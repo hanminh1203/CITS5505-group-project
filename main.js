@@ -1,21 +1,23 @@
-$(function () {
-    $("header").load("src/components/header.component.html");
-    $("footer").load("src/components/footer.component.html");
+
+$(document).ready(function () {
+    function loadComponent(elementSelector, componentPath) {
+        $(elementSelector).load('src/components/' + componentPath + '.component.html', function (response, status) {
+            $.getScript('src/components/' + componentPath + '.component.js');
+        });
+    }
     
-    loadPageByHash();
-    $(window).on('hashchange', function () {
-        loadPageByHash();
-    });
-})
+    function router() {
+        const hash = $(location).attr('hash').substring(1) || 'home';
+        const page = hash || '404';
+        $('main').load('src/pages/' + hash + '.page.html', function (response, status) {
+            $.getScript('src/pages/' + hash + '.page.js');
+        });
+        $('main').removeClass().addClass(page);
+        $('.navbar .nav-item').removeClass('active');
+        $('.navbar .link-nav-' + page).parent().addClass('active');
+    }
 
-function loadPageByHash() {
-    const hash = $(location).attr('hash').substring(1) || 'home';
-    selectPage(hash);
-}
-
-function selectPage(page) {
-    $('main').load('src/pages/' + page + '.page.html');
-    $('main').removeClass().addClass(page);
-    $('.navbar .nav-item').removeClass('active');
-    $('.navbar .link-nav-' + page).parent().addClass('active');
-}
+    loadComponent('header', 'header');
+    $("footer").load("src/components/footer.component.html");
+    $(window).on('hashchange load', router);
+});
