@@ -13,8 +13,6 @@ $(document).ready(function () {
             $.getScript('src/pages/' + hash + '.page.js');
         });
         $('main').removeClass().addClass(page);
-        $('.navbar .nav-item').removeClass('active');
-        $('.navbar .link-nav-' + page).parent().addClass('active');
     }
 
     loadComponent('header', 'header');
