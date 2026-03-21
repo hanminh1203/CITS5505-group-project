@@ -124,12 +124,12 @@ section {
 }
 
 .prev-btn, .next-btn {
+    aspect-ratio: 1 / 1;  /* W:H 1:1 */
     border: none;
     background: transparent;
     font-size: 1.5rem;
     color: #007bff;
     cursor: pointer;
-    padding: 0.5rem;
     border-radius: 50%;
     transition: background-color 0.2s;
 }
