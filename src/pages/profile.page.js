@@ -1,316 +1,180 @@
-$(document).ready(function () {
-    var DEFAULT_PROFILE_PIC = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80';
+// ─── PAGE NAVIGATION ───
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
 
-    // Demo data for this page only.
-    // TODO: Replace with data returned by backend API.
-    var profile = {
-        id: 'u1',
-        nickname: 'Alice Li',
-        profilePic: DEFAULT_PROFILE_PIC,
-        intro: 'I enjoy teaching frontend and exchanging language learning experiences.',
-        offerSkills: ['HTML', 'CSS', 'JavaScript'],
-        learnSkills: ['Public Speaking', 'Photography']
-    };
+  // ─── AUTH ───
+  function doLogin() {
+    const email = document.getElementById('login-email').value;
+    const pw = document.getElementById('login-pw').value;
+    if (!email || !pw) { showToast('Missing fields', 'Please enter your email and password.'); return; }
+    showPage('dashboard');
+    showToast('Welcome back!', 'Signed in as Alex Chen.');
+  }
 
-    var isEditMode = false;
-    var pendingProfilePicDataUrl = '';
+  function doRegister() {
+    showPage('dashboard');
+    showToast('Account created!', 'Welcome to SkillSwap, Alex.');
+  }
 
-    // Avoid XSS
-    function escapeHtml(text) {
-        return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+  // ─── MODALS ───
+  function openModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.add('open');
+  }
+
+  function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.remove('open');
+  }
+  document.querySelectorAll('.ss-modal-overlay').forEach(o => {
+    o.addEventListener('click', function(e) { if (e.target === o) o.classList.remove('open'); });
+  });
+
+  function openOfferModal() { openModal('modal-offer'); }
+  function openNewRequestModal() { openModal('modal-new-request'); }
+  function openEditProfileModal() { openModal('modal-edit-profile'); }
+
+  let currentSkillType = 'offer';
+  let editingSkillRow = null;
+
+  function openAddSkillModal(type) {
+    currentSkillType = type;
+    editingSkillRow = null;
+    document.getElementById('add-skill-title').textContent = type === 'offer' ? 'Add a Skill I Offer' : 'Add a Skill I Want to Learn';
+    document.getElementById('add-skill-sub').textContent = type === 'offer' ? 'Add this skill to your offering profile.' : 'Add this to your learning wish list.';
+    document.getElementById('new-skill-name').value = '';
+    document.getElementById('new-skill-desc').value = '';
+    const submitBtn = document.querySelector('#modal-add-skill .btn-accent');
+    if (submitBtn) submitBtn.textContent = 'Add Skill';
+    openModal('modal-add-skill');
+  }
+
+  // ─── SKILL CRUD ───
+  function selectLevel(btn) {
+    document.querySelectorAll('#level-btns .level-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+  }
+
+  function saveSkill() {
+    const name = document.getElementById('new-skill-name').value.trim();
+    const desc = document.getElementById('new-skill-desc').value.trim();
+    const level = document.querySelector('#level-btns .level-btn.sel')?.textContent || 'Beginner';
+    if (!name) { showToast('Required', 'Please enter a skill name.'); return; }
+
+    if (editingSkillRow) {
+      const skillNameEl = editingSkillRow.querySelector('.skill-name');
+      const skillDescEl = editingSkillRow.querySelector('.skill-meta');
+      const skillLevelEl = editingSkillRow.querySelector('.skill-level');
+      if (skillNameEl) skillNameEl.textContent = name;
+      if (skillDescEl) skillDescEl.textContent = desc || 'No description';
+      if (skillLevelEl) skillLevelEl.textContent = level;
+    } else {
+      const listId = currentSkillType === 'offer' ? 'offer-skills-list' : 'want-skills-list';
+      const list = document.getElementById(listId);
+      const row = document.createElement('div');
+      row.className = 'skill-row';
+      row.innerHTML = `
+      <div><div class="skill-name">${name}</div><div class="skill-meta" style="font-size:0.78rem;color:var(--muted)">${desc || 'No description'}</div></div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="skill-level">${level}</span>
+        <button class="btn btn-sm" onclick="editSkill(this)" style="color:var(--muted);background:none;border:none;padding:2px 6px;"><i class="bi bi-pencil-fill"></i></button>
+        <button class="btn btn-sm" onclick="deleteSkill(this)" style="color:#e05555;background:none;border:none;padding:2px 6px;"><i class="bi bi-trash-fill"></i></button>
+      </div>`;
+      list.appendChild(row);
     }
 
-    // Normalize text by trimming and collapsing whitespace. Return empty string for null/undefined.
-    function normalizeText(value) {
-        if (value === null || value === undefined) {
-            return '';
-        }
-        return String(value).trim().replace(/\s+/g, ' ');
+    editingSkillRow = null;
+    closeModal('modal-add-skill');
+    showToast('Skill saved!', `"${name}" has been updated.`);
+  }
+
+  function deleteSkill(btn) {
+    const row = btn.closest('.skill-row');
+    const name = row.querySelector('.skill-name').textContent;
+    if (confirm(`Remove "${name}" from your profile?`)) {
+      row.style.opacity = '0';
+      row.style.transition = 'opacity 0.3s';
+      setTimeout(() => row.remove(), 300);
+      showToast('Skill removed', `"${name}" has been removed.`);
+    }
+  }
+
+  function editSkill(btn) {
+    const row = btn.closest('.skill-row');
+    const name = row.querySelector('.skill-name').textContent;
+    const desc = row.querySelector('.skill-meta')?.textContent || row.querySelector('.skill-name')?.nextElementSibling?.textContent || '';
+    const level = row.querySelector('.skill-level').textContent;
+
+    editingSkillRow = row;
+    currentSkillType = row.closest('#offer-skills-list') ? 'offer' : 'want';
+
+    document.getElementById('add-skill-title').textContent = 'Edit Skill';
+    document.getElementById('add-skill-sub').textContent = 'Update the skill details on your profile.';
+    const submitBtn = document.querySelector('#modal-add-skill .btn-accent');
+    if (submitBtn) submitBtn.textContent = 'Save Changes';
+
+    document.getElementById('new-skill-name').value = name;
+    document.getElementById('new-skill-desc').value = desc === 'No description' ? '' : desc;
+    document.querySelectorAll('#level-btns .level-btn').forEach(b => {
+      b.classList.toggle('sel', b.textContent === level);
+    });
+    openModal('modal-add-skill');
+  }
+
+  // ─── OTHER ACTIONS ───
+  function submitOffer() {
+    closeModal('modal-offer');
+    showToast('Offer sent!', 'Alex will be notified of your offer.');
+  }
+
+  function createRequest() {
+    closeModal('modal-new-request');
+    showToast('Request posted!', 'Your request is now live on SkillSwap.');
+  }
+
+  function saveProfile() {
+    closeModal('modal-edit-profile');
+    showToast('Profile updated!', 'Your changes have been saved.');
+  }
+
+  function acceptOffer(btn) {
+    const offerCard = btn.closest('.offer-card');
+    const user = offerCard.querySelector('.offer-user').textContent;
+    if (confirm(`Accept offer from ${user}? This will close the request to new offers.`)) {
+      // Update badge
+      const badge = document.querySelector('.detail-hero .badge-status');
+      if (badge) { badge.className = 'badge-status badge-accepted'; badge.textContent = 'Accepted'; }
+      // Disable other accept buttons
+      document.querySelectorAll('.offer-card .btn-accent').forEach(b => {
+        b.disabled = true; b.textContent = 'Accepted'; b.style.opacity = '0.5';
+      });
+      btn.disabled = false; btn.textContent = '✓ Accepted'; btn.style.opacity = '1';
+      showToast('Offer accepted!', `You've accepted ${user}'s offer. Happy swapping!`);
+    }
+  }
+
+  function toggleChip(el) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // ─── TOAST ───
+  function showToast(title, msg) {
+    const t = document.getElementById('toast');
+    const titleEl = document.getElementById('toast-title');
+    const msgEl = document.getElementById('toast-msg');
+
+    if (!t || !titleEl || !msgEl) {
+      return;
     }
 
-    // Cache page elements.
-    var $profilePic = $('#profile-pic');
-    var $nickname = $('#profile-nickname');
-    var $intro = $('#profile-intro');
-    var $viewBadge = $('#profile-view-badge');
-    var $authTip = $('#profile-auth-tip');
-
-    var $editBtn = $('#profile-edit-btn');
-    var $saveBtn = $('#profile-save-btn');
-    var $cancelBtn = $('#profile-cancel-btn');
-    var $editForm = $('#profile-edit-form');
-
-    var $editNickname = $('#edit-nickname');
-    var $editProfilePicFile = $('#edit-profile-pic-file');
-    var $editProfilePicTrigger = $('#edit-profile-pic-trigger');
-    var $editProfilePicName = $('#edit-profile-pic-name');
-    var $editIntro = $('#edit-intro');
-
-    var $offerSkills = $('#offer-skills');
-    var $learnSkills = $('#learn-skills');
-    var $offerSkillEditor = $('#offer-skill-editor');
-    var $learnSkillEditor = $('#learn-skill-editor');
-    var $offerSkillInput = $('#offer-skill-input');
-    var $learnSkillInput = $('#learn-skill-input');
-
-    //Skill list
-    function renderSkillList($container, skills, type) {
-        var html = '';
-        var i = 0;
-        
-        if (!skills || skills.length === 0) {
-            $container.html('<span class="skill-chip-empty">No skills added yet.</span>');
-            return;
-        }
-
-        for (i = 0; i < skills.length; i++) {
-            var safeSkill = escapeHtml(skills[i]);
-            html += '<span class="skill-chip"><span>' + safeSkill + '</span>';
-            // Show remove button in edit mode only.
-            if (isEditMode) {
-                html += '<button type="button" class="remove-skill" data-type="' + type + '" data-skill="' + safeSkill + '">×</button>';
-            }
-
-            html += '</span>';
-        }
-
-        $container.html(html);
-    }
-
-    // Render profile data to page.
-    function renderProfile() {
-        var currentProfilePic = profile.profilePic || DEFAULT_PROFILE_PIC;
-        if (isEditMode && pendingProfilePicDataUrl) {
-            currentProfilePic = pendingProfilePicDataUrl;
-        }
-
-        $profilePic.attr('src', currentProfilePic);
-        $nickname.text(profile.nickname || 'Unnamed User');
-        $intro.text(profile.intro || 'No introduction provided yet.');
-
-        // Demo mode only: always editable.
-        $viewBadge.removeClass('text-bg-secondary').addClass('text-bg-success').text('My Profile');
-        if (isEditMode) {
-            $editBtn.addClass('d-none');
-        } else {
-            $editBtn.removeClass('d-none');
-        }
-        $authTip.addClass('d-none').text('');
-
-        renderSkillList($offerSkills, profile.offerSkills || [], 'offer');
-        renderSkillList($learnSkills, profile.learnSkills || [], 'learn');
-    }
-
-    // Render profile data in edit mode form.
-    function syncFormFromProfile() {
-        $editNickname.val(profile.nickname || '');
-        $editProfilePicFile.val('');
-        $editProfilePicName.text('No file chosen');
-        $editIntro.val(profile.intro || '');
-    }
-
-    // Toggle edit/view mode.
-    function setEditMode(nextEditMode) {
-        isEditMode = nextEditMode;
-
-        if (isEditMode) {
-            pendingProfilePicDataUrl = '';
-            syncFormFromProfile();
-            $editForm.removeClass('d-none');
-            $saveBtn.removeClass('d-none');
-            $cancelBtn.removeClass('d-none');
-            $editBtn.addClass('d-none');
-            $offerSkillEditor.removeClass('d-none');
-            $learnSkillEditor.removeClass('d-none');
-        } else {
-            pendingProfilePicDataUrl = '';
-            $editForm.addClass('d-none');
-            $saveBtn.addClass('d-none');
-            $cancelBtn.addClass('d-none');
-            $editBtn.removeClass('d-none');
-            $offerSkillEditor.addClass('d-none');
-            $learnSkillEditor.addClass('d-none');
-            $editProfilePicFile.val('');
-            $editProfilePicName.text('No file chosen');
-            $offerSkillInput.val('');
-            $learnSkillInput.val('');
-        }
-
-        renderProfile();
-    }
-
-    // Check if skill already exists in the list (case-insensitive).
-    function hasSkill(targetList, normalizedSkill) {
-        var i = 0;
-        for (i = 0; i < targetList.length; i++) {
-            if (String(targetList[i]).toLowerCase() === normalizedSkill.toLowerCase()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Add skill to the list if it doesn't exist. Type is either 'offer' or 'learn'.
-    function addSkill(type, skillInput) {
-        var normalizedSkill = normalizeText(skillInput);
-        var targetList;
-
-        if (!normalizedSkill) {
-            return;
-        }
-
-        if (type === 'offer') {
-            targetList = profile.offerSkills;
-        } else {
-            targetList = profile.learnSkills;
-        }
-
-        if (hasSkill(targetList, normalizedSkill)) {
-            return;
-        }
-
-        targetList.push(normalizedSkill);
-        renderProfile();
-    }
-
-    // Remove skill from the list. Type is either 'offer' or 'learn'.
-    function removeSkill(type, skillValue) {
-        var targetList;
-        var filtered = [];
-        var i = 0;
-
-        if (type === 'offer') {
-            targetList = profile.offerSkills;
-        } else {
-            targetList = profile.learnSkills;
-        }
-
-        for (i = 0; i < targetList.length; i++) {
-            if (String(targetList[i]).toLowerCase() !== String(skillValue).toLowerCase()) {
-                filtered.push(targetList[i]);
-            }
-        }
-
-        if (type === 'offer') {
-            profile.offerSkills = filtered;
-        } else {
-            profile.learnSkills = filtered;
-        }
-
-        renderProfile();
-    }
-
-    // Button events.
-    $editBtn.on('click', function () {
-        setEditMode(true);
-    });
-
-    $cancelBtn.on('click', function () {
-        setEditMode(false);
-    });
-
-    $saveBtn.on('click', function () {
-        var nickname = normalizeText($editNickname.val());
-
-        if (!nickname) {
-            $editNickname.trigger('focus');
-            return;
-        }
-
-        profile.nickname = nickname;
-        if (pendingProfilePicDataUrl) {
-            profile.profilePic = pendingProfilePicDataUrl;
-        }
-        profile.profilePic = profile.profilePic || DEFAULT_PROFILE_PIC;
-        profile.intro = normalizeText($editIntro.val()) || 'No introduction provided yet.';
-
-        // TODO: Send profile to backend API here.
-        setEditMode(false);
-        renderProfile();
-    });
-
-    // Use local image file as preview-only avatar before backend upload is available.
-    $editProfilePicTrigger.on('click', function () {
-        $editProfilePicFile.trigger('click');
-    });
-
-    $editProfilePicFile.on('change', function () {
-        var file = this.files && this.files[0];
-        var reader;
-
-        if (!file) {
-            pendingProfilePicDataUrl = '';
-            $editProfilePicName.text('No file chosen');
-            renderProfile();
-            return;
-        }
-
-        if (!file.type || file.type.indexOf('image/') !== 0) {
-            this.value = '';
-            pendingProfilePicDataUrl = '';
-            $editProfilePicName.text('No file chosen');
-            renderProfile();
-            return;
-        }
-
-        $editProfilePicName.text(file.name);
-        reader = new FileReader();
-        reader.onload = function (event) {
-            pendingProfilePicDataUrl = String((event.target && event.target.result) || '');
-            renderProfile();
-        };
-        reader.readAsDataURL(file);
-    });
-
-    // Add skill button events.
-    $('#offer-skill-add').on('click', function () {
-        addSkill('offer', $offerSkillInput.val());
-        $offerSkillInput.val('');
-        $offerSkillInput.trigger('focus');
-    });
-
-    $('#learn-skill-add').on('click', function () {
-        addSkill('learn', $learnSkillInput.val());
-        $learnSkillInput.val('');
-        $learnSkillInput.trigger('focus');
-    });
-
-    // Press Enter to add skill.
-    $offerSkillInput.on('keydown', function (event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            addSkill('offer', $offerSkillInput.val());
-            $offerSkillInput.val('');
-        }
-    });
-
-    $learnSkillInput.on('keydown', function (event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            addSkill('learn', $learnSkillInput.val());
-            $learnSkillInput.val('');
-        }
-    });
-
-    // remove skill button event (using event delegation since these buttons are rendered dynamically).
-    $(document)
-        .off('click.profileRemoveSkill', '.remove-skill')
-        .on('click.profileRemoveSkill', '.remove-skill', function () {
-            if (!isEditMode) {
-                return;
-            }
-
-            var type = $(this).data('type');
-            var skill = $(this).data('skill');
-            removeSkill(type, skill);
-        });
-
-    // First render.
-    renderProfile();
-    setEditMode(false);
-});
+    titleEl.textContent = title;
+    msgEl.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
