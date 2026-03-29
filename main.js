@@ -8,11 +8,17 @@ $(document).ready(function () {
     
     function router() {
         const hash = $(location).attr('hash').substring(1) || 'home';
-        const page = hash || '404';
+
         $('main').load('src/pages/' + hash + '.page.html', function (response, status) {
+            if (status !== 'success') {
+                $('main').load('src/pages/404.page.html', function (errorPageResponse, errorPageStatus) {
+                    $('main').removeClass().addClass('404');
+                });
+                return;
+            }
+            $('main').removeClass().addClass(hash);
             $.getScript('src/pages/' + hash + '.page.js');
         });
-        $('main').removeClass().addClass(page);
     }
 
     loadComponent('header', 'header');
