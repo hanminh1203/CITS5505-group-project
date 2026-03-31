@@ -1,8 +1,76 @@
 <link rel="stylesheet" href="src/pages/requests.page.css">
-This is requests page. 
-<br>
-Task: Implement  requests page with following points:
-<ul>
-    <li>Search requests by skills</li>
-    <li>Display search results (with action: View details, Offer)</li>
-</ul>
+<div class="requests-page">
+  <div class="requests-container">
+    <div class="page-header">
+      <h1>Skill Requests</h1>
+      <p>Search for requests by skills and explore available opportunities.</p>
+    </div>
+
+    <div class="search-section">
+      <h2>Search Requests</h2>
+
+      <div class="search-form">
+        <div class="form-group">
+          <label for="skillKeyword">Skill Keyword</label>
+          <input type="text" id="skillKeyword" placeholder="e.g. JavaScript, Cooking, Guitar">
+        </div>
+
+        <div class="form-group">
+          <label for="skillCategory">Category</label>
+          <select id="skillCategory">
+            <option value="">All Categories</option>
+            <option value="technology">Technology</option>
+            <option value="language">Language</option>
+            <option value="music">Music</option>
+            <option value="sports">Sports</option>
+            <option value="art">Art</option>
+          </select>
+        </div>
+
+        <div class="form-group search-button-group">
+          <button type="button" class="search-btn">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-section">
+      <h2>Search Results</h2>
+
+      <div class="request-card">
+        <h3>Need Help with JavaScript Basics</h3>
+        <p><strong>Skill:</strong> JavaScript</p>
+        <p><strong>Posted by:</strong> Alice</p>
+        <p><strong>Description:</strong> Looking for someone to explain JavaScript fundamentals and DOM manipulation.</p>
+
+        <div class="card-actions">
+          <a href="#" class="details-btn">View Details</a>
+          <button type="button" class="offer-btn">Offer</button>
+        </div>
+      </div>
+
+      <div class="request-card">
+        <h3>Beginner Guitar Lessons Wanted</h3>
+        <p><strong>Skill:</strong> Guitar</p>
+        <p><strong>Posted by:</strong> Ben</p>
+        <p><strong>Description:</strong> I want to learn basic chords and beginner songs for acoustic guitar.</p>
+
+        <div class="card-actions">
+          <a href="#" class="details-btn">View Details</a>
+          <button type="button" class="offer-btn">Offer</button>
+        </div>
+      </div>
+
+      <div class="request-card">
+        <h3>Need Practice Partner for English Speaking</h3>
+        <p><strong>Skill:</strong> English Speaking</p>
+        <p><strong>Posted by:</strong> Cindy</p>
+        <p><strong>Description:</strong> Looking for a speaking partner to improve daily conversation skills.</p>
+
+        <div class="card-actions">
+          <a href="#" class="details-btn">View Details</a>
+          <button type="button" class="offer-btn">Offer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

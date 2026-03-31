@@ -1,0 +1,139 @@
+.home-wrapper {
+    background-color: lightblue;
+    height: 60vh;
+    width: 100%;
+}
+
+section {
+    position: relative;
+    z-index: 1;
+}
+
+#heading {
+    text-align: center;
+    padding-top: 100px;
+}
+
+/* Main slogan */
+#heading h1{
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+/* Subtitle */
+#heading h2 {
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin-bottom: 50px;
+}
+
+/* Sign Up / Sign In Button design */
+.cta-btn {
+    background: linear-gradient(135deg, #1e90ff, #3b82f6);
+    border: none;
+    border-radius: 999px;
+    padding: 0.75rem 1.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+}
+
+.cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.25);
+    filter: brightness(1.05);
+}
+
+.cta-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 8px 14px rgba(0, 0, 0, 0.22);
+    filter: brightness(0.95);
+}
+
+#features {
+    text-align: center;
+}
+
+/* Advantages Section */
+#advantages {
+    height: 40vh;
+    margin-top: 100px;
+    text-align: center;
+}
+
+#advantages h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Customer Comments Section */
+#comments {
+    height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+#comments .container {
+    width: 100%;
+}
+
+.comment-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.comment-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    height: 250px;
+    text-align: center;
+}
+
+.comment-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-content .stars {
+    color: #ffc107;
+    font-size: 1.2rem;
+    margin-bottom: 50px;
+}
+
+.comment-content p {
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.comment-content cite {
+    font-weight: bold;
+    color: #6c757d;
+    margin-top: auto;
+}
+
+.prev-btn, .next-btn {
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    color: #007bff;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.prev-btn:hover, .next-btn:hover {
+    background-color: #e9ecef;
+}
