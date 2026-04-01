@@ -127,6 +127,18 @@ body {
     border-color: rgba(255, 255, 255, 0.5);
 }
 
+.btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1.5px solid rgba(239, 68, 68, 0.35);
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.28);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #fecaca;
+}
+
 .page-header {
     background: linear-gradient(135deg, var(--ink) 0%, #1e3a8a 60%, #1e1b4b 100%);
     position: relative;
