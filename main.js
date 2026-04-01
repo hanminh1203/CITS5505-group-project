@@ -11,8 +11,15 @@ $(document).ready(function () {
 
         $('main').load('src/pages/' + hash + '.page.html', function (response, status) {
             if (status !== 'success') {
-                $('main').load('src/pages/404.page.html', function (errorPageResponse, errorPageStatus) {
-                    $('main').removeClass().addClass('404');
+                $('main').load('src/pages/error-404.page.html', function (errorPageResponse, errorPageStatus) {
+                    $('main').removeClass().addClass('error-404');
+                    if (errorPageStatus === 'success') {
+                        $.getScript('src/pages/error-404.page.js');
+                    } else {
+                        $('main').empty().append(
+                            '<p class="p-4 text-center text-secondary">Unable to load this page.</p>'
+                        );
+                    }
                 });
                 return;
             }

@@ -94,7 +94,7 @@ main {
     border-radius: 2px;
     transition: all 0.2s;
     cursor: pointer;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     text-decoration: none;
 }
 
@@ -117,4 +117,15 @@ main {
 .btn-accent:hover {
     background: #1d4ed8;
     border-color: #1d4ed8;
+}
+
+.btn-outline-ink {
+    border-color: var(--ink);
+    background-color: transparent;
+    color: var(--ink);
+}
+
+.btn-outline-ink:hover {
+    background-color: var(--ink);
+    color: white;
 }
