@@ -9,6 +9,11 @@ class RequestPage {
 
     async render() {
         this.request = await service.findRequestById(Number(this.params.requestId));
+        if (!this.request) {
+            window.location.hash = '404';
+            return;
+        }
+
         this.container.html(await this.template())  ;
         this.onInit();
     }
