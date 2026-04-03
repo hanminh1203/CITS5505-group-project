@@ -1,12 +1,12 @@
-
 $(document).ready(function () {
     const ROUTES = {
-        'login': 'login',
-        'profile': 'profile',
-        'requests': 'requests',
-        'dashboard': 'dashboard',
-        'dev': 'dev',
-        'requests\/\\d+': 'request'
+        'login': {page: 'login', js: false},
+        'profile': {page: 'profile', js: false},
+        'requests': {page: 'requests', js: false},
+        'dashboard': {page: 'dashboard', js: false},
+        'dev': {page: 'dev', js: false},
+        'home': {page: 'home', js: false},
+        'requests\/(?<requestId>\\d+)': {page: 'request', js: true}
     }
     function loadComponent(elementSelector, componentPath) {
         $(elementSelector).load('src/components/' + componentPath + '.component.html', function (response, status) {
@@ -20,18 +20,31 @@ $(document).ready(function () {
             let matcher = new RegExp(`^${pattern}$`);
             let match = hash.match(matcher)
             if (match) {
-                return ROUTES[pattern];
+                return {
+                    route: ROUTES[pattern],
+                    params: match.groups
+                };
             }
         }
-        return 'home';
+        return {
+            route: ROUTES['home'],
+        };
     }
     
     function router() {
         const hash = $(location).attr('hash').substring(1) || 'home';
-        const page = selectComponent(hash);
-        $('main').load('src/pages/' + page + '.page.html', function (response, status) {
-            $.getScript('src/pages/' + page + '.page.js');
-        });
+        const routeInfo = selectComponent(hash);
+        const page = routeInfo.route.page;
+        if (routeInfo.route.js) {
+            import(`./src/pages/${page}.page.js`).then((module) => {
+                const pageComponent = new module.Page($('main'), routeInfo.params);
+                pageComponent.render();
+            });
+        } else {
+            $('main').load('src/pages/' + page + '.page.html', function (response, status) {
+                $.getScript('src/pages/' + page + '.page.js');
+            });
+        }
         $('main').removeClass().addClass(page);
     }
 
