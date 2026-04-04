@@ -9,7 +9,6 @@ export class BaseModal {
         this.bootstrapModal = null;
         this.jqueryElement = null;
         this.isInitialized = false;
-        this.documentActiveFocus = null;
     }
 
     loadStyles() {
