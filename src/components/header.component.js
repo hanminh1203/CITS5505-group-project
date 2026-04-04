@@ -11,7 +11,8 @@ $(document).ready(function () {
 
         const hash = $(location).attr('hash').substring(1) || 'home';
         $('.navbar .nav-link').removeClass('active');
-        $('.navbar .nav-link-' + hash).addClass('active');
+        $('.navbar .nav-link-' + hash).addClass('active')
+        // TODO bug when hash has /
     }
 
     $('#logout-btn').click(function () {
