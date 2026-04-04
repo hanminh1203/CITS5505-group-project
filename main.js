@@ -1,3 +1,4 @@
+import { HeaderComponent } from './src/components/header.component.js';
 $(document).ready(function () {
     const ROUTES = {
         'login': {page: 'login', js: false},
@@ -8,11 +9,11 @@ $(document).ready(function () {
         'home': {page: 'home', js: false},
         'requests\/(?<requestId>\\d+)': {page: 'request', js: true}
     }
-    function loadComponent(elementSelector, componentPath) {
-        $(elementSelector).load('src/components/' + componentPath + '.component.html', function (response, status) {
-            $.getScript('src/components/' + componentPath + '.component.js');
-        });
-    }
+
+    const headerComponent = new HeaderComponent($('header'));
+    headerComponent.render();
+    $("footer").load("src/components/footer.component.html");
+    $(window).on('hashchange load', router);
 
 
     function selectComponent(hash) {
@@ -46,9 +47,10 @@ $(document).ready(function () {
             });
         }
         $('main').removeClass().addClass(page);
+        
+        headerComponent.updateActiveLink(routeInfo);
+        headerComponent.updateHeader();
     }
 
-    loadComponent('header', 'header');
-    $("footer").load("src/components/footer.component.html");
-    $(window).on('hashchange load', router);
+
 });
