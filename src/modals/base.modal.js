@@ -9,6 +9,7 @@ export class BaseModal {
         this.bootstrapModal = null;
         this.jqueryElement = null;
         this.isInitialized = false;
+        this.documentActiveFocus = null;
     }
 
     loadStyles() {
@@ -24,6 +25,12 @@ export class BaseModal {
         this.modalElement = document.getElementById(this.modalId);
         this.jqueryElement = $(this.modalElement);
         this.bootstrapModal = new bootstrap.Modal(this.modalElement);
+
+        this.modalElement.addEventListener('hide.bs.modal', () => {
+            if (this.modalElement.contains(document.activeElement)) {
+                document.activeElement.blur();
+            }
+        }, { once: true });
     }
 
     async init() {
