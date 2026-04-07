@@ -7,10 +7,21 @@
                 <p class="modal-subtitle">Offer your skill in exchange for what <span app-data-value="request.owner.name"></span> is looking for.</p>
             </div>
             <form id="offer-form">
-                <div class="mb-3">
-                    <label for="offer-skill" class="form-label">Skill you're offering</label>
-                    <input type="text" class="form-control" id="offer-skill" name="skill"
-                        placeholder="Skill you're offering">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="offer-skill" class="form-label">Skill you're offering</label>
+                        <input type="text" class="form-control" id="offer-skill" name="skill"
+                            placeholder="Skill you're offering">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="offer-level" class="form-label">Your skill level</label>
+                        <select class="form-select" id="offer-level" name="level">
+                            <option value="" selected>Select your level</option>
+                            <option value="BEGINNER">Beginner</option>
+                            <option value="INTERMEDIATE">Intermediate</option>
+                            <option value="ADVANCED">Advanced</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -18,6 +29,7 @@
                     <textarea class="form-control" id="offer-message" name="message" rows="4"
                         placeholder="Describe what you want to learn, your goals, and any preferences."></textarea>
                 </div>
+
 
                 <div class="d-flex justify-content-end gap-2">
                     <button type="button" class="app-btn btn-outline-ink" data-bs-dismiss="modal">Cancel</button>

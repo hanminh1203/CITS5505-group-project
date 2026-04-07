@@ -10,11 +10,11 @@ export class RequestModal extends BaseModal {
         const form = this.modalElement.querySelector('#request-form');
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            this.onSubmit(e.target);
+            this.#onSubmit(e.target);
         });
     }
 
-    onSubmit(form) {
+    #onSubmit(form) {
         const data = $(form).serializeArray()
             .reduce((values, x) => {
                 values[x.name] = x.value;
@@ -28,7 +28,7 @@ export class RequestModal extends BaseModal {
 
     prefillData(data) {
         this.data = data;
-        this.jqueryElement.find('#request-title').val(data.title);
+        this.jqueryElement.find('#request-name').val(data.name);
         this.jqueryElement.find('#request-description').val(data.description);
         this.jqueryElement.find('#request-session-format').val(data.format);
         this.jqueryElement.find('#request-duration').val(data.duration);

@@ -11,11 +11,11 @@ export class OfferModal extends BaseModal {
         const form = this.modalElement.querySelector('#offer-form');
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            this.onSubmit(e.target);
+            this.#onSubmit(e.target);
         });
     }
 
-    onSubmit(form) {
+    #onSubmit(form) {
         const data = $(form).serializeArray()
             .reduce((values, x) => {
                 values[x.name] = x.value;

@@ -6,6 +6,9 @@ class RequestPage {
         this.container = container;
         this.params = params;
         this.request = null;
+        this.templates = {
+            offer: null
+        };
     }
 
     async render() {
@@ -15,45 +18,62 @@ class RequestPage {
             return;
         }
 
-        this.container.html(await this.template())  ;
-        this.onInit();
+        this.templates.offer = await $.get('src/components/offer.component.html');
+        this.container.html(await this.#template());
+        this.#onInit();
     }
 
-    onInit() {
+    #onInit() {
+        this.#renderRequest();
+        this.#requestOffers();
+        this.#bindEvents();
+
+
+    }
+
+    #bindEvents() {
+        $("#btn-edit-request").click(() => {
+            const requestModal = new RequestModal((data) => this.#onEditRequest(data));
+            requestModal.show(this.request);
+        });
+
+        $(".btn-offer").click(() => {
+            const offerModal = new OfferModal((data) => this.#onMakeOffer(data));
+            offerModal.show(this.request);
+        });
+    }
+
+    #onEditRequest(data) {
+        this.request = data;
+        this.#renderRequest();
+    }
+
+    #onMakeOffer(data) {
+        this.request.offers.push({
+            offerer: service.currentUser,
+            ...data
+        });
+        this.#requestOffers();
+    }
+
+    #renderRequest() {
         service.fillDataValue('.request', {
             request: this.request
         });
+        $(".request-status").addClass(`status-${this.request.status.toLowerCase()}`)
 
         $("#offering-skills").html(
             this.request.offering.skills.map(skill => $('<div></div>').addClass('skill-chip').text(skill.name))
         );
-
-        $(".request-status").addClass(`status-${this.request.status.toLowerCase()}`)
-
-        $.get('src/components/offer.component.html').then(offerHtml => {
-            this.request.offers.forEach((offer) => {
-                const offerer = offer.offerer;
-                $('#offers').append(service.fillDataValue(offerHtml, offerer));
-            });
-        });
-
-        $("#btn-edit-request").click(() => {
-            const requestModal = new RequestModal((data) => {
-                console.log(data);
-            });
-            requestModal.show(this.request);
-        });
-
-        $("#btn-offer").click(() => {
-            const offerModal = new OfferModal((data) => {
-                console.log(data);
-            });
-            offerModal.show(this.request);
-        });
-
     }
 
-    template() {
+    #requestOffers() {
+        $("#offers").html(
+            this.request.offers.map(offer => service.fillDataValue(this.templates.offer, offer))
+        );
+    }
+
+    #template() {
         return $.get(`src/pages/request.page.html`);
     }
 }
