@@ -1,4 +1,7 @@
-from flask import Flask, redirect, render_template, url_for
+import traceback
+
+from flask import Flask, current_app, redirect, render_template, request, url_for
+from werkzeug.exceptions import HTTPException
 from database import db, ma
 from flask_migrate import Migrate
 # Import models here so Migrate can "see" them
@@ -52,3 +55,28 @@ def fetchModal(modal):
 @app.route("/<page>")
 def subpage(page):
     return redirect(url_for('index', _anchor=page))
+
+
+# Global error handlers
+@app.errorhandler(404)
+def not_found(e):
+    if request.path.startswith('/api/') or request.accept_mimetypes.accept_json:
+        return handle_general_exception(e)
+    
+    return redirect(url_for('index', _anchor=404))
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return handle_general_exception(e)
+
+def handle_general_exception(e):
+    code = 500
+    if isinstance(e, HTTPException):
+        code = e.code
+    response = {
+        "code": code,
+        "message": str(e) if code != 500 else "An internal server error occurred."
+    }
+    if current_app.debug:
+        response["stacktrace"] = traceback.format_exc()
+    return response, code
