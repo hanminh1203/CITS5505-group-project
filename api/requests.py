@@ -21,7 +21,7 @@ def get_requests():
         .selectinload(Offer.offerer)
         .selectinload(UserSkill.skill)
         .selectinload(Skill.category),
-    ).all()
+    ).order_by(Request.id).all()
     return requests_schema.jsonify(requests)
 
 @requests_bp.route('/<int:request_id>', methods=['GET'])

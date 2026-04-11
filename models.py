@@ -3,6 +3,7 @@ from enum import Enum
 from sqlalchemy.sql import func
 from flask_login import current_user
 from sqlalchemy import event
+from sqlalchemy.orm import validates
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -58,6 +59,10 @@ class User(db.Model, UserMixin, AuditMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    @validates("email")
+    def normalize_email(self, key, email):
+        return email.strip().lower() if email else email
     
 class UserSkill(db.Model):
     # Noted as a join table in the diagram, usually omits audit columns
@@ -124,7 +129,7 @@ def add_audit_data(mapper, connection, target):
     target.version = target.version + 1 if target.id else 1
 
 
-models_to_watch = [User, Skill, Request, Offer]
+models_to_watch = [User, SkillCategory, Skill, Request, Offer]
 for model in models_to_watch:
     event.listen(model, 'before_insert', add_audit_data)
     event.listen(model, 'before_update', add_audit_data)
