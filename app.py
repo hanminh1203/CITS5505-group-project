@@ -2,6 +2,7 @@ import traceback
 
 from flask import Flask, current_app, redirect, render_template, request, url_for
 from werkzeug.exceptions import HTTPException
+from config import Config
 from database import db, ma
 from flask_migrate import Migrate
 # Import models here so Migrate can "see" them
@@ -10,12 +11,9 @@ from flask_login import LoginManager
 from api.routes import api_bp
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
 # Setup database and migrations
-# TODO Move configuration into environment variables or a separate config file
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["SQLALCHEMY_ECHO"] = True
 db.init_app(app)
 ma.init_app(app)
 
