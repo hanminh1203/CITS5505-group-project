@@ -68,6 +68,7 @@ class OfferSchema(ma.SQLAlchemyAutoSchema):
 
 class RequestSchema(ma.SQLAlchemyAutoSchema):
     offers = ma.Nested(OfferSchema, many=True) 
+    owner = ma.Nested(UserSchema)
     class Meta:
         model = Request
         fields = BASE_FIELDS + (
@@ -78,5 +79,6 @@ class RequestSchema(ma.SQLAlchemyAutoSchema):
             "duration",
             "availability",
             "offers",
+            "owner"
         ) + AUDIT_FIELDS
         load_instance = True

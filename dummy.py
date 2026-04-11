@@ -25,10 +25,10 @@ REQUEST_COUNT = 12
 OFFER_COUNT = 15
 
 
-def audit_fields(user_id=1):
+def audit_fields(user=None):
     return {
-        "created_by": user_id,
-        "updated_by": user_id,
+        "created_by": user.email if hasattr(user, 'email') else 'system',
+        "updated_by": user.email if hasattr(user, 'email') else 'system',
         "version": 1,
     }
 
@@ -122,7 +122,7 @@ def create_requests(count, users, user_skills):
             description=faker.text(max_nb_chars=200),
             duration=random.choice(["30 mins", "1 hour", "2 hours"]),
             availability=faker.day_of_week(),
-            **audit_fields(owner.id),
+            **audit_fields(owner),
         )
         requests.append(request)
 
@@ -146,7 +146,7 @@ def create_offers(count, users, requests):
             offerer_id=offerer.id,
             request_id=request.id,
             message=faker.paragraph(nb_sentences=3),
-            **audit_fields(offerer.id),
+            **audit_fields(offerer.user),
         )
         offers.append(offer)
 
