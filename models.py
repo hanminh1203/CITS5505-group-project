@@ -1,11 +1,10 @@
 from database import db
-from datetime import datetime
 from enum import Enum
 from sqlalchemy.sql import func
 from flask_login import current_user
 from sqlalchemy import event
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # --- Reusable Enums ---
 
@@ -55,12 +54,18 @@ class User(db.Model, UserMixin, AuditMixin):
     requests = db.relationship('Request', backref='owner', lazy=True)
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
     
 class UserSkill(db.Model):
     # Noted as a join table in the diagram, usually omits audit columns
     __tablename__ = 'user_skill'
-    __table_args__ = {'sqlite_autoincrement': True}
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'skill_id', name='uq_user_skill_user_id_skill_id'),
+        {'sqlite_autoincrement': True},
+    )
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     skill_id = db.Column(db.Integer, db.ForeignKey('skill.id'), nullable=False)
