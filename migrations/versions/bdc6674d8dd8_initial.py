@@ -1,8 +1,8 @@
 """Initial
 
-Revision ID: 8b3140743c5f
+Revision ID: bdc6674d8dd8
 Revises: 
-Create Date: 2026-04-10 22:35:07.609258
+Create Date: 2026-04-11 11:55:25.550408
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8b3140743c5f'
+revision = 'bdc6674d8dd8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,10 +23,10 @@ def upgrade():
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('created_by', sa.BigInteger(), nullable=True),
-    sa.Column('updated_by', sa.BigInteger(), nullable=True),
+    sa.Column('created_by', sa.String(length=255), nullable=True),
+    sa.Column('updated_by', sa.String(length=255), nullable=True),
     sa.Column('version', sa.BigInteger(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_skill_category')),
     sqlite_autoincrement=True
     )
     op.create_table('user',
@@ -39,11 +39,11 @@ def upgrade():
     sa.Column('avatar', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('created_by', sa.BigInteger(), nullable=True),
-    sa.Column('updated_by', sa.BigInteger(), nullable=True),
+    sa.Column('created_by', sa.String(length=255), nullable=True),
+    sa.Column('updated_by', sa.String(length=255), nullable=True),
     sa.Column('version', sa.BigInteger(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email'),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_user')),
+    sa.UniqueConstraint('email', name=op.f('uq_user_email')),
     sqlite_autoincrement=True
     )
     op.create_table('skill',
@@ -52,11 +52,11 @@ def upgrade():
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('created_by', sa.BigInteger(), nullable=True),
-    sa.Column('updated_by', sa.BigInteger(), nullable=True),
+    sa.Column('created_by', sa.String(length=255), nullable=True),
+    sa.Column('updated_by', sa.String(length=255), nullable=True),
     sa.Column('version', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['category_id'], ['skill_category.id'], ),
-    sa.PrimaryKeyConstraint('id'),
+    sa.ForeignKeyConstraint(['category_id'], ['skill_category.id'], name=op.f('fk_skill_category_id_skill_category')),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_skill')),
     sqlite_autoincrement=True
     )
     op.create_table('user_skill',
@@ -64,9 +64,9 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('skill_id', sa.Integer(), nullable=False),
     sa.Column('level', sa.Enum('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT', name='skilllevel'), nullable=True),
-    sa.ForeignKeyConstraint(['skill_id'], ['skill.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id'),
+    sa.ForeignKeyConstraint(['skill_id'], ['skill.id'], name=op.f('fk_user_skill_skill_id_skill')),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], name=op.f('fk_user_skill_user_id_user')),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_user_skill')),
     sqlite_autoincrement=True
     )
     op.create_table('request',
@@ -81,12 +81,12 @@ def upgrade():
     sa.Column('availability', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('created_by', sa.BigInteger(), nullable=True),
-    sa.Column('updated_by', sa.BigInteger(), nullable=True),
+    sa.Column('created_by', sa.String(length=255), nullable=True),
+    sa.Column('updated_by', sa.String(length=255), nullable=True),
     sa.Column('version', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['owner_id'], ['user.id'], ),
-    sa.ForeignKeyConstraint(['owner_skill_id'], ['user_skill.id'], ),
-    sa.PrimaryKeyConstraint('id'),
+    sa.ForeignKeyConstraint(['owner_id'], ['user.id'], name=op.f('fk_request_owner_id_user')),
+    sa.ForeignKeyConstraint(['owner_skill_id'], ['user_skill.id'], name=op.f('fk_request_owner_skill_id_user_skill')),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_request')),
     sqlite_autoincrement=True
     )
     op.create_table('offer',
@@ -96,12 +96,12 @@ def upgrade():
     sa.Column('message', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('created_by', sa.BigInteger(), nullable=True),
-    sa.Column('updated_by', sa.BigInteger(), nullable=True),
+    sa.Column('created_by', sa.String(length=255), nullable=True),
+    sa.Column('updated_by', sa.String(length=255), nullable=True),
     sa.Column('version', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['offerer_id'], ['user.id'], ),
-    sa.ForeignKeyConstraint(['request_id'], ['request.id'], ),
-    sa.PrimaryKeyConstraint('id'),
+    sa.ForeignKeyConstraint(['offerer_id'], ['user_skill.id'], name=op.f('fk_offer_offerer_id_user_skill')),
+    sa.ForeignKeyConstraint(['request_id'], ['request.id'], name=op.f('fk_offer_request_id_request')),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_offer')),
     sqlite_autoincrement=True
     )
     # ### end Alembic commands ###

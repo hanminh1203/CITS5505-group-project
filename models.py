@@ -33,8 +33,8 @@ class AuditMixin:
         server_default=func.now(), 
         onupdate=func.now()
     )
-    created_by = db.Column(db.BigInteger)  # Typically stores a user ID
-    updated_by = db.Column(db.BigInteger)
+    created_by = db.Column(db.String(255))  # Typically stores a user ID
+    updated_by = db.Column(db.String(255))
     version = db.Column(db.BigInteger, default=1)
 
 # --- Models ---
@@ -61,6 +61,8 @@ class UserSkill(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     skill_id = db.Column(db.Integer, db.ForeignKey('skill.id'), nullable=False)
     level = db.Column(db.Enum(SkillLevel), default=SkillLevel.BEGINNER)
+
+    skill = db.relationship('Skill', lazy=True)
 
 class SkillCategory(db.Model, AuditMixin):
     __tablename__ = 'skill_category'
@@ -97,17 +99,19 @@ class Offer(db.Model, AuditMixin):
     __tablename__ = 'offer'
     __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
-    offerer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    offerer_id = db.Column(db.Integer, db.ForeignKey('user_skill.id'), nullable=False)
     request_id = db.Column(db.Integer, db.ForeignKey('request.id'), nullable=False)
     message = db.Column(db.Text)
+
+    offerer = db.relationship('UserSkill', lazy=True)
 
 
 # Add Audit event
 def add_audit_data(mapper, connection, target):
     is_login = current_user and current_user.is_authenticated
     if not target.created_by:
-        target.created_by = current_user.id if is_login else 'system'
-    target.updated_by = current_user.id if is_login else 'system'
+        target.created_by = current_user.email if is_login else 'system'
+    target.updated_by = current_user.email if is_login else 'system'
     target.version = target.version + 1 if target.id else 1
 
 

@@ -9,3 +9,4 @@ DOSKEY db_init=flask db init
 DOSKEY db_migrate=flask db migrate -m $1
 DOSKEY db_upgrade=flask db upgrade
 
+venv\Scripts\activate
