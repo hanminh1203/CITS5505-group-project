@@ -5,6 +5,7 @@ from sqlalchemy.sql import func
 from flask_login import current_user
 from sqlalchemy import event
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash
 
 # --- Reusable Enums ---
 
@@ -33,7 +34,7 @@ class AuditMixin:
         server_default=func.now(), 
         onupdate=func.now()
     )
-    created_by = db.Column(db.String(255))  # Typically stores a user ID
+    created_by = db.Column(db.String(255))
     updated_by = db.Column(db.String(255))
     version = db.Column(db.BigInteger, default=1)
 
@@ -52,6 +53,9 @@ class User(db.Model, UserMixin, AuditMixin):
     # Relationships
     skills = db.relationship('UserSkill', backref='user', lazy=True)
     requests = db.relationship('Request', backref='owner', lazy=True)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
     
 class UserSkill(db.Model):
     # Noted as a join table in the diagram, usually omits audit columns

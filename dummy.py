@@ -140,7 +140,8 @@ def create_offers(count, users, requests):
         if not offer_candidates:
             continue
 
-        offerer = random.choice(offer_candidates)
+        skills = random.choice(offer_candidates).skills
+        offerer = random.choice(skills)
         offer = Offer(
             offerer_id=offerer.id,
             request_id=request.id,
