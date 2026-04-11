@@ -37,18 +37,16 @@ app.register_blueprint(api_bp)
 def index():
     return render_template('index.html')
 
-# TODO to generalize the methods below, we can use a single route with a parameter to determine which template to render. For example:
-@app.route("/pages/<page>")
-def fetchPage(page):
-    return render_template(f'pages/{page}.page.html')
+def render_fragment(section, name):
+    return render_template(f"{section}/{name}.{section[:-1]}.html")
 
-@app.route("/components/<component>")
-def fetchComponent(component):
-    return render_template(f'components/{component}.component.html')
 
-@app.route("/modals/<modal>")
-def fetchModal(modal):
-    return render_template(f'modals/{modal}.modal.html')
+@app.route("/pages/<name>")
+@app.route("/components/<name>")
+@app.route("/modals/<name>")
+def render_section(name):
+    section = request.path.strip("/").split("/", 1)[0]
+    return render_fragment(section, name)
 
 @app.route("/<page>")
 def subpage(page):
