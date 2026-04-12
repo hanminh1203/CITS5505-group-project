@@ -1,10 +1,6 @@
 .login-page {
-    min-height: calc(100vh - 120px);
+    padding: 3rem 1.25rem;
     background: linear-gradient(135deg, var(--ink) 0%, #1e3a8a 60%, #1e1b4b 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2.5rem 1.25rem;
 }
 
 .login-wrapper {
@@ -16,25 +12,7 @@
 .auth-panel {
     width: 100%;
     max-width: 460px;
-}
-
-.auth-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.9rem;
-    font-weight: 700;
-    color: #e8f0ff;
-    margin-bottom: 0.3rem;
-    line-height: 1.1;
-}
-
-.auth-logo span {
-    color: var(--accent2);
-}
-
-.auth-tagline {
-    font-size: 0.82rem;
-    color: var(--muted2);
-    margin: 0 0 1.5rem;
+    margin: 0 auto;
 }
 
 .auth-card {
@@ -207,24 +185,9 @@
     text-decoration: underline;
 }
 
-.back-home {
-    text-align: center;
-    margin-top: 1rem;
-}
-
-.back-home a {
-    color: rgba(212, 228, 247, 0.7);
-    text-decoration: none;
-    font-size: 0.82rem;
-}
-
-.back-home a:hover {
-    text-decoration: underline;
-}
-
 @media (max-width: 576px) {
     .login-page {
-        padding: 1.5rem 1rem;
+        padding: 2rem 1rem;
     }
 
     .auth-card {
