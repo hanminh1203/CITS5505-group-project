@@ -4,7 +4,7 @@ from flask import Flask, current_app, redirect, render_template, request, url_fo
 from werkzeug.exceptions import HTTPException
 from configs.environment import Environment
 import configs.database as database
-import configs.authentication as authentication1
+import configs.authentication as authentication
 from routes.api.routes import api_bp
 from routes.views.routes import views_bp
 
