@@ -6,7 +6,7 @@ class RequestPage {
                 console.log(data);
             });
             requestModal.show(this.request);
-        })
+        });
     }
 }
 

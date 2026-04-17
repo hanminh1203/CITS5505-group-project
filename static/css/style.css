@@ -190,6 +190,7 @@ body {
     color: var(--muted2);
     cursor: pointer;
     margin-bottom: 1rem;
+    text-decoration: none;
 }
 
 .page-header::before {
