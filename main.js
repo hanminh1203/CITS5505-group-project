@@ -28,7 +28,7 @@ $(document).ready(function () {
             }
         }
         return {
-            route: ROUTES['home'],
+            route: { page: 'error-404', js: false },
         };
     }
     
@@ -43,6 +43,19 @@ $(document).ready(function () {
             });
         } else {
             $('main').load('src/pages/' + page + '.page.html', function (response, status) {
+                if (status !== 'success') {
+                    $('main').load('src/pages/error-404.page.html', function (errorPageResponse, errorPageStatus) {
+                        $('main').removeClass().addClass('error-404');
+                        if (errorPageStatus === 'success') {
+                            $.getScript('src/pages/error-404.page.js');
+                        } else {
+                            $('main').empty().append(
+                                '<p class="p-4 text-center text-secondary">Unable to load this page.</p>'
+                            );
+                        }
+                    });
+                    return;
+                }
                 $.getScript('src/pages/' + page + '.page.js');
             });
         }

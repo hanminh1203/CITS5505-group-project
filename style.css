@@ -127,6 +127,7 @@ body {
 .btn-outline-ink {
     border-color: var(--ink);
     background-color: transparent;
+    color: var(--ink);
 }
 
 .btn-outline-ink:hover {
