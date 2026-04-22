@@ -2,7 +2,7 @@ import traceback
 
 from flask import Flask, current_app, redirect, render_template, request, url_for
 from werkzeug.exceptions import HTTPException
-from configs.environment import Environment
+import configs.environment as environment
 import configs.database as database
 import configs.authentication as authentication
 import configs.migration as migration
@@ -11,8 +11,8 @@ from routes.api.routes import api_bp
 from routes.views.routes import views_bp
 
 app = Flask(__name__)
-app.config.from_object(Environment)
 
+environment.init(app)
 database.init(app)
 migration.init(app)
 authentication.init(app)

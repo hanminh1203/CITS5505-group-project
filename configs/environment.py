@@ -17,3 +17,7 @@ class Environment:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = get_bool_env('SQLALCHEMY_ECHO', False)
     FLASK_DEBUG = get_bool_env('FLASK_DEBUG', False)
+    SECRET_KEY = os.environ.get('WTF_CSRF_SECRET_KEY')
+
+def init(app):
+    app.config.from_object(Environment)

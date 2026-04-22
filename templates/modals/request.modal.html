@@ -1,5 +1,4 @@
 <div id="request-modal" class="modal fade request-modal" tabindex="-1" aria-hidden="true">
-    <!-- TODO warning with aria-hidden -> to review -->
     <div class="modal-dialog">
         <div class="modal-content">
             <div>
@@ -7,50 +6,41 @@
                 <p class="modal-subtitle">Update the details of your swap request.</p>
             </div>
             <form id="request-form">
+                {{ form.hidden_tag() }}
+                {{ form.csrf_token }}
                 <div class="mb-3">
-                    <label for="request-title" class="form-label">Request title</label>
-                    <input type="text" class="form-control" id="request-title" name="title"
-                        placeholder="Request title">
+                    {{ form.title.label(class='form-label') }}
+                    {{ form.title(class='form-control', placeholder='Request title')}}
                 </div>
                 <div class="mb-3">
-                    <label for="request-learn" class="form-label">Skill you want to learn</label>
-                    <input type="text" class="form-control" id="request-learn" name="learnSkill"
-                        placeholder="Skill you want to learn">
-                </div>
-
-                <div class="mb-3">
-                    <label for="request-offering-skills" class="form-label">Skills you are offering</label>
-                    <input type="text" class="form-control" id="request-offering-skills" name="offeringSkills"
-                        placeholder="e.g. Python, Django, Web Scraping">
+                    {{ form.skill_to_learn.label(class='form-label') }}
+                    {{ form.skill_to_learn(class='form-control', placeholder='Skill you want to learn')}}
                 </div>
 
                 <div class="mb-3">
-                    <label for="request-description" class="form-label">Description</label>
-                    <textarea class="form-control" id="request-description" name="description" rows="4"
-                        placeholder="Describe what you want to learn, your goals, and any preferences."></textarea>
+                    {{ form.skill_to_offer.label(class='form-label') }}
+                    {{ form.skill_to_offer(class='form-control', placeholder='e.g. Python, Django, Web Scraping')}}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.description.label(class='form-label') }}
+                    {{ form.description(class='form-control', placeholder='Describe what you want to learn, your goals, and any preferences.', rows=4)}}
                 </div>
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="request-session-format" class="form-label">Session format</label>
-                        <select class="form-select" id="request-session-format" name="session">
-                            <option value="" selected>Select a format</option>
-                            <option value="Online">Online</option>
-                            <option value="In-person">In-person</option>
-                            <option value="Hybrid">Hybrid</option>
-                        </select>
+                        {{ form.format.label(class='form-label') }}
+                        {{ form.format(class='form-select')}}
                     </div>
                     <div class="col-md-6">
-                        <label for="request-duration" class="form-label">Duration per session</label>
-                        <input type="text" class="form-control" id="request-duration" name="duration"
-                            placeholder="e.g. 1-2 hours per week">
+                        {{ form.duration.label(class='form-label') }}
+                        {{ form.duration(class='form-control', placeholder='e.g. 1-2 hours per week')}}
                     </div>
                 </div>
 
                 <div class="mb-3 mt-3">
-                    <label for="request-availability" class="form-label">Availability</label>
-                    <input type="text" class="form-control" id="request-availability" name="availability"
-                        placeholder="e.g. Weeknights 6-9pm">
+                    {{ form.availability.label(class='form-label') }}
+                    {{ form.availability(class='form-control', placeholder='e.g. Weeknights 6-9pm')}}
                 </div>
                 <div class="d-flex justify-content-end gap-2">
                     <button type="button" class="app-btn btn-outline-ink" data-bs-dismiss="modal">Cancel</button>

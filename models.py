@@ -1,5 +1,5 @@
 from configs.database import db
-from enum import Enum
+from enum import StrEnum
 from sqlalchemy.sql import func
 from flask_login import current_user
 from sqlalchemy import event
@@ -9,19 +9,20 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # --- Reusable Enums ---
 
-class SkillLevel(Enum):
+class SkillLevel(StrEnum):
     BEGINNER = "Beginner"
     INTERMEDIATE = "Intermediate"
     ADVANCED = "Advanced"
     EXPERT = "Expert"
 
-class RequestStatus(Enum):
+class RequestStatus(StrEnum):
     OPEN = "Open"
     PENDING = "Pending"
+    IN_PROGRESS = "In progress"
     COMPLETED = "Completed"
     CANCELLED = "Cancelled"
 
-class SessionFormat(Enum):
+class SessionFormat(StrEnum):
     ONLINE = "Online"
     OFFLINE = "Offline"
     HYBRID = "Hybrid"
@@ -36,13 +37,17 @@ class AuditMixin:
     )
     created_by = db.Column(db.String(255))
     updated_by = db.Column(db.String(255))
-    version = db.Column(db.BigInteger, default=1)
+    
+class EntityMixin:
+    __table_args__ = {'sqlite_autoincrement': True}
+    
+    id = db.Column(db.Integer, primary_key=True)
+    version = db.Column(db.Integer, nullable=False, default=1)
+    __mapper_args__ = {"version_id_col": version}
 
 # --- Models ---
-class User(db.Model, UserMixin, AuditMixin):
+class User(db.Model, UserMixin, EntityMixin, AuditMixin):
     __tablename__ = 'user'
-    __table_args__ = {'sqlite_autoincrement': True}
-    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255))
@@ -64,7 +69,7 @@ class User(db.Model, UserMixin, AuditMixin):
     def normalize_email(self, key, email):
         return email.strip().lower() if email else email
     
-class UserSkill(db.Model):
+class UserSkill(db.Model, EntityMixin):
     # Noted as a join table in the diagram, usually omits audit columns
     __tablename__ = 'user_skill'
     __table_args__ = (
@@ -78,25 +83,22 @@ class UserSkill(db.Model):
 
     skill = db.relationship('Skill', lazy=True)
 
-class SkillCategory(db.Model, AuditMixin):
+class SkillCategory(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'skill_category'
-    __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
 
     skills = db.relationship('Skill', backref='category', lazy=True)
 
-class Skill(db.Model, AuditMixin):
+class Skill(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'skill'
-    __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('skill_category.id'))
 
 
-class Request(db.Model, AuditMixin):
+class Request(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'request'
-    __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     owner_skill_id = db.Column(db.Integer, db.ForeignKey('user_skill.id'))
@@ -110,9 +112,8 @@ class Request(db.Model, AuditMixin):
     offers = db.relationship('Offer', backref='request', lazy=True)
     owner_skill = db.relationship(UserSkill, lazy=True)
 
-class Offer(db.Model, AuditMixin):
+class Offer(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'offer'
-    __table_args__ = {'sqlite_autoincrement': True}
     id = db.Column(db.Integer, primary_key=True)
     offerer_id = db.Column(db.Integer, db.ForeignKey('user_skill.id'), nullable=False)
     request_id = db.Column(db.Integer, db.ForeignKey('request.id'), nullable=False)
@@ -127,7 +128,6 @@ def add_audit_data(mapper, connection, target):
     if not target.created_by:
         target.created_by = current_user.email if is_login else 'system'
     target.updated_by = current_user.email if is_login else 'system'
-    target.version = target.version + 1 if target.id else 1
 
 
 models_to_watch = [User, SkillCategory, Skill, Request, Offer]

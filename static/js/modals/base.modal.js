@@ -1,3 +1,4 @@
+import { httpService } from '../services/http.service.js'
 export class BaseModal {
     constructor(htmlPath, cssPath, modalId, onCloseCallback) {
         this.onCloseCallback = onCloseCallback;
@@ -19,7 +20,7 @@ export class BaseModal {
     }
 
     async renderModal() {
-        const modalHtml = await $.get(this.htmlPath);
+        const modalHtml = await httpService.get(this.htmlPath);
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         this.modalElement = document.getElementById(this.modalId);
         this.jqueryElement = $(this.modalElement);

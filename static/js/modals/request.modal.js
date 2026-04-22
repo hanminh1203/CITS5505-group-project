@@ -1,37 +1,33 @@
 import { BaseModal } from "./base.modal.js";
+import { httpService } from "../services/http.service.js";
 
 export class RequestModal extends BaseModal {
-    constructor(onSaveCallback) {
-        super('modals/request', 'static/css/modals/request.modal.css', 'request-modal', onSaveCallback);
+    formElem = null;
+    constructor(id, onSaveCallback) {
+        super(`/requests/${id}/edit`, '/static/css/modals/request.modal.css', 'request-modal', onSaveCallback);
+        this.id = id;
         this.data = null;
     }
     
     addEventHandlers() {
-        const form = this.modalElement.querySelector('#request-form');
-        form.addEventListener('submit', (e) => {
+        this.formElem = this.modalElement.querySelector('#request-form');
+        this.formElem.addEventListener('submit', (e) => {
             e.preventDefault();
             this.onSubmit(e.target);
         });
     }
 
-    onSubmit(form) {
-        const data = $(form).serializeArray()
+    extractFormData() {
+        return $(this.formElem).serializeArray()
             .reduce((values, x) => {
                 values[x.name] = x.value;
                 return values;
             }, {});
-        this.close({
-            ...this.data,
-            ...data,
-        });
     }
 
-    prefillData(data) {
-        this.data = data;
-        this.jqueryElement.find('#request-title').val(data.title);
-        this.jqueryElement.find('#request-description').val(data.description);
-        this.jqueryElement.find('#request-session-format').val(data.format);
-        this.jqueryElement.find('#request-duration').val(data.duration);
-        this.jqueryElement.find('#request-availability').val(data.availability);
+    async onSubmit(form) {
+        const { csrf_token, ...formData} = this.extractFormData();
+        const result = await httpService.post(csrf_token, `/api/requests`, formData);
+        this.close();
     }
 }
