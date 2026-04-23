@@ -29,7 +29,7 @@ app.register_blueprint(views_bp)
 def not_found(e):
     if request.path.startswith('/api/') or request.accept_mimetypes.accept_json:
         return handle_general_exception(e)
-    
+    # TODO the error page does not work
     return redirect(url_for('index', _anchor=404))
 
 @app.errorhandler(Exception)

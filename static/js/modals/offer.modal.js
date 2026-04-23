@@ -3,7 +3,7 @@ import { service } from "../services/data.service.js";
 
 export class OfferModal extends BaseModal {
     constructor(onSaveCallback) {
-        super('src/modals/offer.modal.html', null, 'offer-modal', onSaveCallback);
+        super('/modals/offer', null, 'offer-modal', onSaveCallback);
         this.data = null;
     }
     
@@ -11,16 +11,17 @@ export class OfferModal extends BaseModal {
         const form = this.modalElement.querySelector('#offer-form');
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            this.#onSubmit(e.target);
+            this.onSubmit(e.target);
         });
     }
 
-    #onSubmit(form) {
+    onSubmit(form) {
         const data = $(form).serializeArray()
             .reduce((values, x) => {
                 values[x.name] = x.value;
                 return values;
             }, {});
+        // TODO to integrate backend
         this.close(data);
     }
 

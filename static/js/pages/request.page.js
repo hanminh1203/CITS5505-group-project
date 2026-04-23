@@ -1,4 +1,5 @@
 import { RequestModal } from "../modals/request.modal.js";
+import { OfferModal } from "../modals/offer.modal.js";
 class RequestPage {
     requestId = null;
     constructor() {
@@ -12,6 +13,14 @@ class RequestPage {
             });
             requestModal.show(this.request);
         });
+        $(".btn-offer").click(() => {
+            const offerModal = new OfferModal((data) => this.onMakeOffer(data));
+            offerModal.show(this.request);
+        });
+    }
+
+    onMakeOffer(data) {
+        location.reload();
     }
 }
 

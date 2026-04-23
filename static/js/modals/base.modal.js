@@ -12,7 +12,7 @@ export class BaseModal {
         this.isInitialized = false;
     }
 
-    #loadStyles() {
+    loadStyles() {
         if (this.cssPath && !$(`link[href="${this.cssPath}"]`).length) {
             const link = $('<link />').attr('rel', 'stylesheet').attr('href', this.cssPath);
             $('head').append(link);
@@ -33,10 +33,10 @@ export class BaseModal {
         }, { once: true });
     }
 
-    async #init() {
+    async init() {
         this.isInitialized = true;
-        this.#loadStyles();
-        await this.#renderModal();
+        this.loadStyles();
+        await this.renderModal();
         this.addEventHandlers();
     }
 
@@ -55,7 +55,7 @@ export class BaseModal {
 
     async show(data) {
         if (!this.isInitialized) {
-            await this.#init();
+            await this.init();
         }
         if (data) {
             this.prefillData(data);
