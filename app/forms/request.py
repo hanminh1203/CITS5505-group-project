@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, SelectField, StringField, TextAreaField
 
-from models import SessionFormat
+from app.models import SessionFormat
 
 class RequestForm(FlaskForm):
     id = HiddenField('id')

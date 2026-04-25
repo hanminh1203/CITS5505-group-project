@@ -3,9 +3,9 @@ import random
 from faker import Faker
 from sqlalchemy import delete
 
-from configs.database import db
+from app.extensions import db
 from app import app
-from models import (
+from app.models import (
     Offer,
     Request,
     RequestStatus,
