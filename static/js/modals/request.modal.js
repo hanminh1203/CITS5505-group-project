@@ -1,5 +1,6 @@
 import { BaseModal } from "./base.modal.js";
 import { httpService } from "../services/http.service.js";
+import { FormUtils } from "../utils/form.utils.js";
 
 export class RequestModal extends BaseModal {
     formElem = null;
@@ -17,16 +18,8 @@ export class RequestModal extends BaseModal {
         });
     }
 
-    extractFormData() {
-        return $(this.formElem).serializeArray()
-            .reduce((values, x) => {
-                values[x.name] = x.value;
-                return values;
-            }, {});
-    }
-
     async onSubmit(form) {
-        const { csrf_token, ...formData} = this.extractFormData();
+        const { csrf_token, ...formData} = FormUtils.extractFormData(this.formElem);
         const result = await httpService.post(csrf_token, `/api/requests`, formData);
         this.close();
     }

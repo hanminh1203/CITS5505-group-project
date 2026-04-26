@@ -253,6 +253,13 @@ body {
     margin-top: 0;
 }
 
+label.field-required::after {
+    content: '*';
+    --bs-text-opacity: 1;
+    color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity));
+    padding-left: 4px;
+}
+
 
 /* Modal related class */
 .modal {

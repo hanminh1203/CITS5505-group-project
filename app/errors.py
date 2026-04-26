@@ -1,3 +1,4 @@
+from http import HTTPStatus
 import traceback
 
 from flask import current_app, render_template, request
@@ -5,14 +6,14 @@ from werkzeug.exceptions import HTTPException
 
 
 def handle_general_exception(error):
-    code = 500
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     if isinstance(error, HTTPException):
         code = error.code
 
     response = {
         "code": code,
         "message": (
-            str(error) if code != 500 else "An internal server error occurred."
+            str(error) if code != HTTPStatus.INTERNAL_SERVER_ERROR else "An internal server error occurred."
         ),
     }
     if current_app.debug:
@@ -21,8 +22,7 @@ def handle_general_exception(error):
     current_app.logger.error(error, stack_info=True, exc_info=True)
     return response, code
 
-
-def register_error_handlers(app):
+def register_error_handlers(app, login_manager):
     @app.errorhandler(404)
     def not_found(error):
         if request.path.startswith("/api/"):
@@ -37,3 +37,14 @@ def register_error_handlers(app):
     @app.errorhandler(Exception)
     def handle_exception(error):
         return handle_general_exception(error)
+    
+    @login_manager.unauthorized_handler
+    def unauthorized_handler():
+        if 'private_api' in request.blueprints:
+            response = {
+                "code": HTTPStatus.UNAUTHORIZED,
+                "message": "Unauthorized request"
+            }
+            return response, HTTPStatus.UNAUTHORIZED
+        return redirect(url_for('public.login'))
+    

@@ -18,6 +18,7 @@ db = SQLAlchemy(metadata=metadata)
 ma = Marshmallow()
 migrate = Migrate()
 login_manager = LoginManager()
+login_manager.login_view = "public.login"
 csrf = CSRFProtect()
 
 
