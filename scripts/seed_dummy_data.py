@@ -45,17 +45,20 @@ def create_users(count):
     for index in range(count):
         user = User(
             email=f"user{index + 1}_{faker.unique.slug()}@example.com",
-            password="password123",
             name=faker.name(),
             bio=faker.text(max_nb_chars=120),
             address=faker.address(),
             avatar=faker.image_url(),
             **audit_fields(),
         )
+        user.set_password("password")
+        print(user.email, user.password, user.name)
+        print([user.email for user in User.query.all()])
         users.append(user)
 
     session.add_all(users)
     session.flush()
+    print([user.email for user in User.query.all()])
     return users
 
 def create_skills(users, count):
@@ -136,7 +139,7 @@ def main():
         skills = create_skills(users, SKILL_COUNT)
         requests = create_requests(REQUEST_COUNT, users, skills)
         offers = create_offers(OFFER_COUNT, users, requests)
-        session.rollback()
+        session.commit()
         print(
             f"Seeded {len(users)} users, {len(skills)} skills, "
             f"{len(requests)} requests, and {len(offers)} offers."
