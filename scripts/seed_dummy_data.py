@@ -52,13 +52,10 @@ def create_users(count):
             **audit_fields(),
         )
         user.set_password("password")
-        print(user.email, user.password, user.name)
-        print([user.email for user in User.query.all()])
         users.append(user)
 
     session.add_all(users)
     session.flush()
-    print([user.email for user in User.query.all()])
     return users
 
 def create_skills(users, count):
