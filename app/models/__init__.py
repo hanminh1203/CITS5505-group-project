@@ -7,5 +7,14 @@ from app.models.user import User
 register_audit_hooks(User, Skill, Request, Offer)
 
 __all__ = [
-    "User"
+    "AuditMixin",
+    "EntityMixin",
+    "Offer",
+    "Request",
+    "RequestStatus",
+    "SessionFormat",
+    "Skill",
+    "SkillLevel",
+    "User",
+    "register_audit_hooks",
 ]

@@ -3,6 +3,7 @@ from app.models.enums import RequestStatus, SessionFormat
 from app.models.mixins import AuditMixin, EntityMixin
 from app.models.skill import Skill
 
+
 class Request(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'request'
     id = db.Column(db.Integer, primary_key=True)
@@ -17,7 +18,8 @@ class Request(db.Model, EntityMixin, AuditMixin):
 
     offers = db.relationship('Offer', backref='request', lazy=True)
     owner_skill = db.relationship(Skill, lazy=True)
-    
+
+
 class Offer(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'offer'
     id = db.Column(db.Integer, primary_key=True)

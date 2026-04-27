@@ -1,6 +1,6 @@
 import traceback
 
-from flask import current_app, redirect, render_template, request, url_for
+from flask import current_app, render_template, request
 from werkzeug.exceptions import HTTPException
 
 

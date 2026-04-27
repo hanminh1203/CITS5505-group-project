@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app.extensions import db
 from app.models.mixins import AuditMixin, EntityMixin
 
+
 class User(db.Model, UserMixin, EntityMixin, AuditMixin):
     __tablename__ = 'user'
     email = db.Column(db.String(255), unique=True, nullable=False)

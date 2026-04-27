@@ -58,6 +58,7 @@ def create_users(count):
     session.flush()
     return users
 
+
 def create_skills(users, count):
     user_skills = []
     levels = list(SkillLevel)
@@ -67,7 +68,7 @@ def create_skills(users, count):
             skill = Skill(
                 user_id=user.id,
                 name=faker.text(max_nb_chars=20),
-                description = faker.text(max_nb_chars=120),
+                description=faker.text(max_nb_chars=120),
                 level=random.choice(levels),
             )
             user_skills.append(skill)

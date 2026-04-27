@@ -10,6 +10,7 @@ requests_api_bp = Blueprint("requests", __name__, url_prefix="/requests")
 requests_schema = RequestSchema(many=True)
 request_schema = RequestSchema()
 
+
 @requests_api_bp.route("/", methods=["POST"])
 def update_request():
     dto = RequestForm(obj=request.form)

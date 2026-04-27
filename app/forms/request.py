@@ -3,6 +3,7 @@ from wtforms import HiddenField, SelectField, StringField, TextAreaField
 
 from app.models import SessionFormat
 
+
 class RequestForm(FlaskForm):
     id = HiddenField('id')
     version = HiddenField('version')
@@ -14,4 +15,3 @@ class RequestForm(FlaskForm):
                          choices=[(session_format, session_format.value) for session_format in SessionFormat])
     duration = StringField('Duration per session')
     availability = StringField('Availability')
-    
