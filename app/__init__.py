@@ -3,8 +3,10 @@ from flask import Flask
 from app.config import Config
 from app.errors import register_error_handlers
 from app.extensions import init_extensions, login_manager
-from app.features.api import create_private_api_blueprint, create_public_api_blueprint
-from app.features.pages import create_private_views_blueprint, create_public_views_blueprint
+from app.features.api import (
+    create_private_api_blueprint, create_public_api_blueprint)
+from app.features.pages import (
+    create_private_views_blueprint, create_public_views_blueprint)
 from app.templating import init_template_filters
 
 

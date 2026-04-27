@@ -1,13 +1,16 @@
-from flask import Blueprint, render_template, request
-from flask_login import login_user, login_required, logout_user
-from werkzeug.security import check_password_hash
+from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import login_required, logout_user
 
 from app.features.requests.views import requests_views_bp
 from app.forms.login import LoginForm
-from app.models.user import User
 
 
-def render_template_with_class(page, has_css=True, has_js=True, **addition_variables):
+def render_template_with_class(
+    page,
+    has_css=True,
+    has_js=True,
+    **addition_variables,
+):
     return render_template(
         f"pages/{page}.page.html",
         css_file=f"/css/pages/{page}.page.css" if has_css else None,
@@ -20,34 +23,37 @@ def render_template_with_class(page, has_css=True, has_js=True, **addition_varia
 def render_fragment(section, name):
     return render_template(f"{section}/{name}.{section[:-1]}.html")
 
+
 def create_public_views_blueprint():
     public_views_bp = Blueprint("public", __name__, url_prefix="/")
+
     @public_views_bp.route("/", methods=['GET'])
     @public_views_bp.route("/index.html", methods=['GET'])
     def index():
         return render_template_with_class("home")
-    
+
     @public_views_bp.route("/login", methods=['GET'])
     def login():
-        return render_template_with_class('login', form = LoginForm())
-    
+        return render_template_with_class('login', form=LoginForm())
+
     @public_views_bp.route("/register", methods=['GET'])
     def register():
         return render_template_with_class("login", has_js=False)
-    
+
     @public_views_bp.route("/dev", methods=['GET'])
     def dev():
         return render_template_with_class("dev")
-    
+
     return public_views_bp
 
+
 def create_private_views_blueprint():
-    private_views_bp = Blueprint("private", __name__, url_prefix="/")  
-    
+    private_views_bp = Blueprint("private", __name__, url_prefix="/")
+
     @private_views_bp.before_request
     @login_required
     def require_login():
-        pass # login_required will intercept and redirect unauthenticated user
+        pass  # login_required will intercept and redirect unauthenticated user
 
     @private_views_bp.route("/dashboard", methods=['GET'])
     def dashboard():
@@ -57,7 +63,7 @@ def create_private_views_blueprint():
     def logout():
         logout_user()
         return redirect(url_for('public.index'))
-    
+
     @private_views_bp.route("/profile", methods=['GET'])
     def profile():
         return render_template_with_class("profile", has_js=False)

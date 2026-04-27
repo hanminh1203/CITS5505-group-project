@@ -12,15 +12,17 @@ def handle_general_exception(error):
 
     response = {
         "code": code,
-        "message": (
-            str(error) if code != HTTPStatus.INTERNAL_SERVER_ERROR else "An internal server error occurred."
-        ),
+        "message":
+            (str(error)
+                if code != HTTPStatus.INTERNAL_SERVER_ERROR
+                else "An internal server error occurred."),
     }
     if current_app.debug:
         response["stacktrace"] = traceback.format_exc()
 
     current_app.logger.error(error, stack_info=True, exc_info=True)
     return response, code
+
 
 def register_error_handlers(app, login_manager):
     @app.errorhandler(404)
@@ -37,7 +39,7 @@ def register_error_handlers(app, login_manager):
     @app.errorhandler(Exception)
     def handle_exception(error):
         return handle_general_exception(error)
-    
+
     @login_manager.unauthorized_handler
     def unauthorized_handler():
         if 'private_api' in request.blueprints:
@@ -47,4 +49,3 @@ def register_error_handlers(app, login_manager):
             }
             return response, HTTPStatus.UNAUTHORIZED
         return redirect(url_for('public.login'))
-    
