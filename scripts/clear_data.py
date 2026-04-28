@@ -1,7 +1,5 @@
-import random
 import traceback
 
-from faker import Faker
 from sqlalchemy import delete
 
 from run import app
@@ -15,19 +13,19 @@ from app.models import (
 
 session = db.session
 
+
 def clear_data():
     session.execute(delete(Offer))
     session.execute(delete(Request))
     session.execute(delete(Skill))
     session.execute(delete(User))
 
+
 def main():
     try:
         clear_data()
         session.commit()
-        print(
-            f"Database cleaned."
-        )
+        print("Database cleaned.")
     except Exception as exc:
         session.rollback()
         print(f"Something happened while seeding data: {exc}")

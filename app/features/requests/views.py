@@ -37,4 +37,8 @@ def get_request_edit_modal():
     request_id = request.args.get('request_id')
     selected_request = db.get_or_404(Request, request_id) if request_id else None
     form = RequestForm(obj=selected_request)
-    return render_template("modals/request.modal.html", form=form, is_new = not request_id)
+    return render_template(
+        "modals/request.modal.html",
+        form=form,
+        is_new=not request_id,
+    )

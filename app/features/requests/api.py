@@ -19,7 +19,7 @@ def update_request():
     dto = RequestForm(obj=request.form)
     if not dto.validate():
         raise ValidationException(dto.errors)
-    
+
     entity = None
     if dto.id.data:
         entity = db.get_or_404(Request, dto.id.data)
@@ -37,4 +37,4 @@ def update_request():
     entity.availability = dto.availability.data
     entity.duration = dto.duration.data
     db.session.commit()
-    return jsonify(id= entity.id), 200
+    return jsonify(id=entity.id), 200
