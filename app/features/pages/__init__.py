@@ -57,7 +57,7 @@ def create_private_views_blueprint():
 
     @private_views_bp.route("/dashboard", methods=['GET'])
     def dashboard():
-        return render_template_with_class("dashboard", has_js=False)
+        return render_template_with_class("dashboard")
 
     @private_views_bp.route('/logout', methods=['GET', 'POST'])
     def logout():

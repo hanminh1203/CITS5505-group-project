@@ -3,6 +3,7 @@ import traceback
 
 from flask import current_app, redirect, render_template, request, url_for
 from werkzeug.exceptions import HTTPException
+from app.exceptions import SkillswapException
 
 
 def handle_general_exception(error):
@@ -39,6 +40,14 @@ def register_error_handlers(app, login_manager):
     @app.errorhandler(Exception)
     def handle_exception(error):
         return handle_general_exception(error)
+    
+    @app.errorhandler(SkillswapException)
+    def handle_validation_exception(error):
+        response, _code = handle_general_exception(error)
+        response['data'] = error.get_addition_info()
+        response['response'] = error.message
+        return response, error.code
+        
 
     @login_manager.unauthorized_handler
     def unauthorized_handler():

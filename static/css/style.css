@@ -310,10 +310,14 @@ label.field-required::after {
 
 .modal-content .form-control,
 .modal-content .form-select {
-    border: 1.5px solid var(--border);
     border-radius: 6px;
-    background: var(--card-bg);
     font-size: 0.9rem;
     padding: 0.6rem 0.9rem;
+}
+
+.modal-content .form-control:not(.is-invalid),
+.modal-content .form-select:not(.is-invalid){
+    border: 1.5px solid var(--border);
     color: var(--ink);
+    background: var(--card-bg);
 }

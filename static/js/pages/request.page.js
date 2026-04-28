@@ -11,7 +11,7 @@ class RequestPage {
             const requestModal = new RequestModal(this.requestId, (data) => {
                 location.reload();
             });
-            requestModal.show(this.request);
+            requestModal.show();
         });
         $(".btn-offer").click(() => {
             const offerModal = new OfferModal((data) => this.onMakeOffer(data));

@@ -1,3 +1,5 @@
+from sqlalchemy import false
+
 from app.extensions import db
 from app.models.enums import RequestStatus, SessionFormat
 from app.models.mixins import AuditMixin, EntityMixin
@@ -8,7 +10,8 @@ class Request(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'request'
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    owner_skill_id = db.Column(db.Integer, db.ForeignKey('skill.id'))
+    owner_skill_id = db.Column(db.Integer, db.ForeignKey('skill.id'), nullable=False)
+    skill_to_learn = db.Column(db.String(255), nullable = False)
     status = db.Column(db.Enum(RequestStatus), default=RequestStatus.OPEN)
     format = db.Column(db.Enum(SessionFormat), default=SessionFormat.ONLINE)
     title = db.Column(db.String(255), nullable=False)

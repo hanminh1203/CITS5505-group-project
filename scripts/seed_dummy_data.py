@@ -97,6 +97,7 @@ def create_requests(count, users, skills):
                 if owner_skill_options
                 else None
             ),
+            skill_to_learn=faker.text(max_nb_chars=255),
             status=random.choice(statuses),
             format=random.choice(formats),
             title=faker.sentence(nb_words=6),
