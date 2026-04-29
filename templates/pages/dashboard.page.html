@@ -1,0 +1,52 @@
+{% extends 'pages/base.page.html' %}
+{% block main %}
+<div class="dashboard-page">
+    <div class="page-header">
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">Manage your requests and offers in one place.</div>
+    </div>
+
+    <div class="page-body dashboard-body">
+        <div class="dashboard-grid">
+            <div class="dashboard-main">
+                <section class="page-item">
+                    <div class="dashboard-section-header">
+                        <h2 class="item-header">My requests</h2>
+                        <span class="dashboard-count">0 items</span>
+                    </div>
+
+                    <div class="dashboard-empty">You have not created any requests yet.</div>
+                </section>
+
+                <section class="page-item">
+                    <div class="dashboard-section-header">
+                        <h2 class="item-header">My offering</h2>
+                        <span class="dashboard-count">0 items</span>
+                    </div>
+
+                    <div class="dashboard-empty">You are not offering on any requests yet.</div>
+                </section>
+            </div>
+
+            <aside class="dashboard-side">
+                <section class="page-item">
+                    <h2 class="item-header">Quick actions</h2>
+                    <p class="dashboard-side-text">
+                        If you want to learn a skill and are willing to exchange it for knowledge you already have, please create a new request.
+                    </p>
+                    <button id="btnCreateRequest" class="app-btn btn-accent dashboard-action-btn">Create request</button>
+                </section>
+
+                <section class="page-item">
+                    <h2 class="item-header">Tips</h2>
+                    <ul class="dashboard-tip-list">
+                        <li>Give your skill request a simple and clear title.</li>
+                        <li>Let others know what you’d be happy to offer in return.</li>
+                        <li>Keep your request friendly, and specific.</li>
+                    </ul>
+                </section>
+            </aside>
+        </div>
+    </div>
+</div>
+{% endblock %}

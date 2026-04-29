@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Skill<span class="text-accent2">Swap</span></a>
+        
+        <div class="d-flex ms-auto">
+            {% if current_user.is_authenticated %}
+            <div id="header-logout-group" class="d-flex align-items-center">
+                <div class="d-flex align-items-center gap-2 text-center">
+                    <a class="nav-link nav-link-dashboard {{'active' if main_class=='dashboard' else ''}}" href="/dashboard">Dashboard</a>
+                    <a class="nav-link nav-link-requests {{'active' if main_class=='requests' else ''}}" href="/requests">Search Requests</a>
+                    <a class="nav-link nav-link-profile {{'active' if main_class=='profile' else ''}}" href="/profile">My profile</a>
+                </div>
+                <div class="horizontal-divider"></div>
+                <a id="logout-btn" class="app-btn btn-outline" href="/logout" class="nav-link">Logout</a>
+            </div>
+            {% else %}
+            <div id="header-login-group" class="navbar-nav gap-2">
+                <a href="/login" class="app-btn btn-outline">Login</a>
+                <a href="/register" class="app-btn btn-accent">Sign up</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>

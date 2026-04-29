@@ -1,0 +1,11 @@
+[flake8]
+# Folders and files to ignore
+exclude =
+    .git,
+    __pycache__,
+    dist,
+    build,
+    venv,
+    .venv,
+    # Ignore Alembic or Flask-Migrate versions
+    migrations/versions/*,
