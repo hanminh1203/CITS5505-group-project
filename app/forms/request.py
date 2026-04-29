@@ -11,19 +11,30 @@ from wtforms_sqlalchemy.fields import QuerySelectField
 
 from app.models import SessionFormat
 
+
 def coerce_none(value):
     if value is None or value == 'None' or value == '':
         return None
     return str(value)
+
 
 class RequestForm(FlaskForm):
     id = HiddenField('id')
     version = HiddenField('version')
     title = StringField(
         'Request title',
-        validators=[validators.DataRequired(), validators.Length(max=255)],
+        validators=[
+            validators.DataRequired(),
+            validators.Length(max=255)
+        ],
     )
-    skill_to_learn = StringField('Skill you want to learn', validators=[validators.DataRequired(), validators.Length(max=255)])
+    skill_to_learn = StringField(
+        'Skill you want to learn',
+        validators=[
+            validators.DataRequired(),
+            validators.Length(max=255)
+        ],
+    )
     skill_to_offer = QuerySelectField(
         label='Skill you are offering',
         query_factory=lambda: current_user.skills,
@@ -44,5 +55,11 @@ class RequestForm(FlaskForm):
         ],
         coerce=coerce_none
     )
-    duration = StringField('Duration per session', validators=[validators.Length(max=255)])
-    availability = StringField('Availability', validators=[validators.Length(max=255)])
+    duration = StringField(
+        'Duration per session',
+        validators=[validators.Length(max=255)]
+    )
+    availability = StringField(
+        'Availability',
+        validators=[validators.Length(max=255)]
+    )
