@@ -1,14 +1,4 @@
      /* ─── BUTTONS ─── */
-    .btn-ink,
-    .btn-outline-ink,
-    .btn-white {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      border-radius: 2px;
-      transition: all 0.2s;
-    }
     .btn-ink {
       background: var(--ink);
       color: #e8f0ff;
