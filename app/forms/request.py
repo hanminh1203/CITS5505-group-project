@@ -38,10 +38,10 @@ class RequestForm(FlaskForm):
     owner_skill = QuerySelectField(
         label='Skill you are offering',
         query_factory=lambda: current_user.skills,
-        get_label='name',
+        get_label=lambda skill: skill.get_label(),
         allow_blank=True,
-        blank_text='',
-        validators=[validators.InputRequired()]
+        blank_text='<Select a skill from your profile>',
+        validators=[validators.DataRequired()]
     )
     description = TextAreaField(
         'Description',
@@ -49,7 +49,7 @@ class RequestForm(FlaskForm):
     )
     format = SelectField(
         'Session format',
-        choices=[(None, '')] + [
+        choices=[(None, '<Select a format>')] + [
             (session_format, session_format.value)
             for session_format in SessionFormat
         ],

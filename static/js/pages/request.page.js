@@ -8,18 +8,16 @@ class RequestPage {
     }
     onInit() {
         $("#btn-edit-request").click(() => {
-            const requestModal = new RequestModal(this.requestId, (data) => {
-                location.reload();
-            });
+            const requestModal = new RequestModal(this.requestId, (data) => this.reloadPage());
             requestModal.show();
         });
         $(".btn-offer").click(() => {
-            const offerModal = new OfferModal((data) => this.onMakeOffer(data));
+            const offerModal = new OfferModal(this.requestId, (data) => this.reloadPage());
             offerModal.show(this.request);
         });
     }
 
-    onMakeOffer(data) {
+    reloadPage() {
         location.reload();
     }
 }
