@@ -245,3 +245,61 @@ body {
     line-height: 1.2;
     margin-top: 0;
 }
+
+
+/* Modal related class */
+.modal {
+    align-content: center;
+}
+.modal-dialog {
+    margin: auto;
+}
+.modal-content {
+    padding: 2rem;
+}
+
+.modal-title {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--ink);
+}
+
+.modal-subtitle {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+}
+
+.modal-title-icon {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.modal-content .form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+}
+
+.modal-content .form-control,
+.modal-content .form-select {
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--card-bg);
+    font-size: 0.9rem;
+    padding: 0.6rem 0.9rem;
+    color: var(--ink);
+}

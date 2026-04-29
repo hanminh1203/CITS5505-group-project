@@ -1,10 +1,14 @@
 import { RequestModal } from "../modals/request.modal.js";
+import { OfferModal } from "../modals/offer.modal.js";
 import { service } from "../services/data.service.js";
 class RequestPage {
     constructor(container, params) {
         this.container = container;
         this.params = params;
         this.request = null;
+        this.templates = {
+            offer: null
+        };
     }
 
     async render() {
@@ -14,67 +18,63 @@ class RequestPage {
             return;
         }
 
-        this.container.html(await this.template())  ;
-        this.onInit();
+        this.templates.offer = await $.get('src/components/offer.component.html');
+        this.container.html(await this.#template());
+        this.#onInit();
     }
 
-    onInit() {
-        this.fillDataValue('.request', {
+    #onInit() {
+        this.#renderRequest();
+        this.#requestOffers();
+        this.#bindEvents();
+
+
+    }
+
+    #bindEvents() {
+        $("#btn-edit-request").click(() => {
+            const requestModal = new RequestModal((data) => this.#onEditRequest(data));
+            requestModal.show(this.request);
+        });
+
+        $(".btn-offer").click(() => {
+            const offerModal = new OfferModal((data) => this.#onMakeOffer(data));
+            offerModal.show(this.request);
+        });
+    }
+
+    #onEditRequest(data) {
+        this.request = data;
+        this.#renderRequest();
+    }
+
+    #onMakeOffer(data) {
+        this.request.offers.push({
+            offerer: service.currentUser,
+            ...data
+        });
+        this.#requestOffers();
+    }
+
+    #renderRequest() {
+        service.fillDataValue('.request', {
             request: this.request
         });
+        $(".request-status").addClass(`status-${this.request.status.toLowerCase()}`)
 
         $("#offering-skills").html(
             this.request.offering.skills.map(skill => $('<div></div>').addClass('skill-chip').text(skill.name))
         );
-
-        $(".request-status").addClass(`status-${this.request.status.toLowerCase()}`)
-
-        $.get('src/components/offer.component.html').then(offerHtml => {
-            this.request.offers.forEach((offer) => {
-                const offerer = offer.offerer;
-                $('#offers').append(this.fillDataValue(offerHtml, offerer));
-            });
-        });
-
-        $("#btn-edit-request").click(() => {
-            const requestModal = new RequestModal((data) => {
-                console.log(data);
-            });
-            requestModal.show(this.request);
-        })
     }
 
-    template() {
+    #requestOffers() {
+        $("#offers").html(
+            this.request.offers.map(offer => service.fillDataValue(this.templates.offer, offer))
+        );
+    }
+
+    #template() {
         return $.get(`src/pages/request.page.html`);
-    }
-
-    fetchData(obj, path) {
-        if (path.length === 0 || typeof (obj) !== typeof ({})) {
-            return obj;
-        }
-        const [field, ...rest] = path;
-        return this.fetchData(obj[field], rest);
-    }
-
-    fillDataValue(elementHtml, obj) {
-        const element = $(elementHtml);
-        element.find('[app-data-value]').get().forEach(element => {
-            const value = this.fetchData(obj, $(element).attr('app-data-value').split('.'));
-            $(element).text(value);
-        });
-        element.find('[app-attr-value]').get().forEach(childElement => {
-            const appAttrValue = $(childElement).attr('app-attr-value').split(',');
-            appAttrValue.forEach(attrName => {
-                $(childElement).attr(attrName, format($(childElement).attr(attrName), obj));
-            });
-        })
-        return element;
-    }
-
-    format(template, data) {
-        return template.replace(/{{([^}]+)}}/g, (match, key) => {
-            return this.fetchData(data, key.split('.'));
-        });
     }
 }
 

@@ -1,76 +1,117 @@
 <link rel="stylesheet" href="src/pages/requests.page.css">
 <div class="requests-page">
-  <div class="requests-container">
     <div class="page-header">
-      <h1>Skill Requests</h1>
-      <p>Search for requests by skills and explore available opportunities.</p>
+        <div class="page-title">Requests</div>
+        <div class="page-subtitle">Browse skill exchange requests from the community.</div>
     </div>
 
-    <div class="search-section">
-      <h2>Search Requests</h2>
+    <div class="page-body requests-body">
+        <section class="page-item requests-toolbar">
+            <div class="requests-toolbar-left">
+                <input type="text" class="requests-search-input" placeholder="Search requests...">
+            </div>
 
-      <div class="search-form">
-        <div class="form-group">
-          <label for="skillKeyword">Skill Keyword</label>
-          <input type="text" id="skillKeyword" placeholder="e.g. JavaScript, Cooking, Guitar">
-        </div>
+            <div class="requests-toolbar-right">
+                <button class="requests-filter-chip active">All</button>
+                <button class="requests-filter-chip">Open</button>
+                <button class="requests-filter-chip">Beginner</button>
+                <button class="requests-filter-chip">Online</button>
+            </div>
+        </section>
 
-        <div class="form-group">
-          <label for="skillCategory">Category</label>
-          <select id="skillCategory">
-            <option value="">All Categories</option>
-            <option value="technology">Technology</option>
-            <option value="language">Language</option>
-            <option value="music">Music</option>
-            <option value="sports">Sports</option>
-            <option value="art">Art</option>
-          </select>
-        </div>
+        <section class="requests-list">
+            <article class="requests-card">
+                <div class="requests-card-top">
+                    <div class="requests-card-main">
+                        <h2 class="requests-card-title">Looking for beginner guitar lessons</h2>
+                        <p class="requests-card-meta">Wanted skill: Guitar · Format: Online · Duration: 1 hour</p>
+                    </div>
+                    <span class="request-status status-open">Open</span>
+                </div>
 
-        <div class="form-group search-button-group">
-          <button type="button" class="search-btn">Search</button>
-        </div>
-      </div>
+                <p class="requests-card-desc">
+                    I want to learn basic guitar skills and can offer help with Python practice in return.
+                </p>
+
+                <div class="requests-card-tags">
+                    <span class="skill-chip">Python</span>
+                    <span class="skill-chip">Beginner friendly</span>
+                </div>
+
+                <div class="requests-card-footer">
+                    <div class="requests-owner">
+                        <div class="mini-avatar avatar-36">J</div>
+                        <div>
+                            <div class="offer-user">Jianing Wang</div>
+                            <div class="offer-skill">Perth, AU</div>
+                        </div>
+                    </div>
+
+                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
+                </div>
+            </article>
+
+            <article class="requests-card">
+                <div class="requests-card-top">
+                    <div class="requests-card-main">
+                        <h2 class="requests-card-title">Need help with presentation design</h2>
+                        <p class="requests-card-meta">Wanted skill: Slide Design · Format: In person · Duration: 2 hours</p>
+                    </div>
+                    <span class="request-status status-open">Open</span>
+                </div>
+
+                <p class="requests-card-desc">
+                    Looking for help to improve slide layout and storytelling for a university presentation.
+                </p>
+
+                <div class="requests-card-tags">
+                    <span class="skill-chip">Web basics</span>
+                    <span class="skill-chip">English speaking</span>
+                </div>
+
+                <div class="requests-card-footer">
+                    <div class="requests-owner">
+                        <div class="mini-avatar avatar-36">A</div>
+                        <div>
+                            <div class="offer-user">Alex T.</div>
+                            <div class="offer-skill">UWA Campus</div>
+                        </div>
+                    </div>
+
+                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
+                </div>
+            </article>
+
+            <article class="requests-card">
+                <div class="requests-card-top">
+                    <div class="requests-card-main">
+                        <h2 class="requests-card-title">Want to improve spoken English</h2>
+                        <p class="requests-card-meta">Wanted skill: English Speaking · Format: Online · Duration: 45 mins</p>
+                    </div>
+                    <span class="request-status status-open">Open</span>
+                </div>
+
+                <p class="requests-card-desc">
+                    I would like casual conversation practice and can help with HTML/CSS in exchange.
+                </p>
+
+                <div class="requests-card-tags">
+                    <span class="skill-chip">HTML</span>
+                    <span class="skill-chip">CSS</span>
+                </div>
+
+                <div class="requests-card-footer">
+                    <div class="requests-owner">
+                        <div class="mini-avatar avatar-36">M</div>
+                        <div>
+                            <div class="offer-user">Mia K.</div>
+                            <div class="offer-skill">Online</div>
+                        </div>
+                    </div>
+
+                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
+                </div>
+            </article>
+        </section>
     </div>
-
-    <div class="results-section">
-      <h2>Search Results</h2>
-
-      <div class="request-card">
-        <h3>Need Help with JavaScript Basics</h3>
-        <p><strong>Skill:</strong> JavaScript</p>
-        <p><strong>Posted by:</strong> Alice</p>
-        <p><strong>Description:</strong> Looking for someone to explain JavaScript fundamentals and DOM manipulation.</p>
-
-        <div class="card-actions">
-          <a href="#" class="details-btn">View Details</a>
-          <button type="button" class="offer-btn">Offer</button>
-        </div>
-      </div>
-
-      <div class="request-card">
-        <h3>Beginner Guitar Lessons Wanted</h3>
-        <p><strong>Skill:</strong> Guitar</p>
-        <p><strong>Posted by:</strong> Ben</p>
-        <p><strong>Description:</strong> I want to learn basic chords and beginner songs for acoustic guitar.</p>
-
-        <div class="card-actions">
-          <a href="#" class="details-btn">View Details</a>
-          <button type="button" class="offer-btn">Offer</button>
-        </div>
-      </div>
-
-      <div class="request-card">
-        <h3>Need Practice Partner for English Speaking</h3>
-        <p><strong>Skill:</strong> English Speaking</p>
-        <p><strong>Posted by:</strong> Cindy</p>
-        <p><strong>Description:</strong> Looking for a speaking partner to improve daily conversation skills.</p>
-
-        <div class="card-actions">
-          <a href="#" class="details-btn">View Details</a>
-          <button type="button" class="offer-btn">Offer</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
