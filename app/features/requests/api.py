@@ -31,9 +31,9 @@ def update_request():
 
     entity.title = dto.title.data
     entity.description = dto.description.data
-    entity.owner_skill_id = dto.skill_to_offer.data
+    entity.owner_skill_id = dto.skill_to_offer.data.id
     entity.skill_to_learn = dto.skill_to_learn.data
-    entity.format = SessionFormat(dto.format.data)
+    entity.format = SessionFormat(dto.format.data) if dto.format.data else None
     entity.availability = dto.availability.data
     entity.duration = dto.duration.data
     db.session.commit()

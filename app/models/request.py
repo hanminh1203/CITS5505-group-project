@@ -15,7 +15,7 @@ class Request(db.Model, EntityMixin, AuditMixin):
     )
     skill_to_learn = db.Column(db.String(255), nullable=False)
     status = db.Column(db.Enum(RequestStatus), default=RequestStatus.OPEN)
-    format = db.Column(db.Enum(SessionFormat), default=SessionFormat.ONLINE)
+    format = db.Column(db.Enum(SessionFormat), nullable=True)
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     duration = db.Column(db.String(255))

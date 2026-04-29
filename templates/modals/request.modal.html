@@ -13,8 +13,7 @@
             </div>
             <form id="request-form">
                 {{ form.hidden_tag() }}
-                {{ form.csrf_token }}
-                <div class="mb-3 has-validation">
+                <div class="mb-3">
                     {{ render_field(form.title, placeholder='Request title') }}
                 </div>
                 <div class="mb-3">

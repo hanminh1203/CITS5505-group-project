@@ -10,6 +10,7 @@ export class BaseModal {
         this.bootstrapModal = null;
         this.jqueryElement = null;
         this.isInitialized = false;
+        this.modalContainer = $('#modalContainer');
     }
 
     loadStyles() {
@@ -21,7 +22,8 @@ export class BaseModal {
 
     async renderModal() {
         const modalHtml = await httpService.get(this.htmlPath);
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        this.removeModalElementIfExists();
+        this.modalContainer.append(modalHtml);
         this.modalElement = document.getElementById(this.modalId);
         this.jqueryElement = $(this.modalElement);
         this.bootstrapModal = new bootstrap.Modal(this.modalElement);
@@ -30,6 +32,7 @@ export class BaseModal {
             if (this.modalElement.contains(document.activeElement)) {
                 document.activeElement.blur();
             }
+            this.modalElement.remove();
         }, { once: true });
     }
 
@@ -38,6 +41,14 @@ export class BaseModal {
         this.loadStyles();
         await this.renderModal();
         this.addEventHandlers();
+    }
+    
+    removeModalElementIfExists() {
+        this.modalElement = document.getElementById(this.modalId);
+        if (this.modalElement) {
+            this.modalElement.remove();
+        }
+        this.modalElement = null;
     }
 
     addEventHandlers() {

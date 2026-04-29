@@ -7,9 +7,14 @@ from wtforms import (
     TextAreaField,
     validators,
 )
+from wtforms_sqlalchemy.fields import QuerySelectField
 
 from app.models import SessionFormat
 
+def coerce_none(value):
+    if value is None or value == 'None' or value == '':
+        return None
+    return str(value)
 
 class RequestForm(FlaskForm):
     id = HiddenField('id')
@@ -18,11 +23,14 @@ class RequestForm(FlaskForm):
         'Request title',
         validators=[validators.DataRequired(), validators.Length(max=255)],
     )
-    skill_to_learn = StringField('Skill you want to learn')
-    skill_to_offer = SelectField(
-        'Skills you are offering',
-        coerce=int,
-        validators=[validators.InputRequired()],
+    skill_to_learn = StringField('Skill you want to learn', validators=[validators.DataRequired(), validators.Length(max=255)])
+    skill_to_offer = QuerySelectField(
+        label='Skill you are offering',
+        query_factory=lambda: current_user.skills,
+        get_label='name',
+        allow_blank=True,
+        blank_text='',
+        validators=[validators.InputRequired()]
     )
     description = TextAreaField(
         'Description',
@@ -30,16 +38,11 @@ class RequestForm(FlaskForm):
     )
     format = SelectField(
         'Session format',
-        choices=[
+        choices=[(None, '')] + [
             (session_format, session_format.value)
             for session_format in SessionFormat
         ],
+        coerce=coerce_none
     )
-    duration = StringField('Duration per session')
-    availability = StringField('Availability')
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.skill_to_offer.choices = [
-            (skill.id, skill.name) for skill in current_user.skills
-        ]
+    duration = StringField('Duration per session', validators=[validators.Length(max=255)])
+    availability = StringField('Availability', validators=[validators.Length(max=255)])

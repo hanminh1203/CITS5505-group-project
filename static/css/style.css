@@ -253,7 +253,7 @@ body {
     margin-top: 0;
 }
 
-label.field-required::after {
+.form-label:has(+ .form-control[required])::after {
     content: '*';
     --bs-text-opacity: 1;
     color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity));
