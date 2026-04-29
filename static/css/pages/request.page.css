@@ -1,0 +1,120 @@
+.request-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08rem;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 50px;
+}
+
+.request-status.status-open {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.request-status.status-pending {
+    background: #d7e1eb;
+    color: #6c757d;
+}
+
+.request-status.status-in-progress {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.request-status.status-completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.request-status.status-cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* TODO Add css class for different status  */
+
+.offer-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.mini-avatar {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    color: #fff;
+    font-weight: 700;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.avatar-36 {
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+}
+
+.avatar-48 {
+    min-width: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+
+.offer-user {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--ink);
+}
+
+.offer-skill {
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+.offer-msg {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    font-style: italic;
+}
+
+.profile-info {
+    border-bottom: 1px solid var(--border2);
+    padding-bottom: 0.75rem;
+}
+
+.profile-user {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.profile-address {
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+.profil-bio {
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.skill-chip {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    background: #e0f2fe;
+    color: #0369a1;
+}

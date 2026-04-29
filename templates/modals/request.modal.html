@@ -1,0 +1,49 @@
+{% from 'helpers/_formhelpers.html' import render_field %}
+<div id="request-modal" class="modal fade request-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div>
+                {% if is_new %}
+                    <div class="modal-title h5 mb-1"><i class="modal-title-icon bi bi-pencil-fill"></i>Create a Request</div>
+                    <p class="modal-subtitle">Fill the details of your swap request.</p>
+                {% else %}
+                    <div class="modal-title h5 mb-1"><i class="modal-title-icon bi bi-pencil-fill"></i>Edit Request Info</div>
+                    <p class="modal-subtitle">Update the details of your swap request.</p>
+                {% endif %}
+            </div>
+            <form id="request-form">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ render_field(form.title, placeholder='Request title') }}
+                </div>
+                <div class="mb-3">
+                    {{ render_field(form.skill_to_learn, placeholder='Skill you want to learn') }}
+                </div>
+
+                <div class="mb-3">
+                    {{ render_field(form.owner_skill, placeholder='e.g. Python, Django, Web Scraping') }}
+                </div>
+
+                <div class="mb-3">
+                    {{ render_field(form.description, placeholder='Describe what you want to learn, your goals, and any preferences.', rows=4) }}
+                </div>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        {{ render_field(form.format) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ render_field(form.duration, placeholder='e.g. 1-2 hours per week') }}
+                    </div>
+                </div>
+
+                <div class="mb-3 mt-3">
+                    {{ render_field(form.availability, placeholder='e.g. Weeknights 6-9pm') }}
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="app-btn btn-outline-ink" data-bs-dismiss="modal">Cancel</button>
+                    <button id="btn-submit" type="submit" class="app-btn btn-accent">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
