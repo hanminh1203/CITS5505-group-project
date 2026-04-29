@@ -17,7 +17,9 @@
             </div>
         </div>
         <div>
-            <button id="btn-edit-request" class="app-btn btn-secondary"><i class="bi bi-pencil me-2"></i>Edit</button>
+            {% if current_user.id == request.owner_id %}
+                <button id="btn-edit-request" class="app-btn btn-secondary"><i class="bi bi-pencil me-2"></i>Edit</button>
+            {% endif %}
             <button class="app-btn btn-success"><i class="bi bi-check2-circle me-2"></i>Complete</button>
             <button class="app-btn btn-danger"><i class="bi bi-x-circle me-2"></i>Cancel</button>
             <button class="app-btn btn-accent btn-offer"><i class="bi bi-send me-2"></i>Make an offer</button>

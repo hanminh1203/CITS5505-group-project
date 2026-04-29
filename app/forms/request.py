@@ -35,7 +35,7 @@ class RequestForm(FlaskForm):
             validators.Length(max=255)
         ],
     )
-    skill_to_offer = QuerySelectField(
+    owner_skill = QuerySelectField(
         label='Skill you are offering',
         query_factory=lambda: current_user.skills,
         get_label='name',

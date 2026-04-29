@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
 
-from app.exceptions import ValidationException
+from app.exceptions import NotAuthorizedActionException, ValidationException
 from app.extensions import db
 from app.forms import RequestForm
 from app.models import Request, SessionFormat
@@ -23,6 +23,8 @@ def update_request():
     entity = None
     if dto.id.data:
         entity = db.get_or_404(Request, dto.id.data)
+        if entity.owner_id != current_user.id:
+            raise NotAuthorizedActionException()
     else:
         entity = Request()
         entity.owner_id = current_user.id
@@ -31,7 +33,7 @@ def update_request():
 
     entity.title = dto.title.data
     entity.description = dto.description.data
-    entity.owner_skill_id = dto.skill_to_offer.data.id
+    entity.owner_skill_id = dto.owner_skill.data.id
     entity.skill_to_learn = dto.skill_to_learn.data
     entity.format = SessionFormat(dto.format.data) if dto.format.data else None
     entity.availability = dto.availability.data
