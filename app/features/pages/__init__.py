@@ -3,7 +3,7 @@ from flask_login import login_required, logout_user, current_user
 
 from app.features.requests.views import requests_views_bp
 from app.forms.login import LoginForm
-
+from app.forms.register import RegisterForm
 
 def render_template_with_class(
     page,
@@ -40,7 +40,7 @@ def create_public_views_blueprint():
 
     @public_views_bp.route("/register", methods=['GET'])
     def register():
-        return render_template_with_class("login", has_js=False)
+        return render_template_with_class("register", form=RegisterForm())
 
     @public_views_bp.route("/dev", methods=['GET'])
     def dev():
