@@ -1,6 +1,5 @@
 {% extends 'pages/base.page.html' %}
 {% block main %}
-<link rel="stylesheet" href="static/css/pages/requests.page.css">
 <div class="requests-page">
     <div class="page-header">
         <div class="page-title">Requests</div>
@@ -9,112 +8,109 @@
 
     <div class="page-body requests-body">
         <section class="page-item requests-toolbar">
-            <div class="requests-toolbar-left">
-                <input type="text" class="requests-search-input" placeholder="Search requests...">
-            </div>
+            <form method="GET" action="{{ url_for('requests_views.get_requests') }}" class="requests-search-form">
+                <div class="requests-toolbar-left">
+                    <input
+                        type="text"
+                        name="query"
+                        class="requests-search-input"
+                        placeholder="Search requests..."
+                        value="{{ query }}"
+                    >
+                </div>
 
-            <div class="requests-toolbar-right">
-                <button class="requests-filter-chip active">All</button>
-                <button class="requests-filter-chip">Open</button>
-                <button class="requests-filter-chip">Beginner</button>
-                <button class="requests-filter-chip">Online</button>
-            </div>
+                <div class="requests-toolbar-right">
+                    <button type="submit" name="status" value="" class="requests-filter-chip {% if not selected_status and not selected_level and not selected_format %}active{% endif %}">All</button>
+                    <button type="submit" name="status" value="Open" class="requests-filter-chip {% if selected_status == 'Open' %}active{% endif %}">Open</button>
+                    <button type="submit" name="level" value="Beginner" class="requests-filter-chip {% if selected_level == 'Beginner' %}active{% endif %}">Beginner</button>
+                    <button type="submit" name="format" value="Online" class="requests-filter-chip {% if selected_format == 'Online' %}active{% endif %}">Online</button>
+                </div>
+            </form>
         </section>
 
-        <section class="requests-list">
-            <article class="requests-card">
-                <div class="requests-card-top">
-                    <div class="requests-card-main">
-                        <h2 class="requests-card-title">Looking for beginner guitar lessons</h2>
-                        <p class="requests-card-meta">Wanted skill: Guitar · Format: Online · Duration: 1 hour</p>
-                    </div>
-                    <span class="request-status status-open">Open</span>
+        {% if query or selected_status or selected_level or selected_format %}
+            {% if requests %}
+                <section class="requests-list">
+                    {% for item in requests %}
+                        <article class="requests-card">
+                            <div class="requests-card-top">
+                                <div class="requests-card-main">
+                                    <h2 class="requests-card-title">{{ item.title }}</h2>
+                                    <p class="requests-card-meta">
+                                        Wanted skill: {{ item.skill_to_learn }}
+                                        {% if item.format %} · Format: {{ item.format.value }}{% endif %}
+                                        {% if item.duration %} · Duration: {{ item.duration }}{% endif %}
+                                    </p>
+                                </div>
+
+                                <span class="request-status status-{{ item.status.value|lower|replace(' ', '-') }}">
+                                    {{ item.status.value }}
+                                </span>
+                            </div>
+
+                            {% if item.description %}
+                                <p class="requests-card-desc">{{ item.description }}</p>
+                            {% endif %}
+
+                            <div class="requests-card-tags">
+                                {% if item.owner_skill %}
+                                    <span class="skill-chip">{{ item.owner_skill.name }}</span>
+                                    {% if item.owner_skill.level %}
+                                        <span class="skill-chip">{{ item.owner_skill.level.value }}</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+                            <div class="requests-card-footer">
+                                <div class="requests-owner">
+                                    <div class="mini-avatar avatar-36">
+                                        {{ item.owner.name[0] if item.owner and item.owner.name else "U" }}
+                                    </div>
+                                    <div>
+                                        <div class="offer-user">{{ item.owner.name if item.owner else "Unknown user" }}</div>
+                                        <div class="offer-skill">{{ item.format.value if item.format else "Flexible" }}</div>
+                                    </div>
+                                </div>
+
+                                <a href="{{ url_for('requests_views.get_request', request_id=item.id) }}" class="app-btn btn-accent app-btn-small">
+                                    View details
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </section>
+
+                <div class="requests-pagination">
+                    {% if has_prev %}
+                        <a
+                            class="app-btn btn-outline app-btn-small"
+                            href="{{ url_for('requests_views.get_requests', query=query, status=selected_status, level=selected_level, format=selected_format, offset=prev_offset) }}"
+                        >
+                            Previous
+                        </a>
+                    {% endif %}
+
+                    {% if has_next %}
+                        <a
+                            class="app-btn btn-accent app-btn-small"
+                            href="{{ url_for('requests_views.get_requests', query=query, status=selected_status, level=selected_level, format=selected_format, offset=next_offset) }}"
+                        >
+                            Next
+                        </a>
+                    {% endif %}
                 </div>
-
-                <p class="requests-card-desc">
-                    I want to learn basic guitar skills and can offer help with Python practice in return.
-                </p>
-
-                <div class="requests-card-tags">
-                    <span class="skill-chip">Python</span>
-                    <span class="skill-chip">Beginner friendly</span>
-                </div>
-
-                <div class="requests-card-footer">
-                    <div class="requests-owner">
-                        <div class="mini-avatar avatar-36">J</div>
-                        <div>
-                            <div class="offer-user">Jianing Wang</div>
-                            <div class="offer-skill">Perth, AU</div>
-                        </div>
-                    </div>
-
-                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
-                </div>
-            </article>
-
-            <article class="requests-card">
-                <div class="requests-card-top">
-                    <div class="requests-card-main">
-                        <h2 class="requests-card-title">Need help with presentation design</h2>
-                        <p class="requests-card-meta">Wanted skill: Slide Design · Format: In person · Duration: 2 hours</p>
-                    </div>
-                    <span class="request-status status-open">Open</span>
-                </div>
-
-                <p class="requests-card-desc">
-                    Looking for help to improve slide layout and storytelling for a university presentation.
-                </p>
-
-                <div class="requests-card-tags">
-                    <span class="skill-chip">Web basics</span>
-                    <span class="skill-chip">English speaking</span>
-                </div>
-
-                <div class="requests-card-footer">
-                    <div class="requests-owner">
-                        <div class="mini-avatar avatar-36">A</div>
-                        <div>
-                            <div class="offer-user">Alex T.</div>
-                            <div class="offer-skill">UWA Campus</div>
-                        </div>
-                    </div>
-
-                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
-                </div>
-            </article>
-
-            <article class="requests-card">
-                <div class="requests-card-top">
-                    <div class="requests-card-main">
-                        <h2 class="requests-card-title">Want to improve spoken English</h2>
-                        <p class="requests-card-meta">Wanted skill: English Speaking · Format: Online · Duration: 45 mins</p>
-                    </div>
-                    <span class="request-status status-open">Open</span>
-                </div>
-
-                <p class="requests-card-desc">
-                    I would like casual conversation practice and can help with HTML/CSS in exchange.
-                </p>
-
-                <div class="requests-card-tags">
-                    <span class="skill-chip">HTML</span>
-                    <span class="skill-chip">CSS</span>
-                </div>
-
-                <div class="requests-card-footer">
-                    <div class="requests-owner">
-                        <div class="mini-avatar avatar-36">M</div>
-                        <div>
-                            <div class="offer-user">Mia K.</div>
-                            <div class="offer-skill">Online</div>
-                        </div>
-                    </div>
-
-                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
-                </div>
-            </article>
-        </section>
+            {% else %}
+                <section class="page-item requests-empty">
+                    <h2 class="item-header">No results found</h2>
+                    <p class="requests-empty-text">Try another keyword or filter.</p>
+                </section>
+            {% endif %}
+        {% else %}
+            <section class="page-item requests-empty">
+                <h2 class="item-header">Start searching</h2>
+                <p class="requests-empty-text">Use a keyword or filter chip to search for open requests.</p>
+            </section>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
