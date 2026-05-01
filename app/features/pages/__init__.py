@@ -71,6 +71,23 @@ def create_private_views_blueprint():
     def profile():
         return render_template_with_class("profile", has_js=False)
 
+    @private_views_bp.route("/modals/message", methods=['GET'])
+    def display_message_modal():
+        return render_template(
+            "modals/message.modal.html",
+            message=request.args.get('message', '')
+        )
+
+    @private_views_bp.route("/modals/confirmation", methods=['GET'])
+    def display_confirmation_modal():
+        return render_template(
+            "modals/confirmation.modal.html",
+            message=request.args.get('message', '')
+        )
+
+    # TODO served as temporary to load the pages without adding new routes
+    # To be replaced with actual routes
+    # and clear up after the pages are fully implemented
     @private_views_bp.route("/pages/<name>", methods=['GET'])
     @private_views_bp.route("/components/<name>", methods=['GET'])
     @private_views_bp.route("/modals/<name>", methods=['GET'])
