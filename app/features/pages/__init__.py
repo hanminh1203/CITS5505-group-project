@@ -1,4 +1,11 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import login_required, logout_user, current_user
 
 from app.features.requests.views import requests_views_bp
@@ -20,8 +27,8 @@ def render_template_with_class(
     )
 
 
-def render_fragment(section, name):
-    return render_template(f"{section}/{name}.{section[:-1]}.html")
+def render_fragment(section, name, **kwargs):
+    return render_template(f"{section}/{name}.{section[:-1]}.html", **kwargs)
 
 
 def create_public_views_blueprint():
@@ -84,6 +91,15 @@ def create_private_views_blueprint():
             message=request.args.get('message', '')
         )
 
+    @private_views_bp.route("/modals/error", methods=['GET'])
+    def display_error_modal():
+        return render_template(
+            "modals/error.modal.html",
+            message=request.args.get('message', ''),
+            stacktrace=request.args.get('stacktrace', ''),
+            debug=current_app.debug
+        )
+
     # TODO served as temporary to load the pages without adding new routes
     # To be replaced with actual routes
     # and clear up after the pages are fully implemented
@@ -92,7 +108,10 @@ def create_private_views_blueprint():
     @private_views_bp.route("/modals/<name>", methods=['GET'])
     def render_section(name):
         section = request.path.strip("/").split("/", 1)[0]
-        return render_fragment(section, name)
+        return render_fragment(
+            section,
+            name
+        )
 
     private_views_bp.register_blueprint(requests_views_bp)
     return private_views_bp
