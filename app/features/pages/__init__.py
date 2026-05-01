@@ -1,15 +1,12 @@
-<<<<<<< HEAD
-from flask import Blueprint, flash, redirect, render_template, request, url_for
-=======
 from flask import (
     Blueprint,
     current_app,
+    flash,
     redirect,
     render_template,
     request,
     url_for,
 )
->>>>>>> origin/main
 from flask_login import login_required, logout_user, current_user
 
 from app.features.requests.views import requests_views_bp
