@@ -2,7 +2,7 @@ import { BaseModal } from "./base.modal.js";
 
 export class MessageModal extends BaseModal {
     constructor(message, onSaveCallback) {
-        super(`/modals/message?message=${message}`, null, 'message-modal', onSaveCallback);
+        super(`/modals/message?message=${encodeURIComponent(message)}`, null, 'message-modal', onSaveCallback);
     }
 
     addEventHandlers() {
