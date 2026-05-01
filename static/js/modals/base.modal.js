@@ -44,7 +44,9 @@ export class BaseModal {
                 document.activeElement.blur();
             }
             this.modalElement.remove();
-            this.modalBackdrop.remove();
+            if (this.modalBackdrop) {
+                this.modalBackdrop.remove();
+            }
         }, { once: true });
     }
 

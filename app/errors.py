@@ -3,19 +3,24 @@ import traceback
 
 from flask import current_app, redirect, render_template, request, url_for
 from werkzeug.exceptions import HTTPException
-from app.exceptions import SkillswapException
+from app.exceptions import SkillswapException, ValidationException
 
 
 def handle_general_exception(error, code=HTTPStatus.INTERNAL_SERVER_ERROR):
+    message = "An internal server error occurred."
     if isinstance(error, HTTPException):
         code = error.code
+        message = error.description
+    if isinstance(error, SkillswapException):
+        code = error.code
+        message = error.message
 
     response = {
         "code": code,
         "message":
             (str(error)
                 if code != HTTPStatus.INTERNAL_SERVER_ERROR
-                else "An internal server error occurred."),
+                else message),
     }
     if current_app.debug:
         response["stacktrace"] = traceback.format_exc()
@@ -64,10 +69,10 @@ def register_error_handlers(app, login_manager):
 
     @app.errorhandler(SkillswapException)
     def handle_validation_exception(error):
-        response, _code = handle_general_exception(error)
+        response, code = handle_general_exception(error)
         response['data'] = error.get_addition_info()
-        response['response'] = error.message
-        return response, error.code
+        response['expected'] = isinstance(error, ValidationException)
+        return response, code
 
     @login_manager.unauthorized_handler
     def unauthorized_handler():

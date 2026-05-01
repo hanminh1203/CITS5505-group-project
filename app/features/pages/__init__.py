@@ -8,7 +8,6 @@ from flask import (
 )
 from flask_login import login_required, logout_user, current_user
 
-from app.config import Config
 from app.features.requests.views import requests_views_bp
 from app.features.skills.page import skills_views_bp
 from app.forms.login import LoginForm
