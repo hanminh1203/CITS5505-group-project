@@ -1,7 +1,13 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import login_required, logout_user, current_user
 
-from app.config import Config
 from app.features.requests.views import requests_views_bp
 from app.forms.login import LoginForm
 
@@ -85,6 +91,15 @@ def create_private_views_blueprint():
             message=request.args.get('message', '')
         )
 
+    @private_views_bp.route("/modals/error", methods=['GET'])
+    def display_error_modal():
+        return render_template(
+            "modals/error.modal.html",
+            message=request.args.get('message', ''),
+            stacktrace=request.args.get('stacktrace', ''),
+            debug=current_app.debug
+        )
+
     # TODO served as temporary to load the pages without adding new routes
     # To be replaced with actual routes
     # and clear up after the pages are fully implemented
@@ -95,9 +110,7 @@ def create_private_views_blueprint():
         section = request.path.strip("/").split("/", 1)[0]
         return render_fragment(
             section,
-            name,
-            debug=Config.FLASK_DEBUG,
-            **request.args.to_dict(),
+            name
         )
 
     private_views_bp.register_blueprint(requests_views_bp)
