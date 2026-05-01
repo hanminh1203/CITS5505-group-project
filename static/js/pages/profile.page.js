@@ -1,180 +1,144 @@
-// ─── PAGE NAVIGATION ───
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  window.scrollTo(0, 0);
-}
+import { httpService } from '../services/http.service.js';
 
-// ─── AUTH ───
-function doLogin() {
-  const email = document.getElementById('login-email').value;
-  const pw = document.getElementById('login-pw').value;
-  if (!email || !pw) { showToast('Missing fields', 'Please enter your email and password.'); return; }
-  showPage('dashboard');
-  showToast('Welcome back!', 'Signed in as Alex Chen.');
-}
-
-function doRegister() {
-  showPage('dashboard');
-  showToast('Account created!', 'Welcome to SkillSwap, Alex.');
-}
+// Retrieve CSRF token from the meta tag
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
 // ─── MODALS ───
-function openModal(id) {
+// Attach functions to window so they can be called from inline HTML onclick attributes
+window.openModal = function(id) {
   const modal = document.getElementById(id);
   if (!modal) return;
   modal.classList.add('open');
-}
+};
 
-function closeModal(id) {
+window.closeModal = function(id) {
   const modal = document.getElementById(id);
   if (!modal) return;
   modal.classList.remove('open');
-}
+};
+
+// Close modal when clicking outside of it
 document.querySelectorAll('.ss-modal-overlay').forEach(o => {
   o.addEventListener('click', function (e) { if (e.target === o) o.classList.remove('open'); });
 });
 
-function openOfferModal() { openModal('modal-offer'); }
-function openNewRequestModal() { openModal('modal-new-request'); }
-function openEditProfileModal() { openModal('modal-edit-profile'); }
-
-let currentSkillType = 'offer';
-let editingSkillRow = null;
-
-function openAddSkillModal(type) {
-  currentSkillType = type;
-  editingSkillRow = null;
-  document.getElementById('add-skill-title').textContent = type === 'offer' ? 'Add a Skill I Offer' : 'Add a Skill I Want to Learn';
-  document.getElementById('add-skill-sub').textContent = type === 'offer' ? 'Add this skill to your offering profile.' : 'Add this to your learning wish list.';
-  document.getElementById('new-skill-name').value = '';
-  document.getElementById('new-skill-desc').value = '';
-  const submitBtn = document.querySelector('#modal-add-skill .btn-accent');
-  if (submitBtn) submitBtn.textContent = 'Add Skill';
-  openModal('modal-add-skill');
-}
+window.openEditProfileModal = function() { window.openModal('modal-edit-profile'); };
+window.saveProfile = function() {
+  window.closeModal('modal-edit-profile');
+  window.showToast('Profile updated!', 'Your changes have been saved.');
+};
 
 // ─── SKILL CRUD ───
-function selectLevel(btn) {
-  document.querySelectorAll('#level-btns .level-btn').forEach(b => b.classList.remove('sel'));
-  btn.classList.add('sel');
-}
+let editingSkillId = null;
 
-function saveSkill() {
+// Open modal to add a new skill
+window.openAddSkillModal = function() {
+  editingSkillId = null;
+  document.getElementById('add-skill-title').textContent = 'Add a Skill';
+  document.getElementById('add-skill-sub').textContent = 'Add to your profile so others can find you.';
+  document.getElementById('new-skill-name').value = '';
+  document.getElementById('new-skill-desc').value = '';
+  document.getElementById('new-skill-level').value = 'Beginner'; // Reset dropdown to default
+  
+  const submitBtn = document.querySelector('#modal-add-skill .btn-accent');
+  if (submitBtn) submitBtn.textContent = 'Add Skill';
+  
+  window.openModal('modal-add-skill');
+};
+
+// Save (Create or Update) a skill
+window.saveSkill = async function() {
   const name = document.getElementById('new-skill-name').value.trim();
   const desc = document.getElementById('new-skill-desc').value.trim();
-  const level = document.querySelector('#level-btns .level-btn.sel')?.textContent || 'Beginner';
-  if (!name) { showToast('Required', 'Please enter a skill name.'); return; }
+  const level = document.getElementById('new-skill-level').value;
 
-  if (editingSkillRow) {
-    const skillNameEl = editingSkillRow.querySelector('.skill-name');
-    const skillDescEl = editingSkillRow.querySelector('.skill-meta');
-    const skillLevelEl = editingSkillRow.querySelector('.skill-level');
-    if (skillNameEl) skillNameEl.textContent = name;
-    if (skillDescEl) skillDescEl.textContent = desc || 'No description';
-    if (skillLevelEl) skillLevelEl.textContent = level;
-  } else {
-    const listId = currentSkillType === 'offer' ? 'offer-skills-list' : 'want-skills-list';
-    const list = document.getElementById(listId);
-    const row = document.createElement('div');
-    row.className = 'skill-row';
-    row.innerHTML = `
-      <div><div class="skill-name">${name}</div><div class="skill-meta" style="font-size:0.78rem;color:var(--muted)">${desc || 'No description'}</div></div>
-      <div class="d-flex align-items-center gap-2">
-        <span class="skill-level">${level}</span>
-        <button class="btn btn-sm" onclick="editSkill(this)" style="color:var(--muted);background:none;border:none;padding:2px 6px;"><i class="bi bi-pencil-fill"></i></button>
-        <button class="btn btn-sm" onclick="deleteSkill(this)" style="color:#e05555;background:none;border:none;padding:2px 6px;"><i class="bi bi-trash-fill"></i></button>
-      </div>`;
-    list.appendChild(row);
+  // Basic frontend validation
+  if (!name) { 
+    window.showToast('Required', 'Please enter a skill name.'); 
+    return; 
   }
 
-  editingSkillRow = null;
-  closeModal('modal-add-skill');
-  showToast('Skill saved!', `"${name}" has been updated.`);
-}
-
-function deleteSkill(btn) {
-  const row = btn.closest('.skill-row');
-  const name = row.querySelector('.skill-name').textContent;
-  if (confirm(`Remove "${name}" from your profile?`)) {
-    row.style.opacity = '0';
-    row.style.transition = 'opacity 0.3s';
-    setTimeout(() => row.remove(), 300);
-    showToast('Skill removed', `"${name}" has been removed.`);
+  try {
+    if (editingSkillId) {
+      // Update existing skill via API
+      await httpService.post(csrfToken, `/api/skills/${editingSkillId}`, { name, description: desc, level });
+      window.showToast('Skill updated!', `"${name}" has been updated.`);
+    } else {
+      // Add new skill via API
+      await httpService.post(csrfToken, `/api/skills/`, { name, description: desc, level });
+      window.showToast('Skill added!', `"${name}" has been added to your profile.`);
+    }
+    
+    window.closeModal('modal-add-skill');
+    // Refresh the page after a short delay to let the user see the success toast
+    setTimeout(() => location.reload(), 800);
+  } catch (error) {
+    console.error("Failed to save skill", error);
+    window.showToast('Error', 'Failed to save skill. Please try again.');
   }
-}
+};
 
-function editSkill(btn) {
+// Open modal to edit an existing skill
+window.editSkill = function(btn) {
+  // Find the parent row and extract existing skill data
   const row = btn.closest('.skill-row');
+  const skillId = row.getAttribute('data-skill-id');
   const name = row.querySelector('.skill-name').textContent;
-  const desc = row.querySelector('.skill-meta')?.textContent || row.querySelector('.skill-name')?.nextElementSibling?.textContent || '';
+  const desc = row.querySelector('.skill-meta').textContent.replace('No description', '').trim();
   const level = row.querySelector('.skill-level').textContent;
 
-  editingSkillRow = row;
-  currentSkillType = row.closest('#offer-skills-list') ? 'offer' : 'want';
+  editingSkillId = skillId; // Set the global tracking ID
 
+  // Update modal UI for editing
   document.getElementById('add-skill-title').textContent = 'Edit Skill';
   document.getElementById('add-skill-sub').textContent = 'Update the skill details on your profile.';
+  
   const submitBtn = document.querySelector('#modal-add-skill .btn-accent');
   if (submitBtn) submitBtn.textContent = 'Save Changes';
 
+  // Pre-fill form fields
   document.getElementById('new-skill-name').value = name;
-  document.getElementById('new-skill-desc').value = desc === 'No description' ? '' : desc;
-  document.querySelectorAll('#level-btns .level-btn').forEach(b => {
-    b.classList.toggle('sel', b.textContent === level);
-  });
-  openModal('modal-add-skill');
-}
+  document.getElementById('new-skill-desc').value = desc;
+  document.getElementById('new-skill-level').value = level;
+  
+  window.openModal('modal-add-skill');
+};
 
-// ─── OTHER ACTIONS ───
-function submitOffer() {
-  closeModal('modal-offer');
-  showToast('Offer sent!', 'Alex will be notified of your offer.');
-}
-
-function createRequest() {
-  closeModal('modal-new-request');
-  showToast('Request posted!', 'Your request is now live on SkillSwap.');
-}
-
-function saveProfile() {
-  closeModal('modal-edit-profile');
-  showToast('Profile updated!', 'Your changes have been saved.');
-}
-
-function acceptOffer(btn) {
-  const offerCard = btn.closest('.offer-card');
-  const user = offerCard.querySelector('.offer-user').textContent;
-  if (confirm(`Accept offer from ${user}? This will close the request to new offers.`)) {
-    // Update badge
-    const badge = document.querySelector('.detail-hero .badge-status');
-    if (badge) { badge.className = 'badge-status badge-accepted'; badge.textContent = 'Accepted'; }
-    // Disable other accept buttons
-    document.querySelectorAll('.offer-card .btn-accent').forEach(b => {
-      b.disabled = true; b.textContent = 'Accepted'; b.style.opacity = '0.5';
-    });
-    btn.disabled = false; btn.textContent = '✓ Accepted'; btn.style.opacity = '1';
-    showToast('Offer accepted!', `You've accepted ${user}'s offer. Happy swapping!`);
+// Delete an existing skill
+window.deleteSkill = async function(btn) {
+  const row = btn.closest('.skill-row');
+  const skillId = row.getAttribute('data-skill-id');
+  const name = row.querySelector('.skill-name').textContent;
+  
+  if (confirm(`Are you sure you want to remove "${name}" from your profile?`)) {
+    try {
+      // Delete skill via API
+      await httpService.post(csrfToken, `/api/skills/${skillId}/delete`, {});
+      
+      // Animate removal and refresh
+      row.style.opacity = '0';
+      row.style.transition = 'opacity 0.3s';
+      setTimeout(() => location.reload(), 300);
+      
+      window.showToast('Skill removed', `"${name}" has been removed.`);
+    } catch (error) {
+      console.error("Failed to delete skill", error);
+      window.showToast('Error', 'Failed to delete skill. Please try again.');
+    }
   }
-}
-
-function toggleChip(el) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-}
+};
 
 // ─── TOAST ───
-function showToast(title, msg) {
+// Helper function to display toast notifications
+window.showToast = function(title, msg) {
   const t = document.getElementById('toast');
   const titleEl = document.getElementById('toast-title');
   const msgEl = document.getElementById('toast-msg');
 
-  if (!t || !titleEl || !msgEl) {
-    return;
-  }
+  if (!t || !titleEl || !msgEl) return;
 
   titleEl.textContent = title;
   msgEl.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3500);
-}
+};

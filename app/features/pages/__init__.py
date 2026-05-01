@@ -68,7 +68,9 @@ def create_private_views_blueprint():
 
     @private_views_bp.route("/profile", methods=['GET'])
     def profile():
-        return render_template_with_class("profile", has_js=False)
+        from app.models import Skill
+        skills = Skill.query.filter_by(user_id=current_user.id).all()
+        return render_template_with_class("profile", skills=skills)
 
     @private_views_bp.route("/modals/message", methods=['GET'])
     def display_message_modal():
