@@ -59,7 +59,7 @@ def create_public_views_blueprint():
     return public_views_bp
 
 
-def create_private_views_blueprint():  # noqa: C901
+def create_private_views_blueprint():
     private_views_bp = Blueprint("private", __name__, url_prefix="/")
 
     @private_views_bp.before_request
@@ -114,6 +114,7 @@ def create_private_views_blueprint():  # noqa: C901
         return render_template(
             "modals/skill.modal.html", form=form, is_new=is_new
         )
+
     @private_views_bp.route("/modals/error", methods=['GET'])
     def display_error_modal():
         return render_template(
