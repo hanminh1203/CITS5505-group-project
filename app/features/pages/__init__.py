@@ -1,4 +1,11 @@
-from flask import Blueprint, redirect, render_template, request, url_for, current_app
+from flask import (
+    Blueprint,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import login_required, logout_user, current_user
 
 from app.features.requests.views import requests_views_bp
@@ -23,8 +30,8 @@ def render_template_with_class(
     )
 
 
-def render_fragment(section, name):
-    return render_template(f"{section}/{name}.{section[:-1]}.html")
+def render_fragment(section, name, **kwargs):
+    return render_template(f"{section}/{name}.{section[:-1]}.html", **kwargs)
 
 
 def create_public_views_blueprint():
@@ -52,7 +59,7 @@ def create_public_views_blueprint():
     return public_views_bp
 
 
-def create_private_views_blueprint():
+def create_private_views_blueprint():  # noqa: C901
     private_views_bp = Blueprint("private", __name__, url_prefix="/")
 
     @private_views_bp.before_request
@@ -104,11 +111,9 @@ def create_private_views_blueprint():
         else:
             form = SkillForm()
             is_new = True
-
         return render_template(
             "modals/skill.modal.html", form=form, is_new=is_new
         )
-
     @private_views_bp.route("/modals/error", methods=['GET'])
     def display_error_modal():
         return render_template(
@@ -126,7 +131,10 @@ def create_private_views_blueprint():
     @private_views_bp.route("/modals/<name>", methods=['GET'])
     def render_section(name):
         section = request.path.strip("/").split("/", 1)[0]
-        return render_fragment(section, name)
+        return render_fragment(
+            section,
+            name
+        )
 
     private_views_bp.register_blueprint(requests_views_bp)
     return private_views_bp
