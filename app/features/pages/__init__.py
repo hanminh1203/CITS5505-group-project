@@ -9,6 +9,7 @@ from flask import (
 from flask_login import login_required, logout_user, current_user
 
 from app.features.requests.views import requests_views_bp
+from app.features.skills.page import skills_views_bp
 from app.forms.login import LoginForm
 from app.forms.skill import SkillForm
 from app.models import Skill
@@ -91,7 +92,7 @@ def logout():
 def profile():
     skills = (
         Skill.query.filter_by(user_id=current_user.id)
-        .order_by(Skill.id.desc())
+        .order_by(db.func.lower(Skill.name).asc())
         .all()
     )
     return render_template_with_class(
@@ -112,21 +113,6 @@ def display_confirmation_modal():
     return render_template(
         "modals/confirmation.modal.html",
         message=request.args.get('message', '')
-    )
-
-
-@private_views_bp.route("/modals/skill", methods=['GET'])
-def display_skill_modal():
-    skill_id = request.args.get('skill_id')
-    if skill_id:
-        entity = db.get_or_404(Skill, skill_id)
-        form = SkillForm(obj=entity)
-        is_new = False
-    else:
-        form = SkillForm()
-        is_new = True
-    return render_template(
-        "modals/skill.modal.html", form=form, is_new=is_new
     )
 
 
@@ -156,6 +142,7 @@ def render_section(name):
 
 def create_private_views_blueprint():
     private_views_bp.register_blueprint(requests_views_bp)
+    private_views_bp.register_blueprint(skills_views_bp)
     return private_views_bp
 
 
