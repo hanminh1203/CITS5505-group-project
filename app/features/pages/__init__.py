@@ -13,7 +13,6 @@ from app.features.requests.views import requests_views_bp
 from app.features.skills.page import skills_views_bp
 from app.forms.login import LoginForm
 from app.forms.register import RegisterForm
-from app.forms.skill import SkillForm
 from app.extensions import db
 from app.models.user import User
 from app.models import Skill
