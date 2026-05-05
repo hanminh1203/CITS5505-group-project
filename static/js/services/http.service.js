@@ -11,6 +11,14 @@ class HttpService {
             data
         });
     }
+
+    delete(csrfToken, url) {
+        return $.ajax({
+            url,
+            type: 'DELETE',
+            headers: { 'X-CSRF-Token': csrfToken }
+        });
+    }
 }
 
 export const httpService = new HttpService(); 

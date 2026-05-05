@@ -21,3 +21,9 @@ class NotAuthorizedActionException(SkillswapException):
     def __init__(self,
                  message="You are not authorized to perform this action."):
         super().__init__(message, 403)
+
+
+class InvalidActionException(SkillswapException):
+    def __init__(self,
+                 message="This action is invalid in the current context."):
+        super().__init__(message, 400)
