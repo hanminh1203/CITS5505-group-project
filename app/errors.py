@@ -3,24 +3,20 @@ import traceback
 
 from flask import current_app, redirect, render_template, request, url_for
 from werkzeug.exceptions import HTTPException
-from app.exceptions import SkillswapException, ValidationException
+from app.exceptions import SkillswapException
 
 
-def handle_general_exception(error, code=HTTPStatus.INTERNAL_SERVER_ERROR):
-    message = "An internal server error occurred."
+def handle_general_exception(error):
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     if isinstance(error, HTTPException):
         code = error.code
-        message = error.description
-    if isinstance(error, SkillswapException):
-        code = error.code
-        message = error.message
 
     response = {
         "code": code,
         "message":
             (str(error)
                 if code != HTTPStatus.INTERNAL_SERVER_ERROR
-                else message),
+                else "An internal server error occurred."),
     }
     if current_app.debug:
         response["stacktrace"] = traceback.format_exc()
@@ -33,46 +29,24 @@ def register_error_handlers(app, login_manager):
     @app.errorhandler(404)
     def not_found(error):
         if request.path.startswith("/api/"):
-            return handle_general_exception(error, 404)
+            return handle_general_exception(error)
         return render_template(
-            "pages/error.page.html",
-            css_file="/css/pages/error.page.css",
-            js_file="/js/pages/error.page.js",
-            main_class='error',
-            code=404,
-            name="Page Not Found",
-            description="The page you're looking for doesn't exist.",
-            message=(
-                "The page you're looking for doesn't exist, was moved, or the "
-                "link might be broken. Let's get back to swapping skills."
-            )
+            "pages/error-404.page.html",
+            css_file="/css/pages/error-404.page.css",
+            js_file="/js/pages/error-404.page.js",
+            main_class='error-404'
         ), 404
 
     @app.errorhandler(Exception)
     def handle_exception(error):
-        if request.path.startswith("/api/"):
-            return handle_general_exception(error, 500)
-        return render_template(
-            "pages/error.page.html",
-            css_file="/css/pages/error.page.css",
-            js_file="/js/pages/error.page.js",
-            main_class='error',
-            code=500,
-            name="Internal Server Error",
-            description="Something went wrong on our end.",
-            message=(
-                "We're sorry, but something went wrong on our end. Please try "
-                "again later."
-            ),
-            stacktrace=traceback.format_exc() if current_app.debug else None,
-        ), 500
+        return handle_general_exception(error)
 
     @app.errorhandler(SkillswapException)
     def handle_validation_exception(error):
-        response, code = handle_general_exception(error)
+        response, _code = handle_general_exception(error)
         response['data'] = error.get_addition_info()
-        response['expected'] = isinstance(error, ValidationException)
-        return response, code
+        response['response'] = error.message
+        return response, error.code
 
     @login_manager.unauthorized_handler
     def unauthorized_handler():
