@@ -90,7 +90,7 @@ def dashboard():
     my_offerings = Request.query.join(Offer).filter(
         Offer.created_by == current_user.email
     ).order_by(Request.title.asc()).all()
-    
+
     return render_template_with_class(
         "dashboard",
         my_requests=my_requests,
