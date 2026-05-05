@@ -12,19 +12,38 @@
                 <section class="page-item">
                     <div class="dashboard-section-header">
                         <h2 class="item-header">My requests</h2>
-                        <span class="dashboard-count">0 items</span>
+                        <span class="dashboard-count">{{ my_requests|length }} items</span>
                     </div>
 
-                    <div class="dashboard-empty">You have not created any requests yet.</div>
+                    <div class="dashboard-list">
+                        {% for req in my_requests %}
+                            <div class="dashboard-item">
+                                <span>{{ req.title }}</span>
+                                <span class="badge" style="background-color: #e3f2fd; color: #0d47a1; padding: 2px 8px; border-radius: 4px; font-size: 0.8em;">
+                                    {{ req.status.value }}
+                                </span>
+                            </div>
+                        {% else %}
+                            <div class="dashboard-empty">You have not created any requests yet.</div>
+                        {% endfor %}
+                    </div>
                 </section>
 
                 <section class="page-item">
                     <div class="dashboard-section-header">
                         <h2 class="item-header">My offering</h2>
-                        <span class="dashboard-count">0 items</span>
+                        <span class="dashboard-count">{{ my_offerings|length }} items</span>
                     </div>
 
-                    <div class="dashboard-empty">You are not offering on any requests yet.</div>
+                    <div class="dashboard-list">
+                        {% for offer_req in my_offerings %}
+                        <div class="dashboard-item">
+                            <span>{{ offer_req.title }}</span>
+                        </div>
+                        {% else %}
+                        <div class="dashboard-empty">You are not offering on any requests yet.</div>
+                        {% endfor %}
+                    </div>
                 </section>
             </div>
 
