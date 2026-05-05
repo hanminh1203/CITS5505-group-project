@@ -1,6 +1,5 @@
 from flask import (
     Blueprint,
-    current_app,
     flash,
     redirect,
     render_template,
@@ -56,43 +55,43 @@ def login():
     return render_template_with_class('login', form=LoginForm())
 
 
-    @public_views_bp.route("/register", methods=["GET", "POST"])
-    def register():
-        if current_user.is_authenticated:
-            return redirect(url_for("private.dashboard"))
+@public_views_bp.route("/register", methods=["GET", "POST"])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("private.dashboard"))
 
-        form = RegisterForm()
+    form = RegisterForm()
 
-        if form.validate_on_submit():
-            email = form.email.data.strip().lower()
-            name = form.name.data.strip()
+    if form.validate_on_submit():
+        email = form.email.data.strip().lower()
+        name = form.name.data.strip()
 
-            existing_user = User.query.filter_by(email=email).first()
-            if existing_user:
-                form.email.errors.append("This email is already registered.")
-                return render_template_with_class(
-                    "register",
-                    has_js=False,
-                    form=form,
-                )
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            form.email.errors.append("This email is already registered.")
+            return render_template_with_class(
+                "register",
+                has_js=False,
+                form=form,
+            )
 
-            user = User(
-                name=name,
-                email=email,
-                )
-            user.set_password(form.password.data)
+        user = User(
+            name=name,
+            email=email,
+            )
+        user.set_password(form.password.data)
 
-            db.session.add(user)
-            db.session.commit()
+        db.session.add(user)
+        db.session.commit()
 
-            flash("Register successful. Please log in.", "success")
-            return redirect(url_for("public.login"))
+        flash("Register successful. Please log in.", "success")
+        return redirect(url_for("public.login"))
 
-        return render_template_with_class(
-            "register",
-            has_js=False,
-            form=form,
-        )
+    return render_template_with_class(
+        "register",
+        has_js=False,
+        form=form,
+    )
 
 
 @public_views_bp.route("/dev", methods=['GET'])
