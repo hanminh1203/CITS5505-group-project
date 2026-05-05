@@ -79,7 +79,23 @@ def require_login():
 
 @private_views_bp.route("/dashboard", methods=['GET'])
 def dashboard():
-    return render_template_with_class("dashboard")
+    from app.models.request import Request, Offer
+    from app.models.enums import RequestStatus
+
+    my_requests = Request.query.filter(
+        Request.owner_id == current_user.id,
+        Request.status.in_([RequestStatus.OPEN, RequestStatus.PENDING])
+    ).order_by(Request.created_at.desc()).all()
+
+    my_offerings = Request.query.join(Offer).filter(
+        Offer.created_by == current_user.email
+    ).order_by(Request.title.asc()).all()
+
+    return render_template_with_class(
+        "dashboard",
+        my_requests=my_requests,
+        my_offerings=my_offerings
+    )
 
 
 @private_views_bp.route('/logout', methods=['GET', 'POST'])
