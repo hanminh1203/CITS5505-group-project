@@ -26,19 +26,23 @@
                         <option value="PENDING" {% if search.status == "PENDING" %}selected{% endif %}>Pending</option>
                     </select>
 
-                    <option value="">All levels</option>
-                    {% for level in SkillLevel %}
-                        <option value="{{ level.name }}" {% if search.level == level.name %}selected{% endif %}>
-                            {{ level.value }}
-                        </option>
-                    {% endfor %}
+                    <select name="level" class="requests-select">
+                        <option value="">All levels</option>
+                        {% for level in SkillLevel %}
+                            <option value="{{ level.name }}" {% if search.level == level.name %}selected{% endif %}>
+                                {{ level.value }}
+                            </option>
+                        {% endfor %}
+                    </select>
 
-                    <option value="">All formats</option>
-                    {% for format in SessionFormat %}
-                        <option value="{{ format.name }}" {% if search.format == format.name %}selected{% endif %}>
-                            {{ format.value }}
-                        </option>
+                    <select name="format" class="requests-select">
+                        <option value="">All formats</option>
+                        {% for format in SessionFormat %}
+                            <option value="{{ format.name }}" {% if search.format == format.name %}selected{% endif %}>
+                                {{ format.value }}
+                            </option>
                     {% endfor %}
+                    </select>
 
                     <button type="submit" class="app-btn btn-accent">Search</button>
 
