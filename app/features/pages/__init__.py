@@ -14,6 +14,10 @@ from app.forms.login import LoginForm
 from app.forms.register import RegisterForm
 from app.extensions import db
 from app.models.user import User
+from app.models import Skill
+
+public_views_bp = Blueprint("public", __name__, url_prefix="/")
+private_views_bp = Blueprint("private", __name__, url_prefix="/")
 
 
 def render_template_with_class(
