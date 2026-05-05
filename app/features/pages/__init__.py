@@ -125,6 +125,7 @@ def logout():
 
 @private_views_bp.route("/profile", methods=['GET'])
 def profile():
+    from app.forms.skill import SkillForm
     skills = (
         Skill.query.filter_by(user_id=current_user.id)
         .order_by(db.func.lower(Skill.name).asc())
