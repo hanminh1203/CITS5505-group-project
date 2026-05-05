@@ -1,0 +1,13 @@
+{% extends 'pages/base.page.html' %}
+{% block main %}
+<section class="d-flex flex-column align-items-center justify-content-center text-center">
+    <div class="error-code">404</div>
+    <div class="error-name">Page not found</div>
+    <h1 class="error-description">Looks like the swap<br>went <em>missing.</em></h1>
+    <div class="error-message">The page you're looking for doesn't exist, was moved, or the link might be broken. Let's get back to swapping skills.</div>
+    <div>
+        <a href="#home" class="app-btn btn-accent"><i class="bi bi-house-fill me-2"></i>Go back to home</a>
+        <a id="btn-go-back" class="app-btn btn-outline-ink"><i class="bi bi-arrow-left me-2"></i>Go back</a>
+    </div>
+</section>
+{% endblock %}
