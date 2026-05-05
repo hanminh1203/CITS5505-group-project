@@ -4,7 +4,10 @@ from flask import Blueprint, current_app, render_template, request
 from flask_login import current_user
 
 from app.models import Request
-from app.models.enums import RequestStatus
+from app.models.enums import RequestStatus, SkillLevel, SessionFormat
+from app.extensions import db
+from app.forms.request import RequestForm
+from app.config import Config
 
 requests_views_bp = Blueprint(
     "requests_views",
@@ -21,15 +24,14 @@ def get_requests():
     format_value = request.args.get("format", "", type=str).strip()
     page = request.args.get("page", 1, type=int)
 
-    page_size = current_app.config.get("REQUESTS_PAGE_SIZE", 6)
+    page_size = Config.REQUESTS_PAGE_SIZE
 
     base_query = Request.query.filter(
         Request.status.in_([RequestStatus.OPEN, RequestStatus.PENDING])
     )
 
     # User should not search his/her own requests
-    if current_user.is_authenticated:
-        base_query = base_query.filter(Request.owner_id != current_user.id)
+    base_query = base_query.filter(Request.owner_id != current_user.id)
 
     # Search by title only
     if query:
@@ -83,6 +85,10 @@ def get_requests():
         requests=requests_list,
         search=search,
         pagination=pagination,
+        css_file="/css/pages/requests.page.css",
+        main_class="requests",
+        SkillLevel=SkillLevel,
+        SessionFormat=SessionFormat,
     )
 
 
@@ -92,4 +98,20 @@ def get_request(request_id):
     return render_template(
         "pages/request.page.html",
         request=request_item,
+        css_file="/css/pages/request.page.css",
+        main_class="request",
+        js_file="/js/pages/request.page.js",
+    )
+
+@requests_views_bp.route("/modal", methods=["GET"])
+def get_request_edit_modal():
+    request_id = request.args.get('request_id')
+    selected_request = (
+        db.get_or_404(Request, request_id) if request_id else None
+    )
+    form = RequestForm(obj=selected_request)
+    return render_template(
+        "modals/request.modal.html",
+        form=form,
+        is_new=not request_id,
     )

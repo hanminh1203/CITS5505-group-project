@@ -8,7 +8,7 @@
 
     <div class="page-body requests-body">
         <section class="page-item requests-toolbar">
-            <form method="GET" action="{{ url_for('requests_views.get_requests') }}" class="requests-search-form">
+            <form method="GET" action="{{ url_for('private.requests_views.get_requests') }}" class="requests-search-form">
                 <div class="requests-toolbar-left">
                     <input
                         type="text"
@@ -26,23 +26,23 @@
                         <option value="PENDING" {% if search.status == "PENDING" %}selected{% endif %}>Pending</option>
                     </select>
 
-                    <select name="level" class="requests-select">
-                        <option value="">All levels</option>
-                        <option value="BEGINNER" {% if search.level == "BEGINNER" %}selected{% endif %}>Beginner</option>
-                        <option value="INTERMEDIATE" {% if search.level == "INTERMEDIATE" %}selected{% endif %}>Intermediate</option>
-                        <option value="ADVANCED" {% if search.level == "ADVANCED" %}selected{% endif %}>Advanced</option>
-                    </select>
+                    <option value="">All levels</option>
+                    {% for level in SkillLevel %}
+                        <option value="{{ level.name }}" {% if search.level == level.name %}selected{% endif %}>
+                            {{ level.value }}
+                        </option>
+                    {% endfor %}
 
-                    <select name="format" class="requests-select">
-                        <option value="">All formats</option>
-                        <option value="ONLINE" {% if search.format == "ONLINE" %}selected{% endif %}>Online</option>
-                        <option value="OFFLINE" {% if search.format == "OFFLINE" %}selected{% endif %}>Offline</option>
-                        <option value="HYBRID" {% if search.format == "HYBRID" %}selected{% endif %}>Hybrid</option>
-                    </select>
+                    <option value="">All formats</option>
+                    {% for format in SessionFormat %}
+                        <option value="{{ format.name }}" {% if search.format == format.name %}selected{% endif %}>
+                            {{ format.value }}
+                        </option>
+                    {% endfor %}
 
                     <button type="submit" class="app-btn btn-accent">Search</button>
 
-                    <a href="{{ url_for('requests_views.get_requests') }}" class="app-btn btn-outline">
+                    <a href="{{ url_for('private.requests_views.get_requests') }}">
                         Reset
                     </a>
                 </div>
@@ -101,7 +101,7 @@
                             </div>
 
                             <a
-                                href="{{ url_for('requests_views.get_request', request_id=item.id) }}"
+                                href="{{ url_for('private.requests_views.get_request', request_id=item.id) }}"
                                 class="app-btn btn-accent app-btn-small"
                             >
                                 View details
@@ -115,7 +115,7 @@
                 {% if pagination.has_prev %}
                     <a
                         class="app-btn btn-outline app-btn-small"
-                        href="{{ url_for('requests_views.get_requests',
+                        href="{{ url_for('private.requests_views.get_requests',
                             query=search.query,
                             status=search.status,
                             level=search.level,
@@ -130,7 +130,7 @@
                 {% if pagination.has_next %}
                     <a
                         class="app-btn btn-accent app-btn-small"
-                        href="{{ url_for('requests_views.get_requests',
+                        href="{{ url_for('private.requests_views.get_requests',
                             query=search.query,
                             status=search.status,
                             level=search.level,
