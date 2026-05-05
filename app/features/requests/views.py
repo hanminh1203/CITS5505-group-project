@@ -1,6 +1,6 @@
 from math import ceil
 
-from flask import Blueprint, current_app, render_template, request
+from flask import Blueprint, render_template, request
 from flask_login import current_user
 
 from app.models import Request
@@ -102,6 +102,7 @@ def get_request(request_id):
         main_class="request",
         js_file="/js/pages/request.page.js",
     )
+
 
 @requests_views_bp.route("/modal", methods=["GET"])
 def get_request_edit_modal():
