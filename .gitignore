@@ -9,6 +9,7 @@ env/
 
 # Flask instance folder (contains SQLite DBs and local config)
 instance/
+.test-instance/
 
 # Environment variables
 .env
