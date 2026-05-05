@@ -12,6 +12,7 @@ from app.features.requests.views import requests_views_bp
 from app.features.skills.page import skills_views_bp
 from app.forms.login import LoginForm
 from app.forms.skill import SkillForm
+from app.forms.profile import ProfileForm
 from app.models import Skill
 from app.extensions import db
 
@@ -96,7 +97,7 @@ def profile():
         .all()
     )
     return render_template_with_class(
-        "profile", skills=skills, form=SkillForm()
+        "profile", skills=skills, form=SkillForm(), profile_form=ProfileForm(obj=current_user)
     )
 
 
@@ -140,9 +141,12 @@ def render_section(name):
     )
 
 
+from app.features.users.views import users_views_bp
+
 def create_private_views_blueprint():
     private_views_bp.register_blueprint(requests_views_bp)
     private_views_bp.register_blueprint(skills_views_bp)
+    private_views_bp.register_blueprint(users_views_bp)
     return private_views_bp
 
 
