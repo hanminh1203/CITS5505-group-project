@@ -5,9 +5,9 @@ from app.forms.login import LoginForm
 from app.forms.register import RegisterForm
 
 __all__ = [
-    "RequestForm", 
-    "SkillForm", 
-    "ProfileForm", 
-    "LoginForm", 
+    "RequestForm",
+    "SkillForm",
+    "ProfileForm",
+    "LoginForm",
     "RegisterForm"
 ]
