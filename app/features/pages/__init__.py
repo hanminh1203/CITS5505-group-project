@@ -14,9 +14,11 @@ from app.features.skills.page import skills_views_bp
 from app.forms.login import LoginForm
 from app.forms.register import RegisterForm
 from app.forms.skill import SkillForm
-from app.extensions import db
-from app.models.user import User
+from app.forms.profile import ProfileForm
 from app.models import Skill
+from app.extensions import db
+from app.features.users.views import users_views_bp
+from app.models.user import User
 
 public_views_bp = Blueprint("public", __name__, url_prefix="/")
 private_views_bp = Blueprint("private", __name__, url_prefix="/")
@@ -131,7 +133,10 @@ def profile():
         .all()
     )
     return render_template_with_class(
-        "profile", skills=skills, form=SkillForm()
+        "profile",
+        skills=skills,
+        form=SkillForm(),
+        profile_form=ProfileForm(obj=current_user)
     )
 
 
@@ -178,6 +183,7 @@ def render_section(name):
 def create_private_views_blueprint():
     private_views_bp.register_blueprint(requests_views_bp)
     private_views_bp.register_blueprint(skills_views_bp)
+    private_views_bp.register_blueprint(users_views_bp)
     return private_views_bp
 
 

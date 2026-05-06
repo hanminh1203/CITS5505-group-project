@@ -3,23 +3,23 @@
 <div id="page-profile" class="page active">
 
   <div class="profile-header">
-    <div class="profile-avatar-lg">AC</div>
+    <div class="profile-avatar-lg">{{ (current_user.name or current_user.email)[0]|upper }}</div>
     <div class="flex-grow-1">
-      <div class="profile-name-lg">Alex Chen</div>
-      <div class="profile-bio">Full-stack developer · Photography enthusiast · Lifelong learner based in Melbourne, AU
+      <div class="profile-name-lg">{{ current_user.name or current_user.email }}</div>
+      <div class="profile-bio">{{ current_user.bio or 'No bio provided yet.' }}{% if current_user.address %} based in {{
+        current_user.address }}{% endif %}
       </div>
       <div class="profile-tags">
-        <span class="profile-tag">Python</span>
-        <span class="profile-tag">Data Analysis</span>
-        <span class="profile-tag">Photography</span>
-        <span class="profile-tag">Photoshop</span>
+        {% for skill in skills %}
+        <span class="profile-tag">{{ skill.name }}</span>
+        {% endfor %}
       </div>
     </div>
     <div class="text-end">
       <button class="btn-outline-ink btn-edit-profile">
-        <i class="bi bi-pencil"></i> Edit Profile</button>
+        <i class="bi bi-pencil"></i> EditProfile</button>
       <div class="profile-member-since">Member
-        since Jan 2025</div>
+        since {{ current_user.created_at.strftime('%b %Y') if current_user.created_at else 'recently' }}</div>
     </div>
   </div>
 
@@ -38,23 +38,23 @@
             <span class="section-label">{{ skills|length }} skills</span>
           </div>
           <div id="offer-skills-list">
-              {% for skill in skills %}
-              <div class="skill-row" data-skill-id="{{ skill.id }}">
-                <div>
-                  <div class="skill-name">{{ skill.name }}</div>
-                  <div class="skill-meta">{{ skill.description or 'No description' }}</div>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="skill-level">{{ skill.level.value }}</span>
-                  <button class="btn btn-sm btn-edit-skill"><i class="bi bi-pencil-fill"></i></button>
-                  <button class="btn btn-sm btn-delete-skill"><i class="bi bi-trash-fill"></i></button>
-                </div>
+            {% for skill in skills %}
+            <div class="skill-row" data-skill-id="{{ skill.id }}">
+              <div>
+                <div class="skill-name">{{ skill.name }}</div>
+                <div class="skill-meta">{{ skill.description or 'No description' }}</div>
               </div>
-              {% else %}
-              <div class="p-4 text-center empty-skills-msg">
-                You haven't added any skills yet.
+              <div class="d-flex align-items-center gap-2">
+                <span class="skill-level">{{ skill.level.value }}</span>
+                <button class="btn btn-sm btn-edit-skill"><i class="bi bi-pencil-fill"></i></button>
+                <button class="btn btn-sm btn-delete-skill"><i class="bi bi-trash-fill"></i></button>
               </div>
-              {% endfor %}
+            </div>
+            {% else %}
+            <div class="p-4 text-center empty-skills-msg">
+              You haven't added any skills yet.
+            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
