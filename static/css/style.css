@@ -109,6 +109,13 @@ body {
     text-decoration: none;
 }
 
+.app-btn[disabled] {
+    background-color: rgba(145, 149, 151);
+    border-color: rgba(145, 149, 151);
+    color: rgba(241, 245, 247);
+    cursor: not-allowed;
+}
+
 .app-btn-small {
     padding: 0.3rem 0.8rem;
     font-size: 0.75rem;
@@ -141,7 +148,7 @@ body {
     border-color: var(--accent);
 }
 
-.btn-accent:hover {
+.btn-accent:not([disabled]):hover {
     background: #1d4ed8;
     border-color: #1d4ed8;
 }

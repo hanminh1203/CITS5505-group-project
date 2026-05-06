@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request
+from flask_login import current_user
 
 from app.extensions import db
 from app.forms import RequestForm
+from app.forms.offer import OfferForm
 from app.models import Request
 
 requests_views_bp = Blueprint(
@@ -23,9 +25,14 @@ def get_requests():
 @requests_views_bp.route("/<int:request_id>", methods=["GET"])
 def get_request(request_id):
     selected_request = db.get_or_404(Request, request_id)
+    offering = any(
+        offer.offer_skill.user_id == current_user.id
+        for offer in selected_request.offers
+    )
     return render_template(
         "pages/request.page.html",
         request=selected_request,
+        offering=offering,
         css_file="/css/pages/request.page.css",
         js_file="js/pages/request.page.js",
         main_class="request",
@@ -43,4 +50,15 @@ def get_request_edit_modal():
         "modals/request.modal.html",
         form=form,
         is_new=not request_id,
+    )
+
+
+@requests_views_bp.route("/<int:request_id>/offer", methods=["GET"])
+def get_offer_modal(request_id):
+    selected_request = db.get_or_404(Request, request_id)
+    form = OfferForm()
+    return render_template(
+        "modals/offer.modal.html",
+        form=form,
+        request=selected_request,
     )

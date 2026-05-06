@@ -8,7 +8,8 @@ from app.exceptions import (
 )
 from app.extensions import db
 from app.forms import RequestForm
-from app.models import Request, SessionFormat
+from app.forms.offer import OfferForm
+from app.models import Request, SessionFormat, Offer
 from app.models.enums import RequestStatus
 from app.schemas import RequestSchema
 
@@ -70,5 +71,29 @@ def cancel_request(request_id):
             "Request cannot be cancelled in its current status."
         )
     entity.status = RequestStatus.CANCELLED
+    db.session.commit()
+    return jsonify(id=entity.id), 200
+
+
+@requests_api_bp.route("/<int:request_id>/offer", methods=["POST"])
+def make_offer(request_id):
+    selected_request = db.get_or_404(Request, request_id)
+    if selected_request.owner_id == current_user.id:
+        raise NotAuthorizedActionException(
+            "You cannot make an offer on your own request."
+        )
+
+    dto = OfferForm(obj=request.form)
+    if not dto.validate():
+        raise ValidationException(dto.errors)
+
+    entity = Offer()
+    entity.request_id = request_id
+    entity.offer_skill_id = dto.skill.data.id
+    entity.message = dto.message.data
+    db.session.add(entity)
+
+    if selected_request.status == RequestStatus.OPEN:
+        selected_request.status = RequestStatus.PENDING
     db.session.commit()
     return jsonify(id=entity.id), 200

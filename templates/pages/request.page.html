@@ -26,7 +26,13 @@
             {% if request.status.can_cancel() and current_user.id == request.owner_id %}
                 <button id="btn-cancel-request" class="app-btn btn-danger"><i class="bi bi-x-circle me-2"></i>Cancel</button>
             {% endif %}
-            <button class="app-btn btn-accent btn-offer"><i class="bi bi-send me-2"></i>Make an offer</button>
+            {% if current_user.id != request.owner_id %}
+                {% if offering %}
+                    <button class="app-btn" disabled><i class="bi bi-send me-2"></i>Offer Sent</button>
+                {% else %}
+                    <button class="app-btn btn-accent btn-offer"><i class="bi bi-send me-2"></i>Make an offer</button>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
@@ -47,7 +53,7 @@
             <div class="item-body">
                 <div id="offering-skills" class="d-flex gap-2 flex-wrap">
                     <div class="skill-chip">
-                        {{ request.owner_skill.name}}
+                        {{ request.owner_skill.get_label() }}
                     </div>
                 </div>
                 <div class="mt-3">
@@ -97,9 +103,15 @@
                 <div><i class="bi bi-calendar me-2"></i>{{request.availability}}</div>
             </div>
         </div>
+        {% if current_user.id != request.owner_id %}
         <div>
-            <button class="app-btn btn-accent w-100 mb-2 btn-offer"><i class="bi bi-send me-2"></i>Make an offer</button>
+            {% if offering %}
+                <button class="app-btn btn-accent w-100 mb-2" disabled><i class="bi bi-send me-2"></i>Offer Sent</button>
+            {% else %}
+                <button class="app-btn btn-accent w-100 mb-2 btn-offer"><i class="bi bi-send me-2"></i>Make an offer</button>
+            {% endif %}
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
