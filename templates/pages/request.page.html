@@ -55,19 +55,38 @@
                 </div>
             </div>
         </div>
-        <div class="page-item">
-            <div class="item-header">
-                Offers Received <span class="text-muted">({{ request.offers | length }})</span>
-            </div>
-            <div class="item-body">
-                <div class="offer-item">
-                    <div id="offers" class="d-flex flex-column gap-3"></div>
-                    {% for offer in request.offers %}
-                        {% include 'components/offer.component.html' %}
-                    {% endfor %}
+        {% if request.selected_offer %}
+            <div class="page-item">
+                <div class="item-header">
+                    {% if request.status == RequestStatus.IN_PROGRESS %}
+                        Current swap skill with {{ request.selected_offer.offer_skill.user.name }}
+                    {% elif request.status == RequestStatus.COMPLETED %}
+                        Completed swap skill with {{ request.selected_offer.offer_skill.user.name }}
+                    {% elif request.status == RequestStatus.CANCELLED %}
+                        Cancelled swap skill with {{ request.selected_offer.offer_skill.user.name }}
+                    {% endif %}
+                </div>
+                <div class="item-body">
+                        {% with offer=request.selected_offer, selected=True %}
+                            {% include 'components/offer.component.html' %}
+                        {% endwith %}
+                    </div>
+                </div>
+        {% elif request.status in [RequestStatus.OPEN, RequestStatus.PENDING] %}
+            <div class="page-item">
+                <div class="item-header">
+                    Offers Received <span class="text-muted">({{ request.offers | length }})</span>
+                </div>
+                <div class="item-body">
+                    <div class="offer-item">
+                        <div id="offers" class="d-flex flex-column gap-3"></div>
+                        {% for offer in request.offers %}
+                            {% include 'components/offer.component.html' %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </div>
     <div class="page-right">
         <div class="page-item">

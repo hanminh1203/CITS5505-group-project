@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request
 from app.extensions import db
 from app.forms import RequestForm
 from app.models import Request
+from app.models.enums import RequestStatus
 
 requests_views_bp = Blueprint(
     "requests_views",
@@ -29,6 +30,7 @@ def get_request(request_id):
         css_file="/css/pages/request.page.css",
         js_file="js/pages/request.page.js",
         main_class="request",
+        RequestStatus=RequestStatus
     )
 
 

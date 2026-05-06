@@ -5,6 +5,7 @@ from app.exceptions import (
     InvalidActionException,
     NotAuthorizedActionException,
     ValidationException,
+    NotFoundException
 )
 from app.extensions import db
 from app.forms import RequestForm
@@ -26,9 +27,7 @@ def update_request():
 
     entity = None
     if dto.id.data:
-        entity = db.get_or_404(Request, dto.id.data)
-        if entity.owner_id != current_user.id:
-            raise NotAuthorizedActionException()
+        entity = get_owned_request(dto.id.data)
     else:
         entity = Request()
         entity.owner_id = current_user.id
@@ -48,9 +47,7 @@ def update_request():
 
 @requests_api_bp.route("/<int:request_id>/complete", methods=["POST"])
 def complete_request(request_id):
-    entity = db.get_or_404(Request, request_id)
-    if entity.owner_id != current_user.id:
-        raise NotAuthorizedActionException()
+    entity = get_owned_request(request_id)
     if not entity.status.can_complete():
         raise InvalidActionException(
             "Request cannot be marked as completed in its current status."
@@ -62,9 +59,7 @@ def complete_request(request_id):
 
 @requests_api_bp.route("/<int:request_id>/cancel", methods=["POST"])
 def cancel_request(request_id):
-    entity = db.get_or_404(Request, request_id)
-    if entity.owner_id != current_user.id:
-        raise NotAuthorizedActionException()
+    entity = get_owned_request(request_id)
     if not entity.status.can_cancel():
         raise InvalidActionException(
             "Request cannot be cancelled in its current status."
@@ -72,3 +67,49 @@ def cancel_request(request_id):
     entity.status = RequestStatus.CANCELLED
     db.session.commit()
     return jsonify(id=entity.id), 200
+
+
+@requests_api_bp.route(
+    "/<int:request_id>/offers/<int:offer_id>/accept",
+    methods=["POST"],
+)
+def accept_offer(request_id, offer_id):
+    entity = get_owned_request(request_id)
+    if not entity.status.can_accept():
+        raise InvalidActionException(
+            "Offer cannot be accepted in the current request status."
+        )
+    offer = next(
+        (offer for offer in entity.offers if offer.id == offer_id),
+        None,
+    )
+    if not offer:
+        raise NotFoundException("Offer not found.")
+    entity.selected_offer = offer
+    entity.status = RequestStatus.IN_PROGRESS
+    db.session.commit()
+    return jsonify(id=entity.id), 200
+
+
+@requests_api_bp.route(
+    "/<int:request_id>/offers/<int:offer_id>/decline",
+    methods=["POST"],
+)
+def decline_offer(request_id, offer_id):
+    entity = get_owned_request(request_id)
+    offer = next(
+        (offer for offer in entity.offers if offer.id == offer_id),
+        None,
+    )
+    if not offer:
+        raise NotFoundException("Offer not found.")
+    db.session.delete(offer)
+    db.session.commit()
+    return jsonify(id=entity.id), 200
+
+
+def get_owned_request(request_id):
+    entity = db.get_or_404(Request, request_id)
+    if entity.owner_id != current_user.id:
+        raise NotAuthorizedActionException()
+    return entity

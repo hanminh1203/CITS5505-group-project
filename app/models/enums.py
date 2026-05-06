@@ -28,6 +28,9 @@ class RequestStatus(StrEnum):
     def can_edit(self):
         return self in {RequestStatus.OPEN, RequestStatus.PENDING}
 
+    def can_accept(self):
+        return self == RequestStatus.PENDING
+
 
 class SessionFormat(StrEnum):
     ONLINE = "Online"

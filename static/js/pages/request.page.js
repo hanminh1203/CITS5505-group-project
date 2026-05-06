@@ -43,6 +43,38 @@ class RequestPage {
                 }
             }).show();
         });
+
+        $('#btn-accept-offer').click(async (e) => {
+            const offerId = $(e.currentTarget).data('offer-id');
+            this.onAcceptOffer(offerId);
+        });
+
+        $('#btn-decline-offer').click(async (e) => {
+            const offerId = $(e.currentTarget).data('offer-id');
+            this.onDeclineOffer(offerId);
+        });
+    }
+
+    onAcceptOffer(offerId) {
+        new ConfirmationModal("Are you sure you want to accept this offer? This action cannot be undone.", async (confirmed) => {
+            if (confirmed) {
+                await httpService.post(this.csrfToken, `/api/requests/${this.requestId}/offers/${offerId}/accept`);
+                new MessageModal("Offer accepted.", () => {
+                    location.reload();
+                }).show();
+            }
+        }).show();
+    }
+
+    onDeclineOffer(offerId) {
+        new ConfirmationModal("Are you sure you want to decline this offer? This action cannot be undone.", async (confirmed) => {
+            if (confirmed) {
+                await httpService.post(this.csrfToken, `/api/requests/${this.requestId}/offers/${offerId}/decline`);
+                new MessageModal("Offer declined.", () => {
+                    location.reload();
+                }).show();
+            }
+        }).show();
     }
 
     onMakeOffer(data) {
