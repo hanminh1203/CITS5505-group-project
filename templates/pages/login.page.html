@@ -12,17 +12,11 @@
                 <div class="mb-3">
                     {{ form.email.label(class='form-label field-required') }}
                     {{ form.email(class='form-control', placeholder='Enter your email') }}
-                    {% for error in form.email.errors %}
-                        <div class="form-error">{{ error }}</div>
-                    {% endfor %}
                 </div>
 
                 <div class="mb-3">
                     {{ form.password.label(class='form-label field-required') }}
                     {{ form.password(class='form-control', placeholder='Enter your password') }}
-                    {% for error in form.password.errors %}
-                        <div class="form-error">{{ error }}</div>
-                    {% endfor %}
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100">Login</button>
