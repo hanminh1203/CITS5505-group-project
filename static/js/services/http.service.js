@@ -11,6 +11,7 @@ class HttpService {
             data
         });
     }
+
     delete(csrfToken, url) {
         return $.ajax({
             url,
