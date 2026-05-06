@@ -184,3 +184,25 @@
 .requests-filter-chip.active {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
+
+.requests-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+}
+
+.requests-reset-btn {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.requests-reset-btn:hover {
+    color: #3b82f6; 
+}

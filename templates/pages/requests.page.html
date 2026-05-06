@@ -22,8 +22,11 @@
                 <div class="requests-toolbar-right">
                     <select name="status" class="requests-select">
                         <option value="">All status</option>
-                        <option value="OPEN" {% if search.status == "OPEN" %}selected{% endif %}>Open</option>
-                        <option value="PENDING" {% if search.status == "PENDING" %}selected{% endif %}>Pending</option>
+                        {% for status in RequestStatus.can_be_searched() %}
+                            <option value="{{ status }}" {% if search.status == status %}selected{% endif %}>
+                                {{ status }}
+                            </option>
+                        {% endfor %}    
                     </select>
 
                     <select name="level" class="requests-select">
@@ -46,7 +49,7 @@
 
                     <button type="submit" class="app-btn btn-accent">Search</button>
 
-                    <a href="{{ url_for('private.requests_views.get_requests') }}">
+                    <a href="{{ url_for('private.requests_views.get_requests') }}" class="requests-reset-btn">
                         Reset
                     </a>
                 </div>
