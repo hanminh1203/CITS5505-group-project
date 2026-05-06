@@ -9,11 +9,15 @@ class SkillLevel(StrEnum):
 
 
 class RequestStatus(StrEnum):
-    OPEN = "Open"
-    PENDING = "Pending"
-    IN_PROGRESS = "In progress"
-    COMPLETED = "Completed"
-    CANCELLED = "Cancelled"
+    OPEN = "OPEN"
+    PENDING = "PENDING"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+
+    @classmethod
+    def can_be_searched(cls):
+        return [cls.OPEN, cls.PENDING]
 
     def can_cancel(self):
         return self in {

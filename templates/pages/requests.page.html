@@ -1,6 +1,5 @@
 {% extends 'pages/base.page.html' %}
 {% block main %}
-<link rel="stylesheet" href="static/css/pages/requests.page.css">
 <div class="requests-page">
     <div class="page-header">
         <div class="page-title">Requests</div>
@@ -9,112 +8,149 @@
 
     <div class="page-body requests-body">
         <section class="page-item requests-toolbar">
-            <div class="requests-toolbar-left">
-                <input type="text" class="requests-search-input" placeholder="Search requests...">
-            </div>
+            <form method="GET" action="{{ url_for('private.requests_views.get_requests') }}" class="requests-search-form">
+                <div class="requests-toolbar-left">
+                    <input
+                        type="text"
+                        name="query"
+                        class="requests-search-input"
+                        placeholder="Search by title..."
+                        value="{{ search.query }}"
+                    >
+                </div>
 
-            <div class="requests-toolbar-right">
-                <button class="requests-filter-chip active">All</button>
-                <button class="requests-filter-chip">Open</button>
-                <button class="requests-filter-chip">Beginner</button>
-                <button class="requests-filter-chip">Online</button>
-            </div>
+                <div class="requests-toolbar-right">
+                    <select name="status" class="requests-select">
+                        <option value="">All status</option>
+                        {% for status in RequestStatus.can_be_searched() %}
+                            <option value="{{ status }}" {% if search.status == status %}selected{% endif %}>
+                                {{ status }}
+                            </option>
+                        {% endfor %}    
+                    </select>
+
+                    <select name="level" class="requests-select">
+                        <option value="">All levels</option>
+                        {% for level in SkillLevel %}
+                            <option value="{{ level.name }}" {% if search.level == level.name %}selected{% endif %}>
+                                {{ level.value }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="format" class="requests-select">
+                        <option value="">All formats</option>
+                        {% for format in SessionFormat %}
+                            <option value="{{ format.name }}" {% if search.format == format.name %}selected{% endif %}>
+                                {{ format.value }}
+                            </option>
+                    {% endfor %}
+                    </select>
+
+                    <button type="submit" class="app-btn btn-accent">Search</button>
+
+                    <a href="{{ url_for('private.requests_views.get_requests') }}" class="requests-reset-btn">
+                        Reset
+                    </a>
+                </div>
+            </form>
         </section>
 
-        <section class="requests-list">
-            <article class="requests-card">
-                <div class="requests-card-top">
-                    <div class="requests-card-main">
-                        <h2 class="requests-card-title">Looking for beginner guitar lessons</h2>
-                        <p class="requests-card-meta">Wanted skill: Guitar · Format: Online · Duration: 1 hour</p>
-                    </div>
-                    <span class="request-status status-open">Open</span>
-                </div>
+        {% if requests %}
+            <section class="requests-list">
+                {% for item in requests %}
+                    <article class="requests-card">
+                        <div class="requests-card-top">
+                            <div class="requests-card-main">
+                                <h2 class="requests-card-title">{{ item.title }}</h2>
+                                <p class="requests-card-meta">
+                                    Wanted skill: {{ item.skill_to_learn }}
+                                    {% if item.format %} · Format: {{ item.format.value }}{% endif %}
+                                    {% if item.duration %} · Duration: {{ item.duration }}{% endif %}
+                                </p>
+                            </div>
 
-                <p class="requests-card-desc">
-                    I want to learn basic guitar skills and can offer help with Python practice in return.
-                </p>
-
-                <div class="requests-card-tags">
-                    <span class="skill-chip">Python</span>
-                    <span class="skill-chip">Beginner friendly</span>
-                </div>
-
-                <div class="requests-card-footer">
-                    <div class="requests-owner">
-                        <div class="mini-avatar avatar-36">J</div>
-                        <div>
-                            <div class="offer-user">Jianing Wang</div>
-                            <div class="offer-skill">Perth, AU</div>
+                            <span class="request-status status-{{ item.status.value|lower|replace(' ', '-') }}">
+                                {{ item.status | format_request_status }}
+                            </span>
                         </div>
-                    </div>
 
-                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
-                </div>
-            </article>
+                        {% if item.description %}
+                            <p class="requests-card-desc">{{ item.description }}</p>
+                        {% endif %}
 
-            <article class="requests-card">
-                <div class="requests-card-top">
-                    <div class="requests-card-main">
-                        <h2 class="requests-card-title">Need help with presentation design</h2>
-                        <p class="requests-card-meta">Wanted skill: Slide Design · Format: In person · Duration: 2 hours</p>
-                    </div>
-                    <span class="request-status status-open">Open</span>
-                </div>
-
-                <p class="requests-card-desc">
-                    Looking for help to improve slide layout and storytelling for a university presentation.
-                </p>
-
-                <div class="requests-card-tags">
-                    <span class="skill-chip">Web basics</span>
-                    <span class="skill-chip">English speaking</span>
-                </div>
-
-                <div class="requests-card-footer">
-                    <div class="requests-owner">
-                        <div class="mini-avatar avatar-36">A</div>
-                        <div>
-                            <div class="offer-user">Alex T.</div>
-                            <div class="offer-skill">UWA Campus</div>
+                        <div class="requests-card-tags">
+                            {% if item.owner_skill %}
+                                <span class="skill-chip">{{ item.owner_skill.name }}</span>
+                                {% if item.owner_skill.level %}
+                                    <span class="skill-chip">{{ item.owner_skill.level.value }}</span>
+                                {% endif %}
+                            {% endif %}
                         </div>
-                    </div>
 
-                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
-                </div>
-            </article>
+                        <div class="requests-card-footer">
+                            <div class="requests-owner">
+                                <div class="mini-avatar avatar-36">
+                                    {{ item.owner.name | get_initials }}
+                                </div>
+                                <div>
+                                    <div class="offer-user">{{ item.owner.name }}</div>
+                                    <div class="offer-skill">
+                                        {% if item.format %}{{ item.format.value }}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
 
-            <article class="requests-card">
-                <div class="requests-card-top">
-                    <div class="requests-card-main">
-                        <h2 class="requests-card-title">Want to improve spoken English</h2>
-                        <p class="requests-card-meta">Wanted skill: English Speaking · Format: Online · Duration: 45 mins</p>
-                    </div>
-                    <span class="request-status status-open">Open</span>
-                </div>
-
-                <p class="requests-card-desc">
-                    I would like casual conversation practice and can help with HTML/CSS in exchange.
-                </p>
-
-                <div class="requests-card-tags">
-                    <span class="skill-chip">HTML</span>
-                    <span class="skill-chip">CSS</span>
-                </div>
-
-                <div class="requests-card-footer">
-                    <div class="requests-owner">
-                        <div class="mini-avatar avatar-36">M</div>
-                        <div>
-                            <div class="offer-user">Mia K.</div>
-                            <div class="offer-skill">Online</div>
+                            <a
+                                href="{{ url_for('private.requests_views.get_request', request_id=item.id) }}"
+                                class="app-btn btn-accent app-btn-small"
+                            >
+                                View details
+                            </a>
                         </div>
-                    </div>
+                    </article>
+                {% endfor %}
+            </section>
 
-                    <a href="#request" class="app-btn btn-accent app-btn-small">View details</a>
+            <div class="requests-pagination" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <p class="requests-summary-text" style="margin: 0; color: #666; font-size: 14px;">
+                    Total {{ pagination.total_items }} items, page {{ pagination.page }} of {{ pagination.total_pages }}
+                </p>
+                
+                <div class="pagination-buttons">
+                    {% if pagination.has_prev %}
+                        <a class="app-btn btn-outline app-btn-small"
+                            href="{{ url_for('private.requests_views.get_requests',
+                                    query=search.query,
+                                    status=search.status,
+                                    level=search.level,
+                                    format=search.format,
+                                    page=pagination.prev_page
+                            ) }}">
+                            Previous
+                        </a>
+                    {% endif %}
+                    
+                    {% if pagination.has_next %}
+                        <a class="app-btn btn-accent app-btn-small"
+                            href="{{ url_for('private.requests_views.get_requests',
+                                    query=search.query,
+                                    status=search.status,
+                                    level=search.level,
+                                    format=search.format,
+                                    page=pagination.next_page
+                            ) }}">
+                            Next
+                        </a>
+                    {% endif %}
                 </div>
-            </article>
-        </section>
+            </div>
+        {% else %}
+            <section class="page-item requests-empty">
+                <h2 class="item-header">No requests found</h2>
+                <p class="requests-empty-text">Try another search condition.</p>
+            </section>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

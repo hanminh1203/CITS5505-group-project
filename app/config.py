@@ -22,3 +22,4 @@ class Config:
     FLASK_DEBUG = get_bool_env('FLASK_DEBUG', False)
     SECRET_KEY = os.environ.get('SECRET_KEY')
     WTF_CSRF_SECRET_KEY = os.environ.get('WTF_CSRF_SECRET_KEY')
+    REQUESTS_PAGE_SIZE = int(os.getenv("REQUESTS_PAGE_SIZE", 6))
