@@ -56,12 +56,6 @@
             </form>
         </section>
 
-        <section class="requests-summary">
-            <p class="requests-summary-text">
-                Total {{ pagination.total_items }} items, page {{ pagination.page }} of {{ pagination.total_pages }}
-            </p>
-        </section>
-
         {% if requests %}
             <section class="requests-list">
                 {% for item in requests %}
@@ -118,36 +112,38 @@
                 {% endfor %}
             </section>
 
-            <div class="requests-pagination">
-                {% if pagination.has_prev %}
-                    <a
-                        class="app-btn btn-outline app-btn-small"
-                        href="{{ url_for('private.requests_views.get_requests',
-                            query=search.query,
-                            status=search.status,
-                            level=search.level,
-                            format=search.format,
-                            page=pagination.prev_page
-                        ) }}"
-                    >
-                        Previous
-                    </a>
-                {% endif %}
-
-                {% if pagination.has_next %}
-                    <a
-                        class="app-btn btn-accent app-btn-small"
-                        href="{{ url_for('private.requests_views.get_requests',
-                            query=search.query,
-                            status=search.status,
-                            level=search.level,
-                            format=search.format,
-                            page=pagination.next_page
-                        ) }}"
-                    >
-                        Next
-                    </a>
-                {% endif %}
+            <div class="requests-pagination" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <p class="requests-summary-text" style="margin: 0; color: #666; font-size: 14px;">
+                    Total {{ pagination.total_items }} items, page {{ pagination.page }} of {{ pagination.total_pages }}
+                </p>
+                
+                <div class="pagination-buttons">
+                    {% if pagination.has_prev %}
+                        <a class="app-btn btn-outline app-btn-small"
+                            href="{{ url_for('private.requests_views.get_requests',
+                                    query=search.query,
+                                    status=search.status,
+                                    level=search.level,
+                                    format=search.format,
+                                    page=pagination.prev_page
+                            ) }}">
+                            Previous
+                        </a>
+                    {% endif %}
+                    
+                    {% if pagination.has_next %}
+                        <a class="app-btn btn-accent app-btn-small"
+                            href="{{ url_for('private.requests_views.get_requests',
+                                    query=search.query,
+                                    status=search.status,
+                                    level=search.level,
+                                    format=search.format,
+                                    page=pagination.next_page
+                            ) }}">
+                            Next
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         {% else %}
             <section class="page-item requests-empty">
