@@ -27,3 +27,8 @@ class InvalidActionException(SkillswapException):
     def __init__(self,
                  message="This action is invalid in the current context."):
         super().__init__(message, 400)
+
+
+class NotFoundException(SkillswapException):
+    def __init__(self, message="The requested resource was not found."):
+        super().__init__(message, 404)

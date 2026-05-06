@@ -4,6 +4,7 @@ from flask_login import current_user
 from app.exceptions import (
     InvalidActionException,
     NotAuthorizedActionException,
+    NotFoundException,
     ValidationException,
 )
 from app.extensions import db
@@ -72,3 +73,26 @@ def cancel_request(request_id):
     entity.status = RequestStatus.CANCELLED
     db.session.commit()
     return jsonify(id=entity.id), 200
+
+
+@requests_api_bp.route(
+    "/<int:request_id>/offers/<int:offer_id>",
+    methods=["DELETE"],
+)
+def cancel_offer(request_id, offer_id):
+    entity = db.get_or_404(Request, request_id)
+
+    offer = next(
+        (offer for offer in entity.offers if offer.id == offer_id),
+        None,
+    )
+    if not offer:
+        raise NotFoundException("Offer not found.")
+    if offer.offer_skill.user_id != current_user.id:
+        raise NotAuthorizedActionException(
+            "You are not authorized to cancel this offer."
+        )
+
+    db.session.delete(offer)
+    db.session.commit()
+    return jsonify(id=offer.id), 200
