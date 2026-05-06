@@ -23,30 +23,16 @@ export class BaseModal {
     async renderModal() {
         const modalHtml = await httpService.get(this.htmlPath);
         this.removeModalElementIfExists();
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        this.modalContainer.append(modalHtml);
         this.modalElement = document.getElementById(this.modalId);
         this.jqueryElement = $(this.modalElement);
         this.bootstrapModal = new bootstrap.Modal(this.modalElement);
-        this.modalBackdrop = null;
-
-        this.modalElement.addEventListener('show.bs.modal', () => {
-            // Calculate z-index based on the number of currently open modals
-            // so the new modal would on top of the existing ones
-            const countOfModal = $('.modal').length;
-            this.modalBackdrop = $('.modal-backdrop:not(.z-index-set)').first();
-            this.modalBackdrop.addClass('z-index-set');
-            this.modalBackdrop.css('z-index', 1050 + countOfModal * 10);
-            this.jqueryElement.css('z-index', 1050 + countOfModal * 10 + 1);
-        });
 
         this.modalElement.addEventListener('hide.bs.modal', () => {
             if (this.modalElement.contains(document.activeElement)) {
                 document.activeElement.blur();
             }
             this.modalElement.remove();
-            if (this.modalBackdrop) {
-                this.modalBackdrop.remove();
-            }
         }, { once: true });
     }
 
@@ -74,9 +60,7 @@ export class BaseModal {
     }
 
     close(data) {
-        if (this.onCloseCallback) {
-            this.onCloseCallback(data);
-        }
+        this.onCloseCallback(data);
         this.hide();
     }
 

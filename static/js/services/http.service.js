@@ -30,6 +30,18 @@ class HttpService {
         }
     }
 
+    delete(csrfToken, url) {
+        return this.displaySpinner(this.doDelete(csrfToken, url))
+    }
+
+    doDelete(csrfToken, url) {
+        return $.ajax({
+            url,
+            type: 'DELETE',
+            headers: { 'X-CSRF-Token': csrfToken }
+        });
+    }
+
     displaySpinner(promise) {
         this.spinnerElement.show();
         return promise.always(() => {
