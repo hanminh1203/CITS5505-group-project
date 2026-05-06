@@ -39,7 +39,11 @@ def get_requests():
 
     # Optional filters
     if status:
-        base_query = base_query.filter(Request.status == RequestStatus(status))
+        try:
+            status_enum = RequestStatus(status)
+            base_query = base_query.filter(Request.status == status_enum)
+        except ValueError:
+            pass
 
     if level:
         base_query = base_query.filter(Request.owner_skill.has(level=level))
@@ -87,6 +91,7 @@ def get_requests():
         pagination=pagination,
         css_file="/css/pages/requests.page.css",
         main_class="requests",
+        RequestStatus=RequestStatus,
         SkillLevel=SkillLevel,
         SessionFormat=SessionFormat,
     )
