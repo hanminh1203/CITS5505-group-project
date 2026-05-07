@@ -26,3 +26,9 @@ class NotAuthorizedActionException(SkillswapException):
 class IllegalArgumentException(SkillswapException):
     def __init__(self, message):
         super().__init__(message, 400)
+
+
+class InvalidActionException(SkillswapException):
+    def __init__(self,
+                 message="This action is invalid in the current context."):
+        super().__init__(message, 400)

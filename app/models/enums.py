@@ -27,6 +27,19 @@ class RequestStatus(StrEnum):
         except ValueError:
             raise IllegalArgumentException(f"Value {value} is not supported")
 
+    def can_cancel(self):
+        return self in {
+            RequestStatus.OPEN,
+            RequestStatus.PENDING,
+            RequestStatus.IN_PROGRESS,
+        }
+
+    def can_complete(self):
+        return self == RequestStatus.IN_PROGRESS
+
+    def can_edit(self):
+        return self in {RequestStatus.OPEN, RequestStatus.PENDING}
+
 
 class SessionFormat(StrEnum):
     ONLINE = "Online"
