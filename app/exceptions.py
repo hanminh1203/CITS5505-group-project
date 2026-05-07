@@ -21,3 +21,8 @@ class NotAuthorizedActionException(SkillswapException):
     def __init__(self,
                  message="You are not authorized to perform this action."):
         super().__init__(message, 403)
+
+
+class IllegalArgumentException(SkillswapException):
+    def __init__(self, message):
+        super().__init__(message, 400)
