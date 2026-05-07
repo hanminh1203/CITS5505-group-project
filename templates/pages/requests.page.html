@@ -24,7 +24,7 @@
                         <option value="">All status</option>
                         {% for status in RequestStatus.can_be_searched() %}
                             <option value="{{ status }}" {% if search.status == status %}selected{% endif %}>
-                                {{ status }}
+                                {{ status | capitalize }}
                             </option>
                         {% endfor %}    
                     </select>
@@ -119,7 +119,7 @@
                 
                 <div class="pagination-buttons">
                     {% if pagination.has_prev %}
-                        <a class="app-btn btn-outline app-btn-small"
+                        <a class="app-btn btn-accent app-btn-small"
                             href="{{ url_for('private.requests_views.get_requests',
                                     query=search.query,
                                     status=search.status,
@@ -129,7 +129,7 @@
                             ) }}">
                             Previous
                         </a>
-                    {% endif %}
+                    {% endif %}                   
                     
                     {% if pagination.has_next %}
                         <a class="app-btn btn-accent app-btn-small"

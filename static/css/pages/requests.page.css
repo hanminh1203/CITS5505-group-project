@@ -178,6 +178,11 @@
     width: 100%;
 }
 
+.pagination-buttons {
+    display: flex;
+    gap: 12px;
+}
+
 .requests-filter-chip {
     min-width: 84px;
     text-align: center;
@@ -198,11 +203,12 @@
 }
 
 .requests-reset-btn {
-    color: #666;
+    margin-left: 15px;
+    color: #6c757d;
     text-decoration: none;
-    font-size: 14px;
-    margin-left: 10px;
-    transition: color 0.2s;
+    font-weight: 500;
+    align-self: center;
+    font-size: 15px;
 }
 
 .requests-reset-btn:hover {
