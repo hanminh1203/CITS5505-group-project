@@ -19,6 +19,19 @@ class RequestStatus(StrEnum):
     def can_be_searched(cls):
         return [cls.OPEN, cls.PENDING]
 
+    def can_cancel(self):
+        return self in {
+            RequestStatus.OPEN,
+            RequestStatus.PENDING,
+            RequestStatus.IN_PROGRESS,
+        }
+
+    def can_complete(self):
+        return self == RequestStatus.IN_PROGRESS
+
+    def can_edit(self):
+        return self in {RequestStatus.OPEN, RequestStatus.PENDING}
+
 
 class SessionFormat(StrEnum):
     ONLINE = "Online"
