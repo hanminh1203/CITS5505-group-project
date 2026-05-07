@@ -39,11 +39,8 @@ def get_requests():
 
     # Optional filters
     if status:
-        try:
-            status_enum = RequestStatus(status)
+            status_enum = RequestStatus.from_value(status)
             base_query = base_query.filter(Request.status == status_enum)
-        except ValueError:
-            pass
 
     if level:
         base_query = base_query.filter(Request.owner_skill.has(level=level))
