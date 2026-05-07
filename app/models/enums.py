@@ -19,7 +19,7 @@ class RequestStatus(StrEnum):
     @classmethod
     def can_be_searched(cls):
         return [cls.OPEN, cls.PENDING]
-    
+
     @staticmethod
     def from_value(value):
         try:
