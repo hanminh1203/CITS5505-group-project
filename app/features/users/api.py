@@ -17,14 +17,11 @@ def get_users():
 
 @users_api_bp.route("/me", methods=["PUT"])
 def update_profile():
-    if not current_user.is_authenticated:
-        return jsonify(error="Unauthorized"), 401
-
     dto = ProfileForm(obj=request.form)
     if not dto.validate():
         raise ValidationException(dto.errors)
 
-    user = db.session.get(User, current_user.id)
+    user = db.get_or_404(User, current_user.id)
     user.name = dto.name.data
     user.bio = dto.bio.data
     user.address = dto.address.data

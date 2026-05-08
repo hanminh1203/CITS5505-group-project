@@ -13,7 +13,7 @@ from app.features.requests.views import requests_views_bp
 from app.features.skills.page import skills_views_bp
 from app.forms.login import LoginForm
 from app.forms.register import RegisterForm
-from app.forms.skill import SkillForm
+
 from app.forms.profile import ProfileForm
 from app.models import Skill
 from app.extensions import db
@@ -135,7 +135,6 @@ def profile():
     return render_template_with_class(
         "profile",
         skills=skills,
-        form=SkillForm(),
         profile_form=ProfileForm(obj=current_user)
     )
 
