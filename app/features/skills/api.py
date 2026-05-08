@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from app.exceptions import NotAuthorizedActionException, ValidationException
 from app.extensions import db
-from app.forms import SkillForm
+from app.forms.skill import SkillForm
 from app.models import Skill
 from app.models.enums import SkillLevel
 
