@@ -119,12 +119,19 @@ def dashboard():
 
     my_requests = Request.query.filter(
         Request.owner_id == current_user.id,
-        Request.status.in_([RequestStatus.OPEN, RequestStatus.PENDING, RequestStatus.IN_PROGRESS])
+        Request.status.in_([
+            RequestStatus.OPEN,
+            RequestStatus.PENDING,
+            RequestStatus.IN_PROGRESS
+        ])
     ).order_by(Request.created_at.desc()).all()
 
     my_offerings = Request.query.join(Offer).filter(
         Offer.created_by == current_user.email,
-        Request.status.in_([RequestStatus.PENDING, RequestStatus.IN_PROGRESS])
+        Request.status.in_([
+            RequestStatus.PENDING,
+            RequestStatus.IN_PROGRESS
+        ])
     ).order_by(Request.title.asc()).all()
 
     return render_template_with_class(
