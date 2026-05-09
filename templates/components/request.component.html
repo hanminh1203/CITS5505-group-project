@@ -1,0 +1,52 @@
+{% macro render_request_card(item) %}
+    <article class="requests-card">
+        <div class="requests-card-top">
+            <div class="requests-card-main">
+                <h2 class="requests-card-title">{{ item.title }}</h2>
+                    <p class="requests-card-meta">
+                        Wanted skill: {{ item.skill_to_learn }}
+                            {% if item.format %} · Format: {{ item.format.value }}{% endif %}
+                            {% if item.duration %} · Duration: {{ item.duration }}{% endif %}
+                        </p>
+                    </div>
+
+                    <span class="request-status status-{{ item.status.value|lower|replace(' ', '-') }}">
+                        {{ item.status | format_request_status }}
+                    </span>
+                </div>
+
+                {% if item.description %}
+                    <p class="requests-card-desc">{{ item.description }}</p>
+                {% endif %}
+
+                <div class="requests-card-tags">
+                    {% if item.owner_skill %}
+                        <span class="skill-chip">{{ item.owner_skill.name }}</span>
+                        {% if item.owner_skill.level %}
+                            <span class="skill-chip">{{ item.owner_skill.level.value }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="requests-card-footer">
+                    <div class="requests-owner">
+                        <div class="mini-avatar avatar-36">
+                            {{ item.owner.name | get_initials }}
+                        </div>
+                        <div>
+                            <div class="offer-user">{{ item.owner.name }}</div>
+                            <div class="offer-skill">
+                                {% if item.format %}{{ item.format.value }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <a
+                        href="{{ url_for('private.requests_views.get_request', request_id=item.id) }}"
+                        class="app-btn btn-accent app-btn-small"
+                    >
+                        View details
+                    </a>
+                </div>
+            </article>
+        {% endmacro %}
