@@ -10,7 +10,10 @@
                 <div class="d-flex gap-2">
                     <button id="btn-accept-offer" class="app-btn btn-accent app-btn-small" data-offer-id="{{ offer.id }}">Accept</button>
                     <button id="btn-decline-offer" class="app-btn btn-outline-ink app-btn-small" data-offer-id="{{ offer.id }}">Decline</button>
-                </div>
+                    {% if offer.offer_skill.user_id == current_user.id %}
+                        <button class="app-btn btn-outline-ink app-btn-small btn-cancel-offer" data-offer-id="{{ offer.id }}">Cancel</button>
+                    {% endif %}
+            </div>
             {% endif %}
         </div>
         <div class="offer-msg">{{offer.message}}</div>
