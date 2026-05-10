@@ -32,7 +32,7 @@ export class RequestModal extends BaseModal {
             const result = await httpService.post(csrf_token, `/api/requests`, formData);
             this.close(result);
         } catch (e) {
-            const {data} = e.responseJSON
+            const data = e.responseJSON?.data;
             if (data) {
                 for (const field of Object.keys(data)) {
                     const fieldInput = this.formElem.find(`#${field}`);
