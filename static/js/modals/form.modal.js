@@ -31,7 +31,7 @@ export class FormModal extends BaseModal {
             const result = await httpService.post(csrf_token, this.submitUrl, formData);
             this.close(result);
         } catch (e) {
-            const {data} = e.responseJSON
+            const data = e.responseJSON?.data;
             if (data) {
                 for (const field of Object.keys(data)) {
                     const fieldInput = this.jqueryElement.find(`#${field}`);
