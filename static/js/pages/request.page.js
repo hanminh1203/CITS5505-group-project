@@ -43,6 +43,19 @@ class RequestPage {
                 }
             }).show();
         });
+        
+        $(".btn-cancel-offer").click(async (e) => {
+            const offerId = $(e.currentTarget).data('offer-id');
+
+            new ConfirmationModal("Are you sure you want to cancel this offer? This action cannot be undone.", async (confirmed) => {
+                if (confirmed) {
+                    const response = await httpService.delete(this.csrfToken, `/api/requests/${this.requestId}/offers/${offerId}`);
+                    new MessageModal("Offer cancelled.", () => {
+                        location.reload();
+                    }).show();
+                }
+            }).show();
+        });
     }
 
     onMakeOffer(data) {
