@@ -194,7 +194,7 @@ def test_requests_page_displays_search_and_sample_cards(
     search = browser.find_element(By.CSS_SELECTOR, ".requests-search-input")
 
     assert len(cards) == 0
-    assert search.get_attribute("placeholder") == "Search requests..."
+    assert search.get_attribute("placeholder") == "Search by title..."
 
 
 def test_requests_page_shows_filter_chips(browser, server_url, user_factory):
