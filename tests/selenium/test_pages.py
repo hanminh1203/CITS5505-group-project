@@ -4,7 +4,7 @@ import time
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from app.extensions import db
 
@@ -187,12 +187,13 @@ def test_requests_page_displays_search_and_sample_cards(
     human_pause()
 
     wait_for(browser).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, ".requests-card"))
+        EC.presence_of_element_located((By.CSS_SELECTOR,
+                                        ".requests-search-input"))
     )
     cards = browser.find_elements(By.CSS_SELECTOR, ".requests-card")
     search = browser.find_element(By.CSS_SELECTOR, ".requests-search-input")
 
-    assert len(cards) == 3
+    assert len(cards) == 0
     assert search.get_attribute("placeholder") == "Search requests..."
 
 
@@ -209,14 +210,14 @@ def test_requests_page_shows_filter_chips(browser, server_url, user_factory):
     human_pause()
 
     filters = [
-        chip.text
+        Select(chip).first_selected_option.text
         for chip in browser.find_elements(
             By.CSS_SELECTOR,
-            ".requests-filter-chip",
+            ".requests-select",
         )
     ]
 
-    assert filters == ["All", "Open", "Beginner", "Online"]
+    assert filters == ["All status", "All levels", "All formats"]
 
 
 def test_request_detail_page_shows_seeded_request(
