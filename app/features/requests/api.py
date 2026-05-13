@@ -29,6 +29,7 @@ def update_request():
     entity = None
     if dto.id.data:
         entity = db.get_or_404(Request, dto.id.data)
+        db.session.expunge(entity)
         if entity.owner_id != current_user.id:
             raise NotAuthorizedActionException()
     else:
@@ -44,6 +45,8 @@ def update_request():
     entity.format = SessionFormat(dto.format.data) if dto.format.data else None
     entity.availability = dto.availability.data
     entity.duration = dto.duration.data
+    entity.version = int(dto.version.data or 0)
+    db.session.merge(entity)
     db.session.commit()
     return jsonify(id=entity.id), 200
 

@@ -4,9 +4,11 @@ import traceback
 from flask import current_app, redirect, render_template, request, url_for
 from werkzeug.exceptions import HTTPException
 from app.exceptions import (
+    OptimisticException,
     SkillswapException,
     SkillswapExpectedException
 )
+from sqlalchemy.orm.exc import StaleDataError
 
 
 def handle_general_exception(error, code=HTTPStatus.INTERNAL_SERVER_ERROR):
@@ -73,6 +75,12 @@ def register_error_handlers(app, login_manager):
         response['data'] = error.get_addition_info()
         response['expected'] = isinstance(error, SkillswapExpectedException)
         return response, code
+
+    @app.errorhandler(StaleDataError)
+    def handle_state_data_error(error):
+        exception = OptimisticException()
+        exception.__cause__ = error
+        return handle_validation_exception(exception)
 
     @login_manager.unauthorized_handler
     def unauthorized_handler():

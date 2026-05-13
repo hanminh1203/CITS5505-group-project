@@ -51,3 +51,10 @@ class InvalidActionException(SkillswapException):
 class NotFoundException(SkillswapException):
     def __init__(self, message="The requested resource was not found."):
         super().__init__(message, 404)
+
+
+class OptimisticException(SkillswapException):
+    def __init__(self, message="Data has been updated or"
+                 " deleted by another user."
+                 " Please try again"):
+        super().__init__(message, 409)
