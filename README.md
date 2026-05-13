@@ -12,6 +12,7 @@ The application uses Flask as the core technical stack in backend server with fo
 - Flask-Migrate: schema migrations
   
 The frontend templates are served through Jinja templates with reusable components.
+
 ### File structure
 ```test
 app/
@@ -32,6 +33,10 @@ templates/          # HTML Template
   modals/           # Modals view
   pages/            # Page layout of corresponding pages
     base.page.html  # Base layout
+tests/              # Unit/API tests and Selenium browser tests
+  features/         # Tests arranged to match app/features
+  models/           # Model-level unit tests
+  selenium/         # Browser tests against a live Flask server
 run.py              # Flask entrypoint
 ```
 
@@ -122,4 +127,74 @@ Useful routes:
 - `/api/requests/` for the requests API
 
 ## How to run the tests
-Currently, there are currently no automated tests configured in this repository.
+The repository uses `pytest` for automated testing. The test suite includes:
+
+- Unit/model tests for core model behaviour such as password hashing and email
+  normalization.
+- API tests for login, users, skills, and requests.
+- Selenium browser tests for the homepage, login, dashboard, profile, search
+  requests, and request detail pages.
+
+Run the full test suite:
+
+```bash
+python -m pytest
+```
+
+Run only the unit/API tests:
+
+```bash
+python -m pytest tests/features tests/models
+```
+
+Run only the Selenium tests:
+
+```bash
+python -m pytest tests/selenium
+```
+
+By default, Selenium runs Chrome in headless mode. To watch a real Chrome
+browser locally, disable headless mode:
+
+Windows PowerShell:
+
+```powershell
+$env:SELENIUM_HEADLESS="0"
+python -m pytest tests/selenium
+```
+
+Windows (CMD):
+
+```shell
+set SELENIUM_HEADLESS=0
+python -m pytest tests/selenium
+```
+
+macOS / Linux:
+
+```bash
+SELENIUM_HEADLESS=0 python -m pytest tests/selenium
+```
+
+The Selenium tests also support a delay between browser actions to make the
+flow easier to watch:
+
+Windows PowerShell:
+
+```powershell
+$env:SELENIUM_STEP_DELAY="2"
+python -m pytest tests/selenium
+```
+
+Windows (CMD):
+
+```shell
+set SELENIUM_STEP_DELAY=2
+python -m pytest tests/selenium
+```
+
+macOS / Linux:
+
+```bash
+SELENIUM_STEP_DELAY=2 python -m pytest tests/selenium
+```

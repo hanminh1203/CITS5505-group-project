@@ -1,5 +1,7 @@
 {% extends 'pages/base.page.html' %}
+{% from 'components/request.component.html' import render_request_card %}
 {% block main %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/requests.page.css') }}">
 <div class="dashboard-page">
     <div class="page-header">
         <div class="page-title">Dashboard</div>
@@ -12,19 +14,31 @@
                 <section class="page-item">
                     <div class="dashboard-section-header">
                         <h2 class="item-header">My requests</h2>
-                        <span class="dashboard-count">0 items</span>
+                        <span class="dashboard-count">{{ my_requests|length }} items</span>
                     </div>
 
-                    <div class="dashboard-empty">You have not created any requests yet.</div>
+                    <div class="dashboard-list requests-list">
+                        {% for req in my_requests %}
+                            {{ render_request_card(req) }}
+                        {% else %}
+                            <div class="dashboard-empty">You have not created any requests yet.</div>
+                        {% endfor %}
+                    </div>
                 </section>
 
                 <section class="page-item">
                     <div class="dashboard-section-header">
                         <h2 class="item-header">My offering</h2>
-                        <span class="dashboard-count">0 items</span>
+                        <span class="dashboard-count">{{ my_offerings|length }} items</span>
                     </div>
 
-                    <div class="dashboard-empty">You are not offering on any requests yet.</div>
+                    <div class="dashboard-list requests-list">
+                        {% for offer_req in my_offerings %}
+                            {{ render_request_card(offer_req) }}
+                        {% else %}
+                        <div class="dashboard-empty">You are not offering on any requests yet.</div>
+                        {% endfor %}
+                    </div>
                 </section>
             </div>
 

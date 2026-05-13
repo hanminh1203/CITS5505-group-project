@@ -9,6 +9,9 @@
             <div class="d-flex gap-2">
                 <button class="app-btn btn-accent app-btn-small">Accept</button>
                 <button class="app-btn btn-outline-ink app-btn-small">Decline</button>
+                {% if offer.offer_skill.user_id == current_user.id %}
+                    <button class="app-btn btn-outline-ink app-btn-small btn-cancel-offer" data-offer-id="{{ offer.id }}">Cancel</button>
+                {% endif %}
             </div>
         </div>
         <div class="offer-msg">{{offer.message}}</div>

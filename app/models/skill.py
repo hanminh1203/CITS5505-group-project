@@ -11,3 +11,6 @@ class Skill(db.Model, AuditMixin, EntityMixin):
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     level = db.Column(db.Enum(SkillLevel), default=SkillLevel.BEGINNER)
+
+    def get_label(self):
+        return f'{self.name} ({self.level.value})'
