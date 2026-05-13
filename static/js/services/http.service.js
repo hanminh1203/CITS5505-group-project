@@ -4,43 +4,29 @@ class HttpService {
         this.spinnerElement = $('#spinner');
     }
     get(url) {
-        return this.displaySpinner($.get(url));
+        return this.displaySpinner(this.request({ url, type: 'GET' }));
     }
 
     post(csrfToken, url, data) {
-        return this.displaySpinner(this.doPost(csrfToken, url, data));
-    }
-
-    async doPost(csrfToken, url, data) {
-        try {
-            return await $.ajax({
-                url,
-                type: 'POST',
-                headers: { 'X-CSRF-Token': csrfToken },
-                data
-            });
-        } catch (error) {
-            if (!error.responseJSON?.expected) {
-                // lazy import to avoid circular dependency between http.service and error.modal
-                const { ErrorModal } = await import("../modals/error.modal.js");
-                new ErrorModal("An error occurred while processing your request. Please try again later.",
-                    error.responseJSON?.stacktrace).show();
-            }
-            throw error;
-        }
+        return this.displaySpinner(this.request({
+            url,
+            type: 'POST',
+            headers: { 'X-CSRF-Token': csrfToken },
+            data
+        }));
     }
 
     delete(csrfToken, url) {
-        return this.displaySpinner(this.doDelete(csrfToken, url))
+        return this.displaySpinner(this.request({
+            url,
+            type: 'DELETE',
+            headers: { 'X-CSRF-Token': csrfToken }
+        }));
     }
 
-    async doDelete(csrfToken, url) {
+    async request(options) {
         try {
-            return await $.ajax({
-                url,
-                type: 'DELETE',
-                headers: { 'X-CSRF-Token': csrfToken }
-            });
+            return await $.ajax(options);
         } catch (error) {
             if (!error.responseJSON?.expected) {
                 // lazy import to avoid circular dependency between http.service and error.modal
