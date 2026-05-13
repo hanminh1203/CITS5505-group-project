@@ -45,6 +45,7 @@ def update_skill(skill_id):
         raise ValidationException(dto.errors)
 
     entity = db.get_or_404(Skill, skill_id)
+    db.session.expunge(entity)
 
     # Ensure user owns this skill
     if entity.user_id != current_user.id:
@@ -54,6 +55,8 @@ def update_skill(skill_id):
     entity.name = dto.name.data
     entity.level = SkillLevel(dto.level.data)
     entity.description = dto.description.data
+    entity.version = int(dto.version.data or 0)
+    db.session.merge(entity)
 
     db.session.commit()
     return jsonify(id=entity.id), 200
