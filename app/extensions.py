@@ -1,9 +1,12 @@
+import sqlite3
+
 from flask_login import LoginManager
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
-from sqlalchemy import MetaData
+from sqlalchemy import event, Engine, MetaData
+
 
 convention = {
     "ix": "ix_%(column_0_label)s",
@@ -34,3 +37,10 @@ def init_extensions(app):
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.get(User, user_id)
+
+    @event.listens_for(Engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        if isinstance(dbapi_connection, sqlite3.Connection):
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()

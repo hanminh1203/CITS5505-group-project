@@ -8,7 +8,11 @@ class SkillswapException(Exception):
         return {}
 
 
-class ValidationException(SkillswapException):
+class SkillswapExpectedException(SkillswapException):
+    pass
+
+
+class ValidationException(SkillswapExpectedException):
     def __init__(self, errors, message="Validation failed."):
         super().__init__(message, 400)
         self.errors = errors
@@ -17,9 +21,14 @@ class ValidationException(SkillswapException):
         return self.errors
 
 
-class InvalidCredientialException(SkillswapException):
+class InvalidCredientialException(SkillswapExpectedException):
     def __init__(self, message="Invalid Crediential"):
         super().__init__(message, 401)
+
+
+class IntegrityException(SkillswapException):
+    def __init__(self, message="Unable to delete due to integrity exception"):
+        super().__init__(message, 409)
 
 
 class NotAuthorizedActionException(SkillswapException):

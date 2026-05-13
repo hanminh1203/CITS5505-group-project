@@ -7,10 +7,14 @@ from app.models.skill import Skill
 class Request(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'request'
     id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    owner_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete="RESTRICT"),
+        nullable=False,
+    )
     owner_skill_id = db.Column(
         db.Integer,
-        db.ForeignKey('skill.id'),
+        db.ForeignKey('skill.id', ondelete="RESTRICT"),
         nullable=False,
     )
     skill_to_learn = db.Column(db.String(255), nullable=False)
@@ -21,8 +25,15 @@ class Request(db.Model, EntityMixin, AuditMixin):
     duration = db.Column(db.String(255))
     availability = db.Column(db.String(255))
 
-    offers = db.relationship('Offer', backref='request', lazy='selectin')
-    owner_skill = db.relationship(Skill, lazy='selectin')
+    offers = db.relationship(
+        'Offer',
+        backref='request',
+        lazy='selectin',
+        passive_deletes=True,
+    )
+    owner_skill = db.relationship(
+        Skill, lazy='selectin', passive_deletes=True
+    )
 
 
 class Offer(db.Model, EntityMixin, AuditMixin):
@@ -30,14 +41,14 @@ class Offer(db.Model, EntityMixin, AuditMixin):
     id = db.Column(db.Integer, primary_key=True)
     offer_skill_id = db.Column(
         db.Integer,
-        db.ForeignKey('skill.id'),
+        db.ForeignKey('skill.id', ondelete="RESTRICT"),
         nullable=False,
     )
     request_id = db.Column(
         db.Integer,
-        db.ForeignKey('request.id'),
+        db.ForeignKey('request.id', ondelete="RESTRICT"),
         nullable=False,
     )
     message = db.Column(db.Text)
 
-    offer_skill = db.relationship(Skill, lazy='selectin')
+    offer_skill = db.relationship(Skill, lazy='selectin', passive_deletes=True)
