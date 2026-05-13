@@ -2,6 +2,7 @@ import { httpService } from '../services/http.service.js';
 import { ConfirmationModal } from '../modals/confirmation.modal.js';
 import { MessageModal } from '../modals/message.modal.js';
 import { SkillModal } from '../modals/skill.modal.js';
+import { ProfileModal } from '../modals/profile.modal.js';
 
 class ProfilePage {
   constructor() {
@@ -10,6 +11,15 @@ class ProfilePage {
   }
 
   initEventListeners() {
+    // Open modal to edit profile
+    $('.btn-edit-profile').click(() => {
+      new ProfileModal(() => {
+        new MessageModal('Profile updated successfully!', () => {
+          location.reload();
+        }).show();
+      }).show();
+    });
+
     // Open modal to add a new skill
     $('.btn-add-skill').click(() => {
       new SkillModal(null, () => {
