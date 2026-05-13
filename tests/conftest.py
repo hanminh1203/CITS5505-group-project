@@ -11,6 +11,7 @@ from werkzeug.serving import make_server
 from app import create_app
 from app.extensions import db
 from app.models import (
+    Offer,
     Request,
     RequestStatus,
     SessionFormat,
@@ -115,6 +116,51 @@ def request_factory(app, skill_factory):
         return entity
 
     return create_request
+
+
+@pytest.fixture
+def request_offers_factory(app,
+                           user_factory,
+                           skill_factory,
+                           request_factory,
+                           offer_factory):
+    def create_request_offer(user=None, num_offer=1):
+        request_owner = user or user_factory()
+        skill = skill_factory(user=request_owner)
+        request = request_factory(owner_skill=skill)
+        request.status = RequestStatus.PENDING
+        db.session.commit()
+        for i in range(0, num_offer):
+            user_offer = user_factory(
+                email=f"user_{i+1}@example.com",
+                password="password123",
+                name=f"User {i+1}",
+            )
+            offer_factory(request, user=user_offer)
+
+        return request_owner, request
+    return create_request_offer
+
+
+@pytest.fixture
+def offer_factory(app, skill_factory):
+    def create_offer(
+        request,
+        user=None,
+        offer_skill=None,
+        message="I can help with this request.",
+    ):
+        offer_skill = offer_skill or skill_factory(user=user)
+        entity = Offer(
+            request_id=request.id,
+            offer_skill_id=offer_skill.id,
+            message=message,
+        )
+        db.session.add(entity)
+        db.session.commit()
+        return entity
+
+    return create_offer
 
 
 @pytest.fixture

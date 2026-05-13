@@ -62,7 +62,7 @@
             </div>
         </div>
         {% if request.selected_offer %}
-            <div class="page-item">
+            <div id="selected-offer" class="page-item">
                 <div class="item-header">
                     {% if request.status == RequestStatus.IN_PROGRESS %}
                         Current swap skill with {{ request.selected_offer.offer_skill.user.name }}

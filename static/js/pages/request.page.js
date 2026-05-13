@@ -55,12 +55,12 @@ class RequestPage {
             }).show();
         });
 
-        $('#btn-accept-offer').click(async (e) => {
+        $('.btn-accept-offer').click(async (e) => {
             const offerId = $(e.currentTarget).data('offer-id');
             this.onAcceptOffer(offerId);
         });
 
-        $('#btn-decline-offer').click(async (e) => {
+        $('.btn-decline-offer').click(async (e) => {
             const offerId = $(e.currentTarget).data('offer-id');
             this.onDeclineOffer(offerId);
         });
