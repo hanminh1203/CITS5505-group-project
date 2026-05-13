@@ -10,7 +10,7 @@ from app.features.pages import (
 from app.templating import init_template_filters
 
 
-def create_app():
+def create_app(config_overrides=None):
     flask_app = Flask(
         __name__,
         instance_relative_config=True,
@@ -18,6 +18,8 @@ def create_app():
         static_folder="../static",
     )
     flask_app.config.from_object(Config)
+    if config_overrides:
+        flask_app.config.update(config_overrides)
 
     init_extensions(flask_app)
     init_template_filters(flask_app)

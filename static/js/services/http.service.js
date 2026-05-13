@@ -42,11 +42,13 @@ class HttpService {
         });
     }
 
-    displaySpinner(promise) {
-        this.spinnerElement.show();
-        return promise.always(() => {
+    async displaySpinner(promise) {
+        try {
+            this.spinnerElement.show();
+            return await promise;
+        } finally {
             this.spinnerElement.hide();
-        });
+        }
     }
 }
 
