@@ -16,6 +16,15 @@ class HttpService {
         }));
     }
 
+    put(csrfToken, url, data) {
+        return this.displaySpinner(this.request({
+            url,
+            type: 'PUT',
+            headers: { 'X-CSRF-Token': csrfToken },
+            data
+        }));
+    }
+
     delete(csrfToken, url) {
         return this.displaySpinner(this.request({
             url,
