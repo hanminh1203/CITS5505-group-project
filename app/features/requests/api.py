@@ -81,12 +81,12 @@ def cancel_request(request_id):
     methods=["DELETE"],
 )
 def cancel_offer(request_id, offer_id):
-    entity = db.get_or_404(Request, request_id)
-
-    offers = [offer for offer in entity.offers if offer.id == offer_id]
-    if not offers:
+    offer = Offer.query.filter_by(
+        id=offer_id,
+        request_id=request_id
+    ).first()
+    if not offer:
         raise NotFoundException("Offer not found.")
-    offer = offers[0]
     if offer.offer_skill.user_id != current_user.id:
         raise NotAuthorizedActionException(
             "You are not authorized to cancel this offer."

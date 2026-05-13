@@ -20,8 +20,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
             "name",
             "bio",
             "address",
-            "avatar",
-            "initials",
+            "avatar"
         ) + AUDIT_FIELDS
         load_instance = True
 
