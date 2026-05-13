@@ -26,7 +26,7 @@ def test_login_api_rejects_invalid_password(client, user_factory):
     )
 
     # Assert
-    assert response.status_code == 400
+    assert response.status_code == 401
 
 
 def test_login_api_rejects_unknown_email(client):
@@ -40,4 +40,4 @@ def test_login_api_rejects_unknown_email(client):
     response = client.post("/api/login", data=credentials)
 
     # Assert
-    assert response.status_code == 400
+    assert response.status_code == 401
