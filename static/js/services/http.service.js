@@ -22,7 +22,7 @@ class HttpService {
         } catch (error) {
             if (!error.responseJSON?.expected) {
                 // lazy import to avoid circular dependency between http.service and error.modal
-                const { ErrorModal } = await import ("../modals/error.modal.js");
+                const { ErrorModal } = await import("../modals/error.modal.js");
                 new ErrorModal("An error occurred while processing your request. Please try again later.",
                     error.responseJSON?.stacktrace).show();
             }
@@ -34,12 +34,22 @@ class HttpService {
         return this.displaySpinner(this.doDelete(csrfToken, url))
     }
 
-    doDelete(csrfToken, url) {
-        return $.ajax({
-            url,
-            type: 'DELETE',
-            headers: { 'X-CSRF-Token': csrfToken }
-        });
+    async doDelete(csrfToken, url) {
+        try {
+            return await $.ajax({
+                url,
+                type: 'DELETE',
+                headers: { 'X-CSRF-Token': csrfToken }
+            });
+        } catch (error) {
+            if (!error.responseJSON?.expected) {
+                // lazy import to avoid circular dependency between http.service and error.modal
+                const { ErrorModal } = await import("../modals/error.modal.js");
+                new ErrorModal("An error occurred while processing your request. Please try again later.",
+                    error.responseJSON?.stacktrace).show();
+            }
+            throw error;
+        }
     }
 
     async displaySpinner(promise) {
