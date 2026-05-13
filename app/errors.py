@@ -3,7 +3,11 @@ import traceback
 
 from flask import current_app, redirect, render_template, request, url_for
 from werkzeug.exceptions import HTTPException
-from app.exceptions import SkillswapException, ValidationException
+from app.exceptions import (
+    InvalidCredientialException,
+    SkillswapException,
+    ValidationException,
+)
 
 
 def handle_general_exception(error, code=HTTPStatus.INTERNAL_SERVER_ERROR):
@@ -71,7 +75,9 @@ def register_error_handlers(app, login_manager):
     def handle_validation_exception(error):
         response, code = handle_general_exception(error)
         response['data'] = error.get_addition_info()
-        response['expected'] = isinstance(error, ValidationException)
+        is_validation = isinstance(error, ValidationException)
+        is_credential = isinstance(error, InvalidCredientialException)
+        response['expected'] = is_validation or is_credential
         return response, code
 
     @login_manager.unauthorized_handler

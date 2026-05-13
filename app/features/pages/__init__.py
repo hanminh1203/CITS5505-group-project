@@ -11,14 +11,11 @@ from flask_login import login_required, logout_user, current_user
 
 from app.features.requests.views import requests_views_bp
 from app.features.skills.page import skills_views_bp
-from app.forms.login import LoginForm
-from app.forms.register import RegisterForm
-
-from app.forms.profile import ProfileForm
+from app.forms import LoginForm, RegisterForm, ProfileForm
 from app.models import Skill
 from app.extensions import db
 from app.features.users.views import users_views_bp
-from app.models.user import User
+from app.models import User, Request, Offer, RequestStatus
 
 public_views_bp = Blueprint("public", __name__, url_prefix="/")
 private_views_bp = Blueprint("private", __name__, url_prefix="/")
@@ -32,8 +29,8 @@ def render_template_with_class(
 ):
     return render_template(
         f"pages/{page}.page.html",
-        css_file=f"/css/pages/{page}.page.css" if has_css else None,
-        js_file=f"/js/pages/{page}.page.js" if has_js else None,
+        css_file=f"css/pages/{page}.page.css" if has_css else None,
+        js_file=f"js/pages/{page}.page.js" if has_js else None,
         main_class=page,
         **addition_variables
     )
@@ -97,11 +94,6 @@ def register():
     )
 
 
-@public_views_bp.route("/dev", methods=['GET'])
-def dev():
-    return render_template_with_class("dev")
-
-
 def create_public_views_blueprint():
     return public_views_bp
 
@@ -116,9 +108,6 @@ def require_login():
 
 @private_views_bp.route("/dashboard", methods=['GET'])
 def dashboard():
-    from app.models.request import Request, Offer
-    from app.models.enums import RequestStatus
-
     my_requests = Request.query.filter(
         Request.owner_id == current_user.id,
         Request.status.in_([
@@ -186,20 +175,6 @@ def display_error_modal():
         message=request.args.get('message', ''),
         stacktrace=request.args.get('stacktrace', ''),
         debug=current_app.debug
-    )
-
-
-# TODO served as temporary to load the pages without adding new routes
-# To be replaced with actual routes
-# and clear up after the pages are fully implemented
-@private_views_bp.route("/pages/<name>", methods=['GET'])
-@private_views_bp.route("/components/<name>", methods=['GET'])
-@private_views_bp.route("/modals/<name>", methods=['GET'])
-def render_section(name):
-    section = request.path.strip("/").split("/", 1)[0]
-    return render_fragment(
-        section,
-        name
     )
 
 

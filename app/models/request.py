@@ -1,7 +1,7 @@
 from app.extensions import db
 from app.models.enums import RequestStatus, SessionFormat
 from app.models.mixins import AuditMixin, EntityMixin
-from app.models.skill import Skill
+from app.models import Skill
 
 
 class Request(db.Model, EntityMixin, AuditMixin):

@@ -4,8 +4,7 @@ from flask import Blueprint, render_template, request
 from flask_login import current_user
 
 from app.extensions import db
-from app.forms.offer import OfferForm
-from app.forms.request import RequestForm
+from app.forms import OfferForm, RequestForm
 from app.models import Request
 from app.models.enums import RequestStatus, SkillLevel, SessionFormat
 from app.config import Config

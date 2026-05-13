@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 from app.extensions import db
-from app.forms.skill import SkillForm
+from app.forms import SkillForm
 from app.models import Skill
 
 skills_views_bp = Blueprint("skills_views", __name__)

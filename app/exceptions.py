@@ -17,6 +17,11 @@ class ValidationException(SkillswapException):
         return self.errors
 
 
+class InvalidCredientialException(SkillswapException):
+    def __init__(self, message="Invalid Crediential"):
+        super().__init__(message, 401)
+
+
 class NotAuthorizedActionException(SkillswapException):
     def __init__(self,
                  message="You are not authorized to perform this action."):

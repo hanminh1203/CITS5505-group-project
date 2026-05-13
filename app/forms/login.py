@@ -1,7 +1,19 @@
 from flask_wtf import FlaskForm
 from wtforms import EmailField, PasswordField
+from wtforms.validators import DataRequired, Email
 
 
 class LoginForm(FlaskForm):
-    email = EmailField('Email')
-    password = PasswordField('Password')
+    email = EmailField(
+        'Email',
+        validators=[
+            DataRequired(),
+            Email(message="Please enter a valid email address."),
+        ],
+    )
+    password = PasswordField(
+        'Password',
+        validators=[
+            DataRequired(),
+        ]
+    )

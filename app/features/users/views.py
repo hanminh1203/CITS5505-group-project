@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import current_user
 
-from app.forms.profile import ProfileForm
+from app.forms import ProfileForm
 
 users_views_bp = Blueprint("users_views", __name__)
 
