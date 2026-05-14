@@ -17,8 +17,10 @@ def wait_for(browser, timeout=10):
     return WebDriverWait(browser, timeout)
 
 
-def human_pause():
-    if STEP_DELAY_SECONDS > 0:
+def human_pause(second=None):
+    if second is not None:
+        time.sleep(second)
+    elif STEP_DELAY_SECONDS > 0:
         time.sleep(STEP_DELAY_SECONDS)
 
 
@@ -145,7 +147,7 @@ def test_profile_shows_authenticated_users_skills(
     skills_list = browser.find_element(By.ID, "offer-skills-list")
     skill_count = browser.find_element(By.CSS_SELECTOR, ".section-label")
     assert "Photography" in skills_list.text
-    assert "1 SKILLS" in skill_count.text
+    assert "1 SKILL" in skill_count.text
 
 
 def test_profile_page_shows_empty_skill_state(
@@ -257,3 +259,79 @@ def test_request_detail_page_shows_seeded_request(
     assert "About Riley Owner" in body_text
     assert "Session Preferences" in body_text
     assert browser.find_element(By.ID, "btn-cancel-request").is_displayed()
+
+
+def test_request_detail_page_accept_offer(
+    browser,
+    server_url,
+    user_factory,
+    request_offers_factory
+):
+    user = user_factory(
+        email="detail@example.com",
+        password="password123",
+        name="Riley Owner",
+    )
+    _, request = request_offers_factory(user, 2)
+
+    login_through_ui(browser, server_url, "detail@example.com", "password123")
+    browser.get(f"{server_url}/requests/{request.id}")
+
+    wait_for(browser).until(
+        EC.presence_of_element_located((By.ID, "request-data"))
+    )
+
+    elements = browser.find_elements(By.CSS_SELECTOR, ".btn-accept-offer")
+    assert len(elements) == 2
+    elements[1].click()  # Accept the 2nd offer
+
+    human_pause(1)
+    wait_and_click(browser, By.ID, "btn-ok")  # Confirm accept
+    human_pause(1)
+    wait_and_click(browser, By.ID, "btn-ok")  # Request is accepted
+
+    selected_offer_section = browser.find_element(By.ID, "selected-offer")
+    assert selected_offer_section.is_displayed()
+    assert selected_offer_section.find_element(
+        By.CSS_SELECTOR,
+        '.item-header').text == "Current swap skill with User 2"
+
+
+def test_request_detail_page_decline_offer(
+    browser,
+    server_url,
+    user_factory,
+    request_offers_factory
+):
+    user = user_factory(
+        email="detail@example.com",
+        password="password123",
+        name="Riley Owner",
+    )
+    _, request = request_offers_factory(user, 2)
+
+    login_through_ui(browser, server_url, "detail@example.com", "password123")
+    browser.get(f"{server_url}/requests/{request.id}")
+
+    wait_for(browser).until(
+        EC.presence_of_element_located((By.ID, "request-data"))
+    )
+
+    elements = browser.find_elements(By.CSS_SELECTOR, ".btn-decline-offer")
+    assert len(elements) == 2
+    elements[1].click()  # Decline the 2nd offer
+    human_pause(1)
+    wait_and_click(browser, By.ID, "btn-ok")  # Confirm decline
+    human_pause(1)
+    wait_and_click(browser, By.ID, "btn-ok")  # Offer is decline
+
+    after_elements = browser.find_elements(By.CSS_SELECTOR,
+                                           ".btn-decline-offer")
+    assert len(after_elements) == 1  # Only 1 offer left
+
+
+def wait_and_click(browser, by, value):
+    wait_for(browser).until(
+        EC.presence_of_element_located((by, value))
+    )
+    browser.find_element(by, value).click()

@@ -115,6 +115,7 @@ def get_request(request_id):
         css_file="/css/pages/request.page.css",
         main_class="request",
         js_file="/js/pages/request.page.js",
+        RequestStatus=RequestStatus
     )
 
 

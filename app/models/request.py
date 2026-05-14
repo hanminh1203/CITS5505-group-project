@@ -24,16 +24,20 @@ class Request(db.Model, EntityMixin, AuditMixin):
     description = db.Column(db.Text)
     duration = db.Column(db.String(255))
     availability = db.Column(db.String(255))
+    selected_offer_id = db.Column(
+        db.Integer,
+        db.ForeignKey('offer.id'),
+        nullable=True,
+    )
 
     offers = db.relationship(
         'Offer',
-        backref='request',
+        back_populates='request',
+        foreign_keys='Offer.request_id',
         lazy='selectin',
         passive_deletes=True,
     )
-    owner_skill = db.relationship(
-        Skill, lazy='selectin', passive_deletes=True
-    )
+    owner_skill = db.relationship(Skill, lazy=True)
 
 
 class Offer(db.Model, EntityMixin, AuditMixin):
@@ -51,4 +55,11 @@ class Offer(db.Model, EntityMixin, AuditMixin):
     )
     message = db.Column(db.Text)
 
+    request = db.relationship(
+        Request,
+        back_populates='offers',
+        foreign_keys=[request_id],
+        lazy='selectin',
+        passive_deletes=True,
+    )
     offer_skill = db.relationship(Skill, lazy='selectin', passive_deletes=True)

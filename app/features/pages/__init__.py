@@ -17,6 +17,7 @@ from app.extensions import db
 from app.features.users.views import users_views_bp
 from app.models import User, Request, Offer, RequestStatus
 
+
 public_views_bp = Blueprint("public", __name__, url_prefix="/")
 private_views_bp = Blueprint("private", __name__, url_prefix="/")
 
@@ -117,7 +118,8 @@ def dashboard():
         ])
     ).order_by(Request.created_at.desc()).all()
 
-    my_offerings = Request.query.join(Offer).filter(
+    my_offerings = Request.query.join(Offer,
+                                      Offer.request_id == Request.id).filter(
         Offer.created_by == current_user.email,
         Request.status.in_([
             RequestStatus.PENDING,

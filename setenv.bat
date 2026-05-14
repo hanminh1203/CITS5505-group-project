@@ -8,7 +8,7 @@ DOSKEY lint1=flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 DOSKEY lint2=flake8 . --count --max-complexity=10 --statistics
 
 DOSKEY run_test=set "SELENIUM_STEP_DELAY=0" $T set "SELENIUM_HEADLESS=1" $T python -m pytest --html=report.html
-DOSKEY test_sel_live=set "SELENIUM_STEP_DELAY=10" $T set "SELENIUM_HEADLESS=0" $T python -m pytest tests\test_selenium.py
+DOSKEY test_sel_live=set "SELENIUM_STEP_DELAY=0" $T set "SELENIUM_HEADLESS=0" $T python -m pytest tests\selenium\test_pages.py
 DOSKEY test_sel_live_single=set "SELENIUM_STEP_DELAY=0" $T set "SELENIUM_HEADLESS=0" $T python -m pytest tests\selenium\test_pages.py::$1
 DOSKEY reset_test=set "SELENIUM_STEP_DELAY=0" $T set "SELENIUM_HEADLESS=1"
 
