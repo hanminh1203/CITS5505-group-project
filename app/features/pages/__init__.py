@@ -19,6 +19,9 @@ from app.models import Skill
 from app.extensions import db
 from app.features.users.views import users_views_bp
 from app.models.user import User
+from app.models.request import Request, Offer
+from app.models.enums import RequestStatus
+
 
 public_views_bp = Blueprint("public", __name__, url_prefix="/")
 private_views_bp = Blueprint("private", __name__, url_prefix="/")
@@ -116,9 +119,6 @@ def require_login():
 
 @private_views_bp.route("/dashboard", methods=['GET'])
 def dashboard():
-    from app.models.request import Request, Offer
-    from app.models.enums import RequestStatus
-
     my_requests = Request.query.filter(
         Request.owner_id == current_user.id,
         Request.status.in_([
@@ -128,7 +128,8 @@ def dashboard():
         ])
     ).order_by(Request.created_at.desc()).all()
 
-    my_offerings = Request.query.join(Offer).filter(
+    my_offerings = Request.query.join(Offer,
+                                      Offer.request_id == Request.id).filter(
         Offer.created_by == current_user.email,
         Request.status.in_([
             RequestStatus.PENDING,
