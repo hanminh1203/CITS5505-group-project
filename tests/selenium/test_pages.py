@@ -147,7 +147,7 @@ def test_profile_shows_authenticated_users_skills(
     skills_list = browser.find_element(By.ID, "offer-skills-list")
     skill_count = browser.find_element(By.CSS_SELECTOR, ".section-label")
     assert "Photography" in skills_list.text
-    assert "1 SKILLS" in skill_count.text
+    assert "1 SKILL" in skill_count.text
 
 
 def test_profile_page_shows_empty_skill_state(
