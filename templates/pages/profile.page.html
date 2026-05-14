@@ -5,10 +5,15 @@
   <div class="profile-header">
     <div class="profile-avatar-lg">{{ current_user.name|get_initials }}</div>
     <div class="flex-grow-1">
-      <div class="profile-name-lg">{{ current_user.name }}</div>
-      <div class="profile-bio">{{ current_user.bio or 'No bio provided yet.' }}{% if current_user.address %} based in {{
-        current_user.address }}{% endif %}
+      <div class="d-flex align-items-baseline gap-3 mb-2">
+        <div class="profile-name-lg mb-0">{{ current_user.name }}</div>
+        {% if current_user.address %}
+        <div class="profile-location">
+          <i class="bi bi-geo-alt-fill"></i> {{ current_user.address }}
+        </div>
+        {% endif %}
       </div>
+      <div class="profile-bio">{{ current_user.bio or 'No bio provided yet.' }}</div>
       <div class="profile-tags">
         {% for skill in skills[:5] %}
         <span class="profile-tag">{{ skill.name }}</span>
@@ -38,7 +43,7 @@
         <div class="skill-set-card">
           <div class="skill-set-header">
             <h5>My Skill Set</h5>
-            <span class="section-label">{{ skills|length }} skills</span>
+            <span class="section-label">{{ skills|length }} skill{% if skills|length != 1 %}s{% endif %}</span>
           </div>
           <div id="offer-skills-list">
             {% for skill in skills %}
