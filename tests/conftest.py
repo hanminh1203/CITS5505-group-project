@@ -5,6 +5,7 @@ import pytest
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options
+from sqlalchemy import text
 from sqlalchemy.pool import StaticPool
 from werkzeug.serving import make_server
 
@@ -50,8 +51,10 @@ def clean_database(app):
     with app.app_context():
         db.session.rollback()
         db.session.remove()
+        db.session.execute(text("PRAGMA foreign_keys=OFF"))
         for table in reversed(db.metadata.sorted_tables):
             db.session.execute(table.delete())
+        db.session.execute(text("PRAGMA foreign_keys=ON"))
         db.session.commit()
         yield
         db.session.rollback()

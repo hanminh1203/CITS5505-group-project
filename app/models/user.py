@@ -17,10 +17,7 @@ class User(db.Model, UserMixin, EntityMixin, AuditMixin):
 
     # Relationships
     skills = db.relationship(
-        'Skill', backref='user', lazy=True, passive_deletes=True
-    )
-    requests = db.relationship(
-        'Request', backref='owner', lazy=True, passive_deletes=True
+        'Skill', back_populates='user', lazy=True, passive_deletes=True
     )
 
     def set_password(self, password):

@@ -1,7 +1,7 @@
 """Add ON DELETE RESTRICT
 
 Revision ID: de8768bdeab7
-Revises: 8bba2fa898d3
+Revises: 47a72b3ea7b0
 Create Date: 2026-05-13 20:26:00.188827
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'de8768bdeab7'
-down_revision = '8bba2fa898d3'
+down_revision = '47a72b3ea7b0'
 branch_labels = None
 depends_on = None
 

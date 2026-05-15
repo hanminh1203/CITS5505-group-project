@@ -26,7 +26,7 @@ class Request(db.Model, EntityMixin, AuditMixin):
     availability = db.Column(db.String(255))
     selected_offer_id = db.Column(
         db.Integer,
-        db.ForeignKey('offer.id'),
+        db.ForeignKey('offer.id', use_alter=True, ondelete="RESTRICT"),
         nullable=True,
     )
 
@@ -38,6 +38,19 @@ class Request(db.Model, EntityMixin, AuditMixin):
         passive_deletes=True,
     )
     owner_skill = db.relationship(Skill, lazy=True)
+    owner = db.relationship(
+        'User',
+        foreign_keys=owner_id,
+        lazy='selectin',
+        passive_deletes=True
+    )
+    selected_offer = db.relationship(
+        'Offer',
+        foreign_keys=[selected_offer_id],
+        post_update=True,
+        lazy=True,
+        passive_deletes=True
+    )
 
 
 class Offer(db.Model, EntityMixin, AuditMixin):
@@ -59,7 +72,7 @@ class Offer(db.Model, EntityMixin, AuditMixin):
         Request,
         back_populates='offers',
         foreign_keys=[request_id],
-        lazy='selectin',
+        lazy=True,
         passive_deletes=True,
     )
     offer_skill = db.relationship(Skill, lazy='selectin', passive_deletes=True)
