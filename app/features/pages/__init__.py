@@ -51,7 +51,7 @@ def render_fragment(section, name, **kwargs):
 @public_views_bp.route("/", methods=['GET'])
 @public_views_bp.route("/index.html", methods=['GET'])
 def index():
-    return render_template_with_class("home")
+    return render_template_with_class("home", has_js=False)
 
 
 @public_views_bp.route("/login", methods=['GET'])
