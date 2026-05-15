@@ -28,7 +28,7 @@ export class FormModal extends BaseModal {
         this.clearError();
         const { csft_token, ...formData} = FormUtils.extractFormData(this.formElement);
         try {
-            const result = await httpService.post(csrf_token, this.submitUrl, formData);
+            const result = await this.doSubmitRequest(csft_token, formData);
             this.close(result);
         } catch (e) {
             const data = e.responseJSON?.data;
@@ -40,5 +40,9 @@ export class FormModal extends BaseModal {
                 }
             }
         }
+    }
+
+    doSubmitRequest(csrf_token, formData) {
+        return httpService.post(csrf_token, this.submitUrl, formData);
     }
 }

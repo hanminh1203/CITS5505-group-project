@@ -64,6 +64,7 @@ def test_user_can_update_own_skill(client, login_user, skill_factory):
         "name": "Advanced Python",
         "level": SkillLevel.EXPERT.value,
         "description": "Testing and architecture",
+        "version": skill.version
     }
 
     # Act
@@ -76,6 +77,28 @@ def test_user_can_update_own_skill(client, login_user, skill_factory):
     assert updated_skill.name == payload["name"]
     assert updated_skill.level == SkillLevel.EXPERT
     assert updated_skill.description == payload["description"]
+
+
+def test_concurrent_update_when_user_update_skill(
+    client,
+    login_user,
+    skill_factory
+):
+    # Arrange
+    user = login_user()
+    skill = skill_factory(user=user, name="Python")
+    payload = {
+        "name": "Advanced Python",
+        "level": SkillLevel.EXPERT.value,
+        "description": "Testing and architecture",
+        "version": skill.version + 10
+    }
+
+    # Act
+    response = client.post(f"/api/skills/{skill.id}", data=payload)
+
+    # Assert
+    assert response.status_code == 409
 
 
 def test_user_cannot_update_another_users_skill(

@@ -29,6 +29,7 @@ def update_request():
     entity = None
     if dto.id.data:
         entity = get_owned_request(dto.id.data)
+        db.session.expunge(entity)
     else:
         entity = Request()
         entity.owner_id = current_user.id
@@ -42,6 +43,8 @@ def update_request():
     entity.format = SessionFormat(dto.format.data) if dto.format.data else None
     entity.availability = dto.availability.data
     entity.duration = dto.duration.data
+    entity.version = int(dto.version.data or 0)
+    db.session.merge(entity)
     db.session.commit()
     return jsonify(id=entity.id), 200
 
@@ -75,12 +78,10 @@ def cancel_request(request_id):
     methods=["DELETE"],
 )
 def cancel_offer(request_id, offer_id):
-    entity = db.get_or_404(Request, request_id)
-
-    offer = next(
-        (offer for offer in entity.offers if offer.id == offer_id),
-        None,
-    )
+    offer = Offer.query.filter_by(
+        id=offer_id,
+        request_id=request_id
+    ).first()
     if not offer:
         raise NotFoundException("Offer not found.")
     if offer.offer_skill.user_id != current_user.id:

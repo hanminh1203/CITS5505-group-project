@@ -2,11 +2,11 @@ from math import ceil
 
 from flask import Blueprint, render_template, request
 from flask_login import current_user
+from sqlalchemy.orm import joinedload
 
 from app.extensions import db
-from app.forms.offer import OfferForm
-from app.forms.request import RequestForm
-from app.models import Request
+from app.forms import OfferForm, RequestForm
+from app.models import Request, Offer
 from app.models.enums import RequestStatus, SkillLevel, SessionFormat
 from app.config import Config
 
@@ -97,7 +97,13 @@ def get_requests():
 
 @requests_views_bp.route("/<int:request_id>", methods=["GET"])
 def get_request(request_id):
-    request_item = Request.query.get_or_404(request_id)
+    request_item = db.get_or_404(Request,
+                                 request_id,
+                                 options=[
+                                     joinedload(Request.offers)
+                                     .joinedload(Offer.offer_skill)
+                                     ]
+                                 )
     offering = any(
         offer.offer_skill.user_id == current_user.id
         for offer in request_item.offers

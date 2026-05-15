@@ -1,7 +1,13 @@
+from sqlalchemy.exc import IntegrityError
+
 from flask import Blueprint, jsonify, request
 from flask_login import current_user
 
-from app.exceptions import NotAuthorizedActionException, ValidationException
+from app.exceptions import (
+    IntegrityException,
+    NotAuthorizedActionException,
+    ValidationException,
+)
 from app.extensions import db
 from app.forms.skill import SkillForm
 from app.models import Skill
@@ -39,6 +45,7 @@ def update_skill(skill_id):
         raise ValidationException(dto.errors)
 
     entity = db.get_or_404(Skill, skill_id)
+    db.session.expunge(entity)
 
     # Ensure user owns this skill
     if entity.user_id != current_user.id:
@@ -48,6 +55,8 @@ def update_skill(skill_id):
     entity.name = dto.name.data
     entity.level = SkillLevel(dto.level.data)
     entity.description = dto.description.data
+    entity.version = int(dto.version.data or 0)
+    db.session.merge(entity)
 
     db.session.commit()
     return jsonify(id=entity.id), 200
@@ -56,12 +65,18 @@ def update_skill(skill_id):
 # Delete a specific skill
 @skills_api_bp.route("/<int:skill_id>", methods=["DELETE"])
 def delete_skill(skill_id):
-    entity = db.get_or_404(Skill, skill_id)
+    try:
+        entity = db.get_or_404(Skill, skill_id)
 
-    # Ensure user owns this skill before deletion
-    if entity.user_id != current_user.id:
-        raise NotAuthorizedActionException()
+        # Ensure user owns this skill before deletion
+        if entity.user_id != current_user.id:
+            raise NotAuthorizedActionException()
 
-    db.session.delete(entity)
-    db.session.commit()
-    return "", 200
+        db.session.delete(entity)
+        db.session.commit()
+        return "", 200
+    except IntegrityError as error:
+        raise IntegrityException(
+            "Cannot delete the skill because "
+            "some entities still using this skill."
+        ) from error

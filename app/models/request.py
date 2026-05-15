@@ -7,10 +7,14 @@ from app.models.skill import Skill
 class Request(db.Model, EntityMixin, AuditMixin):
     __tablename__ = 'request'
     id = db.Column(db.Integer, primary_key=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    owner_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete="RESTRICT"),
+        nullable=False,
+    )
     owner_skill_id = db.Column(
         db.Integer,
-        db.ForeignKey('skill.id'),
+        db.ForeignKey('skill.id', ondelete="RESTRICT"),
         nullable=False,
     )
     skill_to_learn = db.Column(db.String(255), nullable=False)
@@ -22,7 +26,7 @@ class Request(db.Model, EntityMixin, AuditMixin):
     availability = db.Column(db.String(255))
     selected_offer_id = db.Column(
         db.Integer,
-        db.ForeignKey('offer.id'),
+        db.ForeignKey('offer.id', use_alter=True, ondelete="RESTRICT"),
         nullable=True,
     )
 
@@ -30,14 +34,22 @@ class Request(db.Model, EntityMixin, AuditMixin):
         'Offer',
         back_populates='request',
         foreign_keys='Offer.request_id',
-        lazy=True,
+        lazy='selectin',
+        passive_deletes=True,
     )
     owner_skill = db.relationship(Skill, lazy=True)
+    owner = db.relationship(
+        'User',
+        foreign_keys=owner_id,
+        lazy='selectin',
+        passive_deletes=True
+    )
     selected_offer = db.relationship(
         'Offer',
         foreign_keys=[selected_offer_id],
         post_update=True,
         lazy=True,
+        passive_deletes=True
     )
 
 
@@ -46,12 +58,12 @@ class Offer(db.Model, EntityMixin, AuditMixin):
     id = db.Column(db.Integer, primary_key=True)
     offer_skill_id = db.Column(
         db.Integer,
-        db.ForeignKey('skill.id'),
+        db.ForeignKey('skill.id', ondelete="RESTRICT"),
         nullable=False,
     )
     request_id = db.Column(
         db.Integer,
-        db.ForeignKey('request.id'),
+        db.ForeignKey('request.id', ondelete="RESTRICT"),
         nullable=False,
     )
     message = db.Column(db.Text)
@@ -61,5 +73,6 @@ class Offer(db.Model, EntityMixin, AuditMixin):
         back_populates='offers',
         foreign_keys=[request_id],
         lazy=True,
+        passive_deletes=True,
     )
-    offer_skill = db.relationship(Skill, lazy=True)
+    offer_skill = db.relationship(Skill, lazy='selectin', passive_deletes=True)

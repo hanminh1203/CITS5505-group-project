@@ -8,13 +8,27 @@ class SkillswapException(Exception):
         return {}
 
 
-class ValidationException(SkillswapException):
+class SkillswapExpectedException(SkillswapException):
+    pass
+
+
+class ValidationException(SkillswapExpectedException):
     def __init__(self, errors, message="Validation failed."):
         super().__init__(message, 400)
         self.errors = errors
 
     def get_addition_info(self):
         return self.errors
+
+
+class InvalidCredientialException(SkillswapExpectedException):
+    def __init__(self, message="Invalid Crediential"):
+        super().__init__(message, 401)
+
+
+class IntegrityException(SkillswapException):
+    def __init__(self, message="Unable to delete due to integrity exception"):
+        super().__init__(message, 409)
 
 
 class NotAuthorizedActionException(SkillswapException):
@@ -37,3 +51,10 @@ class InvalidActionException(SkillswapException):
 class NotFoundException(SkillswapException):
     def __init__(self, message="The requested resource was not found."):
         super().__init__(message, 404)
+
+
+class OptimisticException(SkillswapException):
+    def __init__(self, message="Data has been updated or"
+                 " deleted by another user."
+                 " Please try again"):
+        super().__init__(message, 409)

@@ -24,8 +24,10 @@ class RequestStatus(StrEnum):
     def from_value(value):
         try:
             return RequestStatus(value)
-        except ValueError:
-            raise IllegalArgumentException(f"Value {value} is not supported")
+        except ValueError as error:
+            raise IllegalArgumentException(
+                f"Value {value} is not supported"
+            ) from error
 
     def can_cancel(self):
         return self in {

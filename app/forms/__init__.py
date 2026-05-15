@@ -3,11 +3,13 @@ from app.forms.skill import SkillForm
 from app.forms.profile import ProfileForm
 from app.forms.login import LoginForm
 from app.forms.register import RegisterForm
+from app.forms.offer import OfferForm
 
 __all__ = [
     "RequestForm",
     "SkillForm",
     "ProfileForm",
     "LoginForm",
-    "RegisterForm"
+    "RegisterForm",
+    "OfferForm"
 ]

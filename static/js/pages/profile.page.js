@@ -49,15 +49,10 @@ class ProfilePage {
 
       new ConfirmationModal(`Are you sure you want to remove "${name}" from your profile?`, async (confirmed) => {
         if (confirmed) {
-          try {
-            await httpService.delete(this.csrfToken, `/api/skills/${skillId}`);
-            new MessageModal(`Skill "${name}" has been removed.`, () => {
-              location.reload();
-            }).show();
-          } catch (error) {
-            console.error("Failed to delete skill", error);
-            new MessageModal('Failed to delete skill. Please try again.').show();
-          }
+          await httpService.delete(this.csrfToken, `/api/skills/${skillId}`);
+          new MessageModal(`Skill "${name}" has been removed.`, () => {
+            location.reload();
+          }).show();
         }
       }).show();
     });

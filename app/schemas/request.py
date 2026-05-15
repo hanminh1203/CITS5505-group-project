@@ -20,17 +20,9 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
             "name",
             "bio",
             "address",
-            "avatar",
-            "initials",
+            "avatar"
         ) + AUDIT_FIELDS
         load_instance = True
-
-    initials = ma.Method("get_initials")
-
-    def get_initials(self, obj):
-        return "".join(
-            [part[0].upper() for part in obj.name.strip().split(" ")[0:2]]
-        )
 
 
 class SkillSchema(ma.SQLAlchemyAutoSchema):
