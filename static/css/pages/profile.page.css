@@ -8,7 +8,6 @@
   display: block;
 }
 
-
 /* Buttons used on profile page */
 .btn-outline-ink,
 .btn-outline-accent,
@@ -67,25 +66,6 @@
 }
 
 /* Profile page */
-.profile-header {
-  background: linear-gradient(135deg, var(--ink) 0%, #1e3a8a 60%, #1e1b4b 100%);
-  color: #e8f0ff;
-  padding: 3rem 4rem;
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-  border-bottom: 2px solid var(--accent);
-  position: relative;
-  overflow: hidden;
-}
-
-.profile-header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 70% 50%, rgba(37, 99, 235, 0.2) 0%, transparent 60%);
-  pointer-events: none;
-}
 
 .profile-avatar-lg {
   width: 90px;
@@ -138,10 +118,6 @@
   letter-spacing: 0.08em;
   padding: 0.2rem 0.6rem;
   border-radius: 50px;
-}
-
-.profile-body {
-  padding: 2.5rem 4rem;
 }
 
 .skill-set-card {
@@ -352,7 +328,7 @@
 }
 
 /* Extracted from inline styles */
-.profile-header .btn-edit-profile {
+.btn-edit-profile {
   color: var(--cool);
   border-color: rgba(255, 255, 255, 0.2);
 }
@@ -380,4 +356,8 @@
 
 .empty-skills-msg {
   color: var(--muted);
+}
+
+.profile-action {
+  min-width: 170px;
 }

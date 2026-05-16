@@ -5,7 +5,7 @@
     <a class="page-back fade-right" href="{{ url_for('private.requests_views.get_requests') }}"><i class="bi bi-arrow-left"></i> Back
     </a>
     <div class="page-headline d-flex justify-content-between flex-wrap gap-3">
-        <div class="flex-fill">
+        <div>
             <div class="page-title">
                 {{ request.title }}
             </div>
@@ -16,7 +16,7 @@
                 <div class="request-status status-{{ request.status |format_request_status }}">{{ request.status.value }}</div>               
             </div>
         </div>
-        <div class="fade-left">
+        <div class="flex-fill text-end fade-left">
             {% if request.status.can_edit() and current_user.id == request.owner_id %}
                 <button id="btn-edit-request" class="app-btn btn-secondary"><i class="bi bi-pencil me-2"></i>Edit</button>
             {% endif %}
