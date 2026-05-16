@@ -2,7 +2,7 @@
 {% block main %}
 <div id="request-data" data-request-id="{{ request.id }}"></div>
 <div class="page-header">
-    <a class="page-back" href="/requests"><i class="bi bi-arrow-left"></i> Back
+    <a class="page-back fade-right" href="{{ url_for('private.requests_views.get_requests') }}"><i class="bi bi-arrow-left"></i> Back
     </a>
     <div class="page-headline d-flex justify-content-between flex-wrap gap-3">
         <div class="flex-fill">
@@ -16,7 +16,7 @@
                 <div class="request-status status-{{ request.status |format_request_status }}">{{ request.status.value }}</div>               
             </div>
         </div>
-        <div>
+        <div class="fade-left">
             {% if request.status.can_edit() and current_user.id == request.owner_id %}
                 <button id="btn-edit-request" class="app-btn btn-secondary"><i class="bi bi-pencil me-2"></i>Edit</button>
             {% endif %}
@@ -46,7 +46,7 @@
                 {{ request.description }}
             </div>
         </div>
-        <div class="page-item">
+        <div class="page-item delay-1">
             <div class="item-header">
                 What I'm Offering in Exchange
             </div>
@@ -62,7 +62,7 @@
             </div>
         </div>
         {% if request.selected_offer %}
-            <div id="selected-offer" class="page-item">
+            <div id="selected-offer" class="page-item delay-2">
                 <div class="item-header">
                     {% if request.status == RequestStatus.IN_PROGRESS %}
                         Current swap skill with {{ request.selected_offer.offer_skill.user.name }}
@@ -79,7 +79,7 @@
                     </div>
                 </div>
         {% elif request.status in [RequestStatus.OPEN, RequestStatus.PENDING] %}
-            <div class="page-item">
+            <div class="page-item delay-2">
                 <div class="item-header">
                     Offers Received <span class="text-muted">({{ request.offers | length }})</span>
                 </div>
@@ -95,7 +95,7 @@
         {% endif %}
     </div>
     <div class="page-right">
-        <div class="page-item">
+        <div class="page-item delay-3">
             <div class="item-header">
                 About {{ request.owner.name }}
             </div>
@@ -112,18 +112,24 @@
                 </div>
             </div>
         </div>
-        <div class="page-item">
+        <div class="page-item delay-4">
             <div class="item-header">
                 Session Preferences
             </div>
             <div class="item-body">
-                <div><i class="bi bi-camera-video me-2"></i>{{request.format.value}}</div>
-                <div><i class="bi bi-clock me-2"></i>{{request.duration}}</div>
-                <div><i class="bi bi-calendar me-2"></i>{{request.availability}}</div>
+                {% if request.format %}
+                    <div><i class="bi bi-camera-video me-2"></i>{{request.format.value}}</div>
+                {% endif %}
+                {% if request.duration %}
+                    <div><i class="bi bi-clock me-2"></i>{{request.duration}}</div>
+                {% endif %}
+                {% if request.availability %}
+                    <div><i class="bi bi-calendar me-2"></i>{{request.availability}}</div>
+                {% endif %}
             </div>
         </div>
         {% if current_user.id != request.owner_id %}
-        <div>
+        <div class="fade-up delay-5">
             {% if offering %}
                 <button class="app-btn btn-accent w-100 mb-2" disabled><i class="bi bi-send me-2"></i>Offer Sent</button>
             {% else %}
