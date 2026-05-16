@@ -7,7 +7,7 @@
         <div class="page-subtitle">Browse skill exchange requests from the community.</div>
     </div>
 
-    <div class="page-body requests-body">
+    <div class="page-body">
         <section class="page-item requests-toolbar">
             <form method="GET" action="{{ url_for('private.requests_views.get_requests') }}" class="requests-search-form">
                 <div class="requests-toolbar-left">
@@ -48,6 +48,8 @@
                     {% endfor %}
                     </select>
 
+                </div>
+                <div>
                     <button type="submit" class="app-btn btn-accent">Search</button>
 
                     <a href="{{ url_for('private.requests_views.get_requests') }}" class="requests-reset-btn">

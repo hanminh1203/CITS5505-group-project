@@ -118,6 +118,7 @@
       gap: 1rem;
       box-shadow: 0 4px 24px rgba(37,99,235,0.1), 0 1px 4px rgba(0,0,0,0.05);
       transition: transform 0.3s, box-shadow 0.3s;
+      max-width: calc(100% - 3rem);
     }
     .skill-card-float:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(37,99,235,0.15); }
     .skill-card-float:nth-child(2) { margin-left: 3rem; }
