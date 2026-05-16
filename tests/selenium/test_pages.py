@@ -144,6 +144,8 @@ def test_profile_shows_authenticated_users_skills(
     wait_for(browser).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".skill-row"))
     )
+    human_pause(1)  # wait for animation
+
     skills_list = browser.find_element(By.ID, "offer-skills-list")
     skill_count = browser.find_element(By.CSS_SELECTOR, ".section-label")
     assert "Photography" in skills_list.text
@@ -164,7 +166,7 @@ def test_profile_page_shows_empty_skill_state(
         "password123",
     )
     browser.get(f"{server_url}/profile")
-    human_pause()
+    human_pause(1)  # wait for animation
 
     body_text = browser.find_element(By.TAG_NAME, "body").text
 
@@ -250,6 +252,7 @@ def test_request_detail_page_shows_seeded_request(
     wait_for(browser).until(
         EC.presence_of_element_located((By.ID, "request-data"))
     )
+    human_pause(1)  # wait for animation
     body_text = browser.find_element(By.TAG_NAME, "body").text
 
     assert "Need guitar coaching" in body_text
@@ -291,6 +294,7 @@ def test_request_detail_page_accept_offer(
     wait_and_click(browser, By.ID, "btn-ok")  # Request is accepted
 
     selected_offer_section = browser.find_element(By.ID, "selected-offer")
+    human_pause(1)  # wait for animation
     assert selected_offer_section.is_displayed()
     assert selected_offer_section.find_element(
         By.CSS_SELECTOR,
