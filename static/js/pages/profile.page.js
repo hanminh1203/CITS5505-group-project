@@ -31,9 +31,10 @@ class ProfilePage {
 
     // Open modal to edit an existing skill
     $('#offer-skills-list').on('click', '.btn-edit-skill', (e) => {
+      // get the skill id from the skill row
       const row = e.currentTarget.closest('.skill-row');
       const skillId = row.getAttribute('data-skill-id');
-      
+
       new SkillModal(skillId, () => {
         new MessageModal('Skill updated successfully!', () => {
           location.reload();
@@ -49,10 +50,16 @@ class ProfilePage {
 
       new ConfirmationModal(`Are you sure you want to remove "${name}" from your profile?`, async (confirmed) => {
         if (confirmed) {
-          await httpService.delete(this.csrfToken, `/api/skills/${skillId}`);
-          new MessageModal(`Skill "${name}" has been removed.`, () => {
-            location.reload();
-          }).show();
+          try {
+            await httpService.delete(this.csrfToken, `/api/skills/${skillId}`);
+            new MessageModal(`Skill "${name}" has been removed.`, () => {
+              location.reload();
+            }).show();
+          } catch (e) {
+            // if failed to delete the skill, show error message
+            const errorMsg = e.responseJSON?.message || "Failed to delete skill.";
+            new MessageModal(errorMsg).show();
+          }
         }
       }).show();
     });

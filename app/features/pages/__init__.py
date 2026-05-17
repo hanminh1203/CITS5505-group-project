@@ -46,6 +46,7 @@ def render_fragment(section, name, **kwargs):
 @public_views_bp.route("/", methods=['GET'])
 @public_views_bp.route("/index.html", methods=['GET'])
 def index():
+    # it does not have js file
     return render_template_with_class("home", has_js=False)
 
 
@@ -140,16 +141,21 @@ def logout():
     return redirect(url_for('public.index'))
 
 
+# It is a private route, only accessible by logged in users
 @private_views_bp.route("/profile", methods=['GET'])
 def profile():
     skills = (
         Skill.query.filter_by(user_id=current_user.id)
+        #order by the name of the skill in ascending order
+        # db.func.lower() ensures case-insensitive sorting
         .order_by(db.func.lower(Skill.name).asc())
         .all()
     )
+    # It will create an instance of the ProfileForm and pass the current user's data to it
     return render_template_with_class(
         "profile",
         skills=skills,
+        # ProfileForm(obj=current_user) pre-fills the form with the current user's data
         profile_form=ProfileForm(obj=current_user)
     )
 
