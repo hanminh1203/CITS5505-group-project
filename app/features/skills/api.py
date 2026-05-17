@@ -75,6 +75,8 @@ def delete_skill(skill_id):
         db.session.delete(entity)
         db.session.commit()
         return "", 200
+    # if the skill is used in a request, it will raise an IntegrityError
+    # catch it and raise an IntegrityException
     except IntegrityError as error:
         raise IntegrityException(
             "Cannot delete the skill because "
