@@ -60,7 +60,7 @@
         </section>
 
         {% if requests %}
-            <section class="requests-list">
+            <section class="requests-list fade-up delay-1">
                 {% for item in requests %}
                     {{ render_request_card(item) }}
                 {% endfor %}
@@ -100,7 +100,7 @@
                 </div>
             </div>
         {% else %}
-            <section class="page-item requests-empty">
+            <section class="page-item requests-empty delay-1">
                 <h2 class="item-header">No requests found</h2>
                 <p class="requests-empty-text">Try another search condition.</p>
             </section>

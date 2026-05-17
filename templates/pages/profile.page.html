@@ -4,8 +4,8 @@
 
   <div class="page-header">
     <div class="d-flex gap-4">
-      <div class="profile-avatar-lg">{{ current_user.name|get_initials }}</div>
-      <div class="flex-grow-1">
+      <div class="profile-avatar-lg fade-right">{{ current_user.name|get_initials }}</div>
+      <div class="flex-grow-1 fade-right">
         <div class="d-flex align-items-baseline gap-3 mb-2">
           <div class="profile-name-lg mb-0">{{ current_user.name }}</div>
           {% if current_user.address %}
@@ -24,11 +24,11 @@
           {% endif %}
         </div>
       </div>
-      <div class="d-none d-md-block profile-action text-end">
+      <div class="d-none d-md-block profile-action text-end fade=left">
         {{ render_profile_edit() }}
       </div>
     </div>
-    <div class="d-flex d-md-none gap-3 mt-3 flex-row-reverse">
+    <div class="d-flex d-md-none gap-3 mt-3 flex-row-reverse fade-left">
       {{ render_profile_edit() }}
     </div>
   </div>
@@ -37,12 +37,12 @@
     <div class="row g-4">
       <!-- Skills I Offer -->
       <div class="col-lg-10 mx-auto">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 fade-up">
           <div class="section-title mb-0">Skills I Offer</div>
           <button class="btn-outline-accent btn-add-skill"><i class="bi bi-plus"></i> Add
             Skill</button>
         </div>
-        <div class="skill-set-card">
+        <div class="skill-set-card fade-up delay-1">
           <div class="skill-set-header">
             <h5>My Skill Set</h5>
             <span class="section-label">{{ skills|length }} skill{% if skills|length != 1 %}s{% endif %}</span>

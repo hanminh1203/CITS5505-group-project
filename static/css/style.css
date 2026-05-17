@@ -62,6 +62,7 @@ body {
     background-color: var(--ink);
     border-bottom: 2px solid var(--accent);
     padding: 0.5rem 2rem;
+    min-height: 60px;
 }
 
 .navbar-brand {
@@ -541,3 +542,42 @@ body {
 .requests-card .requests-card-title {
     max-width: calc(100% - 4rem);
 }
+
+
+
+/** ANIMATIONS **/
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeRight {
+    from { opacity: 0; transform: translateX(-32px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(32px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+
+.fade-up, .page-item {
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fade-right, .page-title, .page-subtitle {
+  opacity: 0;
+  animation: fadeRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fade-left {
+  opacity: 0;
+  animation: fadeLeft 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.30s; }
+.delay-3 { animation-delay: 0.45s; }
+.delay-4 { animation-delay: 0.65s; }
+.delay-5 { animation-delay: 0.85s; }
