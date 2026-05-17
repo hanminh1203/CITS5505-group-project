@@ -8,7 +8,7 @@ class ProfileForm(FlaskForm):
     name = StringField(
         "Display name",
         validators=[
-            # DataRequired() is a function from WTForms, it makes this field mandatory
+            # It is a function from WTForms, it makes this field mandatory
             DataRequired(),
             Length(min=3, max=255, message="Name is at least 3 characters"),
         ],
